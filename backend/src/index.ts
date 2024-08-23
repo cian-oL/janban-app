@@ -3,6 +3,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 
+import userRoute from "../routes/userRoute";
+
 const PORT = process.env.SERVER_PORT || 8080;
 const dbConnection = process.env.MONGO_DB_CONNECTION_STRING;
 
@@ -15,5 +17,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/api/user", userRoute);
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

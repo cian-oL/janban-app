@@ -12,12 +12,14 @@ const Header = () => {
         >
           Janban
         </Link>
-        <Button
-          onClick={() => console.log("Login clicked")}
-          className="bg-amber-300 font-bold text-black hover:bg-white"
-        >
-          Sign In
-        </Button>
+        <Link to="/sign-in">
+          <Button
+            onClick={() => console.log("Login clicked")}
+            className="bg-amber-300 font-bold text-black hover:bg-white"
+          >
+            Sign In
+          </Button>
+        </Link>
       </div>
     </header>
   );

@@ -4,9 +4,9 @@ import User from "../models/user";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { auth0Id } = req.body;
+    const { racfid } = req.body;
 
-    const existingUser = await User.findOne({ auth0Id });
+    const existingUser = await User.findOne({ racfid });
 
     if (existingUser) {
       return res.status(409).json({ message: "User already exists" });

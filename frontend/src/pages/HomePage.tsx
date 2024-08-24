@@ -1,4 +1,6 @@
+import SignInTile from "@/components/SignInTile";
+
 const HomePage = () => {
-  return <div>HomePage</div>;
+  return <SignInTile />;
 };
 export default HomePage;

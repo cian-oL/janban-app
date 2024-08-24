@@ -3,10 +3,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { UserFormData } from "@/types/userTypes";
-// import { useMyUser } from "@/api/userApiClient";
+import { useRegisterUser } from "@/api/userApiClient";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -40,7 +41,11 @@ const formSchema = z
   });
 
 const RegistrationForm = () => {
-  //   const { registerUser } = useMyUser;
+  const { registerUser } = useRegisterUser();
+
+  const onSubmit = (formData: UserFormData) => {
+    registerUser(formData);
+  };
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
@@ -49,7 +54,7 @@ const RegistrationForm = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(() => console.log("submit clicked"))}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-5"
       >
         <h1 className="mx-2 text-2xl font-bold underline">Register</h1>

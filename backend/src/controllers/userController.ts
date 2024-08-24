@@ -40,13 +40,14 @@ export const registerUser = async (req: Request, res: Response) => {
       { expiresIn: "1d" }
     );
 
-    res.cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 86400000,
-    });
-
-    return res.status(201).json({ accessToken });
+    return res
+      .status(201)
+      .cookie("refresh_token", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 86400000,
+      })
+      .json({ accessToken });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });

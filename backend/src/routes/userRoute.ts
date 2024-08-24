@@ -4,10 +4,12 @@ import {
   registerUser,
   updateUser,
 } from "../controllers/userController";
+import { validateRegistration } from "../middleware/auth";
 
 const router = express.Router();
 
-router.post("/register", registerUser);
+// "/api/user"
+router.post("/register", validateRegistration, registerUser);
 router.get("/", getUser);
 router.put("/", updateUser);
 

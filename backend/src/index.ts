@@ -3,7 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 
-import userRoute from "../routes/userRoute";
+import userRoute from "./routes/userRoute";
 
 const PORT = process.env.SERVER_PORT || 8080;
 const dbConnection = process.env.MONGO_DB_CONNECTION_STRING;

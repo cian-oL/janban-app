@@ -7,11 +7,12 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <main>{children}</main>
+      <main className="container flex-1">{children}</main>
       <Footer />
-    </>
+    </div>
   );
 };
+
 export default Layout;

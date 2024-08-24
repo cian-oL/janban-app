@@ -48,6 +48,13 @@ const RegistrationForm = () => {
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      racfid: "",
+      password: "",
+      email: "",
+      name: "",
+      confirmPassword: "",
+    },
   });
 
   return (

@@ -36,7 +36,7 @@ const SignInForm = () => {
 
   const onSubmit = (formData: SignInFormData) => {
     signInUser(formData).then((data) => {
-      setAccessToken(data);
+      setAccessToken(data.accessToken);
       toast.success("Signed in");
       navigate("/");
     });

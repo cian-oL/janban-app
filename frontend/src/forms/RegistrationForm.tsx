@@ -49,7 +49,7 @@ const RegistrationForm = () => {
 
   const onSubmit = (formData: UserFormData) => {
     registerUser(formData).then((data) => {
-      setAccessToken(data);
+      setAccessToken(data.accessToken);
       toast.success("User registered");
       navigate("/");
     });

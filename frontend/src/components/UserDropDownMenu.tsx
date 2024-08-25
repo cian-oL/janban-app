@@ -1,5 +1,6 @@
 import { User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 import { useGetUser, useSignOutUser } from "@/api/userApiClient";
 import { useAuthContext } from "@/auth/AuthContext";
@@ -14,19 +15,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useEffect } from "react";
 
 const UserDropDownMenu = () => {
   const navigate = useNavigate();
   const { currentUser } = useGetUser();
-  const { setAccessToken } = useAuthContext();
+  const { setAccessToken, user, setUser } = useAuthContext();
   const { signOutUser } = useSignOutUser();
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+
+    setUser(currentUser);
+  }, [currentUser, setUser]);
 
   const handleSignOut = () => {
     signOutUser().then(() => {
       setAccessToken("");
+      setUser(undefined);
       toast.success("Signed out");
       navigate("/");
     });
@@ -36,7 +43,7 @@ const UserDropDownMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger className="flex gap-2 bg-amber-300 rounded p-2 text-black font-bold hover:bg-white">
         <User />
-        {currentUser?.name}
+        {user?.name}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-indigo-500 text-white mr-2">
         <DropdownMenuLabel className="font-extrabold text-lg underline">

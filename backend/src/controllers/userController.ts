@@ -19,13 +19,13 @@ export const registerUser = async (req: Request, res: Response) => {
     if (existingUser) {
       return res.status(409).json({ message: "User already exists" });
     }
-    const newUser = new User(req.body);
-    await newUser.save();
+    const user = new User(req.body);
+    await user.save();
 
     const accessToken = jwt.sign(
       {
-        userId: newUser._id,
-        email: newUser.email,
+        userId: user._id,
+        email: user.email,
       },
       process.env.JWT_ACCESS_TOKEN_KEY as string,
       { expiresIn: "15m" }
@@ -33,8 +33,8 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const refreshToken = jwt.sign(
       {
-        userId: newUser._id,
-        email: newUser.email,
+        userId: user._id,
+        email: user.email,
       },
       process.env.JWT_REFRESH_TOKEN_KEY as string,
       { expiresIn: "1d" }

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { UserFormData } from "@/types/userTypes";
 import { useRegisterUser } from "@/api/userApiClient";
+import { useAuthContext } from "@/auth/AuthContext";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,24 +19,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useAuthContext } from "@/auth/AuthContext";
 
 const formSchema = z
   .object({
     racfid: z
-      .string({ required_error: "Required" })
+      .string()
+      .min(1, "Required")
       .regex(/J\d{6}/, "Employee ID begins with J and contains 6 numbers"),
     password: z
-      .string({ required_error: "Required" })
+      .string()
+      .min(1, "Required")
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%^&*?])(?=.{8,})/,
         "Passwords must meet strong password criteria"
       ),
-    email: z
-      .string({ required_error: "Required" })
-      .email("Not in email format"),
-    name: z.string({ required_error: "Required" }),
-    confirmPassword: z.string(),
+    email: z.string().min(1, "Required").email("Not in email format"),
+    name: z.string().min(1, "Required"),
+    confirmPassword: z.string().min(1, "Required"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

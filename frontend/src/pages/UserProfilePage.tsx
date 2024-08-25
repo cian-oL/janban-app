@@ -1,6 +1,6 @@
 import { useGetUser, useUpdateUser } from "@/api/userApiClient";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import RegistrationForm from "@/forms/RegistrationForm";
+import UserProfileForm from "@/forms/UserProfileForm";
 
 const UserProfilePage = () => {
   const { currentUser, isLoading: isGetLoading } = useGetUser();
@@ -11,7 +11,7 @@ const UserProfilePage = () => {
   }
 
   return (
-    <RegistrationForm
+    <UserProfileForm
       currentUser={currentUser}
       isLoading={isUpdateLoading}
       onSave={updateUser}

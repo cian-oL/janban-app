@@ -4,7 +4,8 @@ import { useRegisterUser } from "@/api/userApiClient";
 import { useAuthContext } from "@/auth/AuthContext";
 import { UserFormData } from "@/types/userTypes";
 import { toast } from "sonner";
-import RegistrationForm from "@/forms/RegistrationForm";
+import UserProfilePage from "./UserProfilePage";
+import UserProfileForm from "@/forms/UserProfileForm";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const RegisterPage = () => {
     });
   };
 
-  return <RegistrationForm onSave={handleRegisterUser} />;
+  return <UserProfileForm onSave={handleRegisterUser} />;
 };
 
 export default RegisterPage;

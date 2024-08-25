@@ -45,7 +45,7 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-const RegistrationForm = ({ currentUser, isLoading, onSave }: Props) => {
+const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -207,4 +207,4 @@ const RegistrationForm = ({ currentUser, isLoading, onSave }: Props) => {
   );
 };
 
-export default RegistrationForm;
+export default UserProfileForm;

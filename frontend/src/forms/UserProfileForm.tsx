@@ -73,7 +73,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSave)}
-        className="flex flex-col gap-5"
+        className="p-5 mx-auto my-5 rounded-lg flex flex-col gap-5 bg-indigo-100 md:max-w-[60%]"
       >
         {currentUser ? (
           <>
@@ -129,6 +129,8 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
               </FormItem>
             )}
           />
+        </div>
+        <div className="mx-2 flex flex-col gap-5">
           <FormField
             control={form.control}
             name="name"
@@ -140,7 +142,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                 <FormControl>
                   <Input
                     {...field}
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal"
+                    className="max-w-96 py-1 px-2 border rounded w-full flex-1 font-normal"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -161,7 +163,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                   <Input
                     {...field}
                     type="password"
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal"
+                    className="py-1 px-2 border rounded w-full flex-1 font-normal md:max-w-60"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />

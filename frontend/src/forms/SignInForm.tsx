@@ -54,7 +54,7 @@ const SignInForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-5"
+        className="p-5 mx-auto my-5 rounded-lg flex flex-col gap-5 bg-indigo-100 md:max-w-[60%]"
       >
         <h1 className="mx-2 text-2xl font-bold underline">Sign In</h1>
         <FormDescription className="mx-2 text-sm italic">
@@ -72,7 +72,7 @@ const SignInForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal md:w-[30%]"
+                    className="py-1 px-2 border rounded w-full flex-1 font-normal md:w-[50%]"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -91,7 +91,7 @@ const SignInForm = () => {
                   <Input
                     {...field}
                     type="password"
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal md:w-[30%]"
+                    className="py-1 px-2 border rounded w-full flex-1 font-normal md:w-[50%]"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />

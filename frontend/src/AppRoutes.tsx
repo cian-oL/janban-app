@@ -4,6 +4,7 @@ import Layout from "./layouts/Layout";
 import HomePage from "./pages/HomePage";
 import SignInPage from "./pages/SignInPage";
 import RegisterPage from "./pages/RegisterPage";
+import UserProfilePage from "./pages/UserProfilePage";
 
 const AppRoutes = () => {
   return (
@@ -29,6 +30,14 @@ const AppRoutes = () => {
         element={
           <Layout>
             <RegisterPage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/my-profile"
+        element={
+          <Layout>
+            <UserProfilePage />
           </Layout>
         }
       />

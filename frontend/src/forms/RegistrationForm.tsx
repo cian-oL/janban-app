@@ -1,15 +1,11 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
 
-import { UserFormData } from "@/types/userTypes";
-import { useRegisterUser } from "@/api/userApiClient";
-import { useAuthContext } from "@/auth/AuthContext";
+import { User, UserFormData } from "@/types/userTypes";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -19,6 +15,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useEffect } from "react";
+
+type Props = {
+  currentUser?: User;
+  isLoading?: boolean;
+  onSave: (formData: UserFormData) => void;
+};
 
 const formSchema = z
   .object({
@@ -42,40 +45,47 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-const RegistrationForm = () => {
-  const { registerUser } = useRegisterUser();
-  const navigate = useNavigate();
-  const { setAccessToken } = useAuthContext();
-
-  const onSubmit = (formData: UserFormData) => {
-    registerUser(formData).then((data) => {
-      setAccessToken(data.accessToken);
-      toast.success("User registered");
-      navigate("/");
-    });
-  };
-
+const RegistrationForm = ({ currentUser, isLoading, onSave }: Props) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      racfid: "",
+      racfid: currentUser?.racfid || "",
       password: "",
-      email: "",
-      name: "",
+      email: currentUser?.email || "",
+      name: currentUser?.name || "",
       confirmPassword: "",
     },
   });
 
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+
+    form.reset(currentUser);
+  }, [currentUser, form]);
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSave)}
         className="flex flex-col gap-5"
       >
-        <h1 className="mx-2 text-2xl font-bold underline">Register</h1>
-        <FormDescription className="mx-2 text-sm italic">
-          All fields are required
-        </FormDescription>
+        {currentUser ? (
+          <>
+            <h1 className="mx-2 text-2xl font-bold underline">Profile</h1>
+            <FormDescription className="mx-2 text-sm italic">
+              Edit Information by confirming password and submitting
+            </FormDescription>
+          </>
+        ) : (
+          <>
+            <h1 className="mx-2 text-2xl font-bold underline">Register</h1>
+            <FormDescription className="mx-2 text-sm italic">
+              All fields are required
+            </FormDescription>
+          </>
+        )}
         <div className="mx-2 flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
@@ -88,6 +98,7 @@ const RegistrationForm = () => {
                 <FormControl>
                   <Input
                     {...field}
+                    disabled={!!currentUser}
                     className="py-1 px-2 border rounded w-full flex-1 font-normal"
                   />
                 </FormControl>
@@ -140,7 +151,7 @@ const RegistrationForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-slate-700 text-sm font-bold">
-                  Password:
+                  {currentUser && "Enter/Change"} Password:
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -185,9 +196,10 @@ const RegistrationForm = () => {
         <span className="mx-2">
           <Button
             type="submit"
+            disabled={isLoading}
             className="rounded-lg bg-amber-300 text-black font-bold w-full lg:w-fit hover:bg-amber-400"
           >
-            Register
+            {isLoading ? "Saving..." : currentUser ? "Submit" : "Register"}
           </Button>
         </span>
       </form>

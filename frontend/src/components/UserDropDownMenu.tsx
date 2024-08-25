@@ -14,11 +14,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useEffect } from "react";
 
 const UserDropDownMenu = () => {
   const { currentUser } = useGetUser();
   const { setAccessToken } = useAuthContext();
   const { signOutUser } = useSignOutUser();
+
+  useEffect(() => {}, []);
 
   const handleSignOut = () => {
     signOutUser().then(() => {
@@ -39,7 +42,7 @@ const UserDropDownMenu = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link to="/profile">Profile Settings</Link>
+          <Link to="/my-profile">Profile Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <Button

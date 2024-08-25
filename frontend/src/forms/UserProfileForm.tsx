@@ -49,10 +49,10 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      racfid: currentUser?.racfid || "",
+      racfid: "",
       password: "",
-      email: currentUser?.email || "",
-      name: currentUser?.name || "",
+      email: "",
+      name: "",
       confirmPassword: "",
     },
   });
@@ -62,7 +62,11 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
       return;
     }
 
-    form.reset(currentUser);
+    form.reset({
+      racfid: currentUser?.racfid,
+      email: currentUser?.email,
+      name: currentUser?.name,
+    });
   }, [currentUser, form]);
 
   return (

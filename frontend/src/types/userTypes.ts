@@ -15,5 +15,5 @@ export type UserFormData = {
 
 export type SignInFormData = {
   racfid: string;
-  password: number;
+  password: string;
 };

@@ -2,12 +2,15 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { SignInFormData } from "@/types/userTypes";
-// import { useMyUser } from "@/api/userApiClient";
+import { useSignInUser } from "@/api/userApiClient";
+import { useAuthContext } from "@/auth/AuthContext";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -20,20 +23,37 @@ import {
 
 const formSchema = z.object({
   racfid: z
-    .string({ required_error: "Required" })
+    .string()
+    .min(1, "Required")
     .regex(/J\d{6}/, "Employee ID begins with J and contains 6 numbers"),
-  password: z.string({ required_error: "Required" }),
+  password: z.string().min(1, "Required"),
 });
 
 const SignInForm = () => {
+  const { signInUser } = useSignInUser();
+  const navigate = useNavigate();
+  const { setAccessToken } = useAuthContext();
+
+  const onSubmit = (formData: SignInFormData) => {
+    signInUser(formData).then((data) => {
+      setAccessToken(data);
+      toast.success("Signed in");
+      navigate("/");
+    });
+  };
+
   const form = useForm<SignInFormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      racfid: "",
+      password: "",
+    },
   });
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(() => console.log("submit clicked"))}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-5"
       >
         <h1 className="mx-2 text-2xl font-bold underline">Sign In</h1>

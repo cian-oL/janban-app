@@ -169,7 +169,7 @@ export const useSignOutUser = () => {
 
   if (error) {
     console.log(error.toString());
-    toast.error("Failed to sign in");
+    toast.error("Failed to sign out");
     reset();
   }
 

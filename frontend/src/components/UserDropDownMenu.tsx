@@ -1,5 +1,5 @@
 import { User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useGetUser, useSignOutUser } from "@/api/userApiClient";
 import { useAuthContext } from "@/auth/AuthContext";
@@ -17,6 +17,7 @@ import {
 import { useEffect } from "react";
 
 const UserDropDownMenu = () => {
+  const navigate = useNavigate();
   const { currentUser } = useGetUser();
   const { setAccessToken } = useAuthContext();
   const { signOutUser } = useSignOutUser();
@@ -27,6 +28,7 @@ const UserDropDownMenu = () => {
     signOutUser().then(() => {
       setAccessToken("");
       toast.success("Signed out");
+      navigate("/");
     });
   };
 

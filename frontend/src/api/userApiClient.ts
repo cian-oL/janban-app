@@ -1,7 +1,8 @@
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
-import { SignInFormData, UserFormData } from "@/types/userTypes";
+import { SignInFormData, User, UserFormData } from "@/types/userTypes";
 import { toast } from "sonner";
+import { useAuthContext } from "@/auth/AuthContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -13,7 +14,7 @@ export const useRegisterUser = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-      credentials: "include",
+      // credentials: "include",
     });
 
     if (!response.ok) {
@@ -38,6 +39,75 @@ export const useRegisterUser = () => {
   return { registerUser };
 };
 
+export const useGetUser = () => {
+  const { accessToken } = useAuthContext();
+
+  const getUserRequest = async (): Promise<User> => {
+    const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to get user profile");
+    }
+
+    return response.json();
+  };
+
+  const {
+    data: currentUser,
+    error,
+    isLoading,
+  } = useQuery("getUser", getUserRequest);
+
+  if (error) {
+    console.log(error.toString());
+    toast.error("Error loading profile");
+  }
+
+  return { currentUser, isLoading };
+};
+
+export const useUpdateUser = () => {
+  const { accessToken } = useAuthContext();
+
+  const updateUserRequest = async (formData: UserFormData): Promise<User> => {
+    const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update user profile");
+    }
+
+    return response.json();
+  };
+
+  const {
+    mutateAsync: updateUser,
+    error,
+    reset,
+    isLoading,
+  } = useMutation(updateUserRequest);
+
+  if (error) {
+    console.log(error.toString());
+    toast.error("Error updating profile");
+    reset();
+  }
+
+  return { updateUser, isLoading };
+};
+
 export const useSignInUser = () => {
   const signInUserRequest = async (formData: SignInFormData) => {
     const response = await fetch(`${API_BASE_URL}/api/auth/sign-in`, {
@@ -46,7 +116,7 @@ export const useSignInUser = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-      credentials: "include",
+      // credentials: "include",
     });
 
     if (!response.ok) {
@@ -78,7 +148,7 @@ export const useSignOutUser = () => {
       headers: {
         "Content-Type": "json/application",
       },
-      credentials: "include",
+      // credentials: "include",
     });
 
     if (!response.ok) {

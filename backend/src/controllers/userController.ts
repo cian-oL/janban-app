@@ -25,7 +25,6 @@ export const registerUser = async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
       {
         userId: user._id,
-        email: user.email,
       },
       process.env.JWT_ACCESS_TOKEN_KEY as string,
       { expiresIn: "15m" }
@@ -34,7 +33,6 @@ export const registerUser = async (req: Request, res: Response) => {
     const refreshToken = jwt.sign(
       {
         userId: user._id,
-        email: user.email,
       },
       process.env.JWT_REFRESH_TOKEN_KEY as string,
       { expiresIn: "1d" }
@@ -54,6 +52,19 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getUser = async (req: Request, res: Response) => {};
+export const getUser = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
 
 export const updateUser = async (req: Request, res: Response) => {};

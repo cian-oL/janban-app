@@ -1,7 +1,7 @@
 import { User } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { useSignOutUser } from "@/api/userApiClient";
+import { useGetUser, useSignOutUser } from "@/api/userApiClient";
 import { useAuthContext } from "@/auth/AuthContext";
 
 import { Button } from "./ui/button";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const UserDropDownMenu = () => {
+  const { currentUser } = useGetUser();
   const { setAccessToken } = useAuthContext();
   const { signOutUser } = useSignOutUser();
 
@@ -30,7 +31,7 @@ const UserDropDownMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger className="flex gap-2 bg-amber-300 rounded p-2 text-black font-bold hover:bg-white">
         <User />
-        User name
+        {currentUser?.name}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-indigo-500 text-white mr-2">
         <DropdownMenuLabel className="font-extrabold text-lg underline">

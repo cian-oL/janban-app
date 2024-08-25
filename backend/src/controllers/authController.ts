@@ -30,7 +30,6 @@ export const signInUser = async (req: Request, res: Response) => {
     const accessToken = jwt.sign(
       {
         userId: user._id,
-        email: user.email,
       },
       process.env.JWT_ACCESS_TOKEN_KEY as string,
       { expiresIn: "15m" }
@@ -39,7 +38,6 @@ export const signInUser = async (req: Request, res: Response) => {
     const refreshToken = jwt.sign(
       {
         userId: user._id,
-        email: user.email,
       },
       process.env.JWT_REFRESH_TOKEN_KEY as string,
       { expiresIn: "1d" }

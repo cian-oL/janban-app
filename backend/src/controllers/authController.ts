@@ -58,6 +58,5 @@ export const signInUser = async (req: Request, res: Response) => {
 };
 
 export const signOutUser = (req: Request, res: Response) => {
-  res.cookie("refresh_token", "", { expires: new Date(0) });
-  return res.sendStatus(204);
+  return res.clearCookie("refresh_token").status(204);
 };

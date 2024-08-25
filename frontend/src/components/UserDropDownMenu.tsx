@@ -22,7 +22,7 @@ const UserDropDownMenu = () => {
 
   const handleSignOut = () => {
     signOutUser().then(() => {
-      setAccessToken(null);
+      setAccessToken("");
       toast.success("Signed out");
     });
   };

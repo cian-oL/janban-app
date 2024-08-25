@@ -12,7 +12,7 @@ type AuthContext = {
 const AuthContext = React.createContext<AuthContext | undefined>(undefined);
 
 export const AuthProvider = ({ children }: Props) => {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>("");
 
   return (
     <AuthContext.Provider value={{ accessToken, setAccessToken }}>

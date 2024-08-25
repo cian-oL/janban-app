@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 
 import { Button } from "./ui/button";
+import { useAuthContext } from "@/auth/AuthContext";
+import UserDropDownMenu from "./UserDropDownMenu";
 
 const Header = () => {
+  const { accessToken } = useAuthContext();
+
   return (
     <header className="py-10 bg-indigo-600 text-white">
       <div className="container flex justify-between items-center">
@@ -12,14 +16,15 @@ const Header = () => {
         >
           Janban
         </Link>
-        <Link to="/sign-in">
-          <Button
-            onClick={() => console.log("Login clicked")}
-            className="bg-amber-300 font-bold text-black hover:bg-white"
-          >
-            Sign In
-          </Button>
-        </Link>
+        {accessToken ? (
+          <UserDropDownMenu />
+        ) : (
+          <Link to="/sign-in">
+            <Button className="bg-amber-300 font-bold text-black hover:bg-white">
+              Sign In
+            </Button>
+          </Link>
+        )}
       </div>
     </header>
   );

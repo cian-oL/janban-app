@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useAuthContext } from "@/auth/AuthContext";
 
 const formSchema = z
   .object({
@@ -44,9 +45,11 @@ const formSchema = z
 const RegistrationForm = () => {
   const { registerUser } = useRegisterUser();
   const navigate = useNavigate();
+  const { setAccessToken } = useAuthContext();
 
   const onSubmit = (formData: UserFormData) => {
-    registerUser(formData).then(() => {
+    registerUser(formData).then((data) => {
+      setAccessToken(data);
       toast.success("User registered");
       navigate("/");
     });

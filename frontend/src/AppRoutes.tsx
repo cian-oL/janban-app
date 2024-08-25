@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import SignInPage from "./pages/SignInPage";
 import RegisterPage from "./pages/RegisterPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import ProtectedRoutes from "./auth/ProtectedRoutes";
 
 const AppRoutes = () => {
   return (
@@ -33,14 +34,18 @@ const AppRoutes = () => {
           </Layout>
         }
       />
-      <Route
-        path="/my-profile"
-        element={
-          <Layout>
-            <UserProfilePage />
-          </Layout>
-        }
-      />
+
+      {/* protected routes */}
+      <Route element={<ProtectedRoutes />}>
+        <Route
+          path="/my-profile"
+          element={
+            <Layout>
+              <UserProfilePage />
+            </Layout>
+          }
+        />
+      </Route>
 
       {/* redirect */}
       <Route path="*" element={<Navigate to="/" />} />

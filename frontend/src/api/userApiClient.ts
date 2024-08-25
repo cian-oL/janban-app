@@ -70,3 +70,33 @@ export const useSignInUser = () => {
 
   return { signInUser };
 };
+
+export const useSignOutUser = () => {
+  const signOutUserRequest = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/sign-out`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "json/application",
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Error during sign out");
+    }
+  };
+
+  const {
+    mutateAsync: signOutUser,
+    error,
+    reset,
+  } = useMutation(signOutUserRequest);
+
+  if (error) {
+    console.log(error.toString());
+    toast.error("Failed to sign in");
+    reset();
+  }
+
+  return { signOutUser };
+};

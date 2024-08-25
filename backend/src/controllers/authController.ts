@@ -58,3 +58,8 @@ export const signInUser = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+export const signOutUser = (req: Request, res: Response) => {
+  res.cookie("refresh_token", "", { expires: new Date(0) });
+  return res.sendStatus(204);
+};

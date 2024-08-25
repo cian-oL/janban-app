@@ -1,12 +1,14 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 
 import { UserFormData } from "@/types/userTypes";
 import { useRegisterUser } from "@/api/userApiClient";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -41,9 +43,13 @@ const formSchema = z
 
 const RegistrationForm = () => {
   const { registerUser } = useRegisterUser();
+  const navigate = useNavigate();
 
   const onSubmit = (formData: UserFormData) => {
-    registerUser(formData);
+    registerUser(formData).then(() => {
+      toast.success("User registered");
+      navigate("/");
+    });
   };
 
   const form = useForm<UserFormData>({

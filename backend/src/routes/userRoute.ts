@@ -4,13 +4,13 @@ import {
   registerUser,
   updateUser,
 } from "../controllers/userController";
-import { jwtCheck, validateRegistration } from "../middleware/auth";
+import { verifyAccessToken, validateRegistration } from "../middleware/auth";
 
 const router = express.Router();
 
 // "/api/user"
 router.post("/register", validateRegistration, registerUser);
-router.get("/profile", jwtCheck, getUser);
-router.put("/profile", jwtCheck, updateUser);
+router.get("/profile", verifyAccessToken, getUser);
+router.put("/profile", verifyAccessToken, updateUser);
 
 export default router;

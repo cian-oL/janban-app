@@ -46,7 +46,7 @@ export const validateSignIn = [
   }),
 ];
 
-export const jwtCheck = async (
+export const verifyAccessToken = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -57,21 +57,25 @@ export const jwtCheck = async (
     if (!authorization || !authorization.startsWith("Bearer")) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+
     const accessToken = authorization.split(" ")[1];
-
-    const decodedToken = jwt.verify(
+    jwt.verify(
       accessToken,
-      process.env.JWT_ACCESS_TOKEN_KEY as string
-    ) as JwtPayload;
-    const userId = decodedToken.userId;
-    const user = await User.findById(userId);
+      process.env.JWT_ACCESS_TOKEN_KEY as string,
+      (err, decodedToken) => {
+        if (err && err.message === "TokenExpiredError") {
+          return res.status(403).json({ message: "Token expired" });
+        }
 
-    if (!user) {
-      return res.send(401).json({ message: "Unauthorized" });
-    }
-    req.userId = user._id.toString();
+        if (err) {
+          return res.status(401).json({ message: "Invalid token" });
+        }
 
-    next();
+        req.userId = (decodedToken as JwtPayload).userId.toString();
+
+        next();
+      }
+    );
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });

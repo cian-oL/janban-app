@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "react-query";
 
-import { SignInFormData, User, UserFormData } from "@/types/userTypes";
+import { User, UserFormData } from "@/types/userTypes";
 import { toast } from "sonner";
 import { useAuthContext } from "@/auth/AuthContext";
 
@@ -14,7 +14,7 @@ export const useRegisterUser = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-      // credentials: "include",
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -106,67 +106,4 @@ export const useUpdateUser = () => {
   }
 
   return { updateUser, isLoading };
-};
-
-export const useSignInUser = () => {
-  const signInUserRequest = async (formData: SignInFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/sign-in`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-      // credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to sign in");
-    }
-
-    return response.json();
-  };
-
-  const {
-    mutateAsync: signInUser,
-    error,
-    reset,
-  } = useMutation(signInUserRequest);
-
-  if (error) {
-    console.log(error.toString());
-    toast.error("Failed to sign in");
-    reset();
-  }
-
-  return { signInUser };
-};
-
-export const useSignOutUser = () => {
-  const signOutUserRequest = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/sign-out`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "json/application",
-      },
-      // credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("Error during sign out");
-    }
-  };
-
-  const {
-    mutateAsync: signOutUser,
-    error,
-    reset,
-  } = useMutation(signOutUserRequest);
-
-  if (error) {
-    console.log(error.toString());
-    toast.error("Failed to sign out");
-    reset();
-  }
-
-  return { signOutUser };
 };

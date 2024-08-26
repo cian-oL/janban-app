@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import { SignInFormData } from "@/types/userTypes";
-import { useSignInUser } from "@/api/userApiClient";
+import { useSignInUser } from "@/api/authApiClient";
 import { useAuthContext } from "@/auth/AuthContext";
 
 import { Button } from "@/components/ui/button";

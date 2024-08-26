@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 import User from "../models/user";
 import { validationResult } from "express-validator";
@@ -60,4 +60,38 @@ export const signInUser = async (req: Request, res: Response) => {
 export const signOutUser = (req: Request, res: Response) => {
   res.clearCookie("refresh_token");
   return res.sendStatus(204);
+};
+
+export const generateAccessToken = async (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies["refresh_token"];
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const decodedToken = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_TOKEN_KEY as string
+    ) as JwtPayload;
+    const userId = decodedToken.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const accessToken = jwt.sign(
+      {
+        userId: user._id,
+      },
+      process.env.JWT_ACCESS_TOKEN_KEY as string,
+      { expiresIn: "15m" }
+    );
+
+    return res.status(200).json({ accessToken });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
 };

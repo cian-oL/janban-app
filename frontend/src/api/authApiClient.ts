@@ -1,10 +1,12 @@
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 import { SignInFormData } from "@/types/userTypes";
 import { toast } from "sonner";
 import { useAuthContext } from "@/auth/AuthContext";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+// ===== USER SIGN IN & SIGN OUT =====
 
 export const useSignInUser = () => {
   const signInUserRequest = async (formData: SignInFormData) => {
@@ -70,4 +72,33 @@ export const useSignOutUser = () => {
   }
 
   return { signOutUser };
+};
+
+// ===== TOKEN MANAGEMENT =====
+
+export const useGenerateAccessToken = () => {
+  const generateAccessTokenRequest = async (): Promise<string> => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/access-token`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Error refreshing access token");
+    }
+
+    return response.json();
+  };
+
+  const {
+    data: newAccessToken,
+    error,
+    isLoading,
+  } = useQuery("generateAccessToken", generateAccessTokenRequest);
+
+  if (error) {
+    console.log(error.toString());
+  }
+
+  return { newAccessToken, isLoading };
 };

@@ -1,15 +1,21 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 
 import { SignInFormData } from "@/types/userTypes";
 import { toast } from "sonner";
 import { useAuthContext } from "@/auth/AuthContext";
+
+type accessTokenResponse = {
+  accessToken: string;
+};
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // ===== USER SIGN IN & SIGN OUT =====
 
 export const useSignInUser = () => {
-  const signInUserRequest = async (formData: SignInFormData) => {
+  const signInUserRequest = async (
+    formData: SignInFormData
+  ): Promise<accessTokenResponse> => {
     const response = await fetch(`${API_BASE_URL}/api/auth/sign-in`, {
       method: "POST",
       headers: {
@@ -44,7 +50,7 @@ export const useSignInUser = () => {
 export const useSignOutUser = () => {
   const { accessToken } = useAuthContext();
 
-  const signOutUserRequest = async () => {
+  const signOutUserRequest = async (): Promise<void> => {
     const response = await fetch(`${API_BASE_URL}/api/auth/sign-out`, {
       method: "POST",
       headers: {
@@ -77,7 +83,7 @@ export const useSignOutUser = () => {
 // ===== TOKEN MANAGEMENT =====
 
 export const useGenerateAccessToken = () => {
-  const generateAccessTokenRequest = async (): Promise<string> => {
+  const generateAccessToken = async (): Promise<accessTokenResponse> => {
     const response = await fetch(`${API_BASE_URL}/api/auth/access-token`, {
       method: "GET",
       credentials: "include",
@@ -90,15 +96,5 @@ export const useGenerateAccessToken = () => {
     return response.json();
   };
 
-  const {
-    data: newAccessToken,
-    error,
-    isLoading,
-  } = useQuery("generateAccessToken", generateAccessTokenRequest);
-
-  if (error) {
-    console.log(error.toString());
-  }
-
-  return { newAccessToken, isLoading };
+  return generateAccessToken;
 };

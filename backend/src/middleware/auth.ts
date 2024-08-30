@@ -63,7 +63,7 @@ export const verifyAccessToken = async (
       accessToken,
       process.env.JWT_ACCESS_TOKEN_KEY as string,
       (err, decodedToken) => {
-        if (err && err.message === "TokenExpiredError") {
+        if (err && err.message === "jwt expired") {
           return res.status(403).json({ message: "Token expired" });
         }
 

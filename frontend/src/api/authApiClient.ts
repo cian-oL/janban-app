@@ -1,35 +1,30 @@
 import { useMutation } from "react-query";
+import { useEffect } from "react";
+import { AxiosResponse } from "axios";
 
 import { SignInFormData } from "@/types/userTypes";
+import { AccessTokenResponse } from "@/types/authTypes";
 import { toast } from "sonner";
 import { useAuthContext } from "@/auth/AuthContext";
-
-type accessTokenResponse = {
-  accessToken: string;
-};
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { axiosInstance } from "./axiosConfig";
 
 // ===== USER SIGN IN & SIGN OUT =====
 
 export const useSignInUser = () => {
-  const signInUserRequest = async (
+  const signInUserRequest = (
     formData: SignInFormData
-  ): Promise<accessTokenResponse> => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/sign-in`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to sign in");
-    }
-
-    return response.json();
+  ): Promise<AccessTokenResponse> => {
+    return axiosInstance
+      .post("/api/auth/sign-in", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((response) => response.data)
+      .catch(() => {
+        throw new Error("Failed to sign in");
+      });
   };
 
   const {
@@ -50,19 +45,22 @@ export const useSignInUser = () => {
 export const useSignOutUser = () => {
   const { accessToken } = useAuthContext();
 
-  const signOutUserRequest = async (): Promise<void> => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/sign-out`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "json/application",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("Error during sign out");
-    }
+  const signOutUserRequest = async (): Promise<AxiosResponse> => {
+    return axiosInstance
+      .post(
+        "/api/auth/sign-out",
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        }
+      )
+      .catch(() => {
+        throw new Error("Failed to sign out");
+      });
   };
 
   const {
@@ -82,19 +80,40 @@ export const useSignOutUser = () => {
 
 // ===== TOKEN MANAGEMENT =====
 
-export const useGenerateAccessToken = () => {
-  const generateAccessToken = async (): Promise<accessTokenResponse> => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/access-token`, {
-      method: "GET",
-      credentials: "include",
-    });
+export const useAxiosInstance = () => {
+  const { accessToken, setAccessToken } = useAuthContext();
 
-    if (!response.ok) {
-      throw new Error("Error refreshing access token");
-    }
+  useEffect(() => {
+    const refreshAccessToken = async (): Promise<void> => {
+      return axiosInstance
+        .get("/api/auth/access-token", {
+          withCredentials: true,
+        })
+        .then((response) => setAccessToken(response.data.accessToken))
+        .catch(() => {
+          throw new Error("Error refreshing access token");
+        });
+    };
 
-    return response.json();
-  };
+    const responseIntercept = axiosInstance.interceptors.response.use(
+      (response) => response,
+      async (err) => {
+        console.log("Intercept error", err);
+        const prevRequest = err?.config;
 
-  return generateAccessToken;
+        if (err?.response?.status === 403 && !prevRequest.sent) {
+          await refreshAccessToken();
+          prevRequest.headers.Authorization = `Bearer ${accessToken}`;
+          prevRequest.sent = true;
+          return axiosInstance(prevRequest);
+        }
+
+        return Promise.reject(err);
+      }
+    );
+
+    return () => axiosInstance.interceptors.response.eject(responseIntercept);
+  }, [accessToken, setAccessToken]);
+
+  return axiosInstance;
 };

@@ -1,9 +1,12 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 
 import { User, UserFormData } from "@/types/userTypes";
+import { useAuthContext } from "@/auth/AuthContext";
 
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,7 +18,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useEffect } from "react";
 
 type Props = {
   currentUser?: User;
@@ -46,6 +48,8 @@ const formSchema = z
   });
 
 const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
+  const { accessToken } = useAuthContext();
+
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,6 +62,11 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
   });
 
   useEffect(() => {
+    if (!currentUser && accessToken) {
+      toast.error("Error loading profile");
+      return;
+    }
+
     if (!currentUser) {
       return;
     }
@@ -67,7 +76,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
       email: currentUser?.email,
       name: currentUser?.name,
     });
-  }, [currentUser, form]);
+  }, [currentUser, accessToken, form]);
 
   return (
     <Form {...form}>

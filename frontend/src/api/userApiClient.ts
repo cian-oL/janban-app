@@ -9,7 +9,7 @@ import { axiosInstance } from "./axiosConfig";
 import { useAxiosInstance } from "./authApiClient";
 
 export const useRegisterUser = () => {
-  const registerUserRequest = (
+  const registerUserRequest = async (
     formData: UserFormData
   ): Promise<AccessTokenResponse> => {
     return axiosInstance
@@ -58,16 +58,7 @@ export const useGetUser = () => {
       });
   };
 
-  const {
-    data: currentUser,
-    error,
-    isLoading,
-  } = useQuery("getUser", getUserRequest);
-
-  if (error) {
-    console.log(error.toString());
-    toast.error("Error loading profile");
-  }
+  const { data: currentUser, isLoading } = useQuery("getUser", getUserRequest);
 
   return { currentUser, isLoading };
 };

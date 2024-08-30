@@ -1,27 +1,28 @@
 import { useMutation, useQuery } from "react-query";
+import { AxiosResponse } from "axios";
 
 import { User, UserFormData } from "@/types/userTypes";
+import { AccessTokenResponse } from "@/types/authTypes";
 import { toast } from "sonner";
 import { useAuthContext } from "@/auth/AuthContext";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { axiosInstance } from "./axiosConfig";
+import { useAxiosInstance } from "./authApiClient";
 
 export const useRegisterUser = () => {
-  const registerUserRequest = async (formData: UserFormData) => {
-    const response = await fetch(`${API_BASE_URL}/api/user/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to register user");
-    }
-
-    return response.json();
+  const registerUserRequest = (
+    formData: UserFormData
+  ): Promise<AccessTokenResponse> => {
+    return axiosInstance
+      .post("/api/user/register", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((response) => response.data)
+      .catch(() => {
+        throw new Error("Failed to register user");
+      });
   };
 
   const {
@@ -41,21 +42,20 @@ export const useRegisterUser = () => {
 
 export const useGetUser = () => {
   const { accessToken } = useAuthContext();
+  const axiosInstance = useAxiosInstance();
 
   const getUserRequest = async (): Promise<User> => {
-    const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to get user profile");
-    }
-
-    return response.json();
+    return axiosInstance
+      .get("/api/user/profile", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => response.data)
+      .catch((err) => {
+        console.log(err);
+        throw new Error("Failed to get user profile");
+      });
   };
 
   const {
@@ -75,21 +75,20 @@ export const useGetUser = () => {
 export const useUpdateUser = () => {
   const { accessToken } = useAuthContext();
 
-  const updateUserRequest = async (formData: UserFormData): Promise<User> => {
-    const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(formData),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to update user profile");
-    }
-
-    return response.json();
+  const updateUserRequest = async (
+    formData: UserFormData
+  ): Promise<AxiosResponse<User>> => {
+    return axiosInstance
+      .put("/api/user/profile", formData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => response.data)
+      .catch(() => {
+        throw new Error("Failed to update user profile");
+      });
   };
 
   const {

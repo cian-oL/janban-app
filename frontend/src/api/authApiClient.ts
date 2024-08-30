@@ -1,6 +1,7 @@
 import { useMutation } from "react-query";
 import { useEffect } from "react";
 import { AxiosResponse } from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { SignInFormData } from "@/types/userTypes";
 import { AccessTokenResponse } from "@/types/authTypes";
@@ -81,7 +82,8 @@ export const useSignOutUser = () => {
 // ===== TOKEN MANAGEMENT =====
 
 export const useAxiosInstance = () => {
-  const { accessToken, setAccessToken } = useAuthContext();
+  const { accessToken, setAccessToken, setUser } = useAuthContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const refreshAccessToken = async (): Promise<void> => {
@@ -90,22 +92,26 @@ export const useAxiosInstance = () => {
           withCredentials: true,
         })
         .then((response) => setAccessToken(response.data.accessToken))
-        .catch(() => {
-          throw new Error("Error refreshing access token");
+        .catch((err) => {
+          console.log(err);
+          setAccessToken("");
+          setUser(undefined);
+          toast.warning("Signed out due to inactivity");
+          navigate("/");
         });
     };
 
     const responseIntercept = axiosInstance.interceptors.response.use(
       (response) => response,
-      async (err) => {
-        console.log("Intercept error", err);
+      (err) => {
         const prevRequest = err?.config;
 
         if (err?.response?.status === 403 && !prevRequest.sent) {
-          await refreshAccessToken();
-          prevRequest.headers.Authorization = `Bearer ${accessToken}`;
-          prevRequest.sent = true;
-          return axiosInstance(prevRequest);
+          refreshAccessToken().then(() => {
+            prevRequest.headers.Authorization = `Bearer ${accessToken}`;
+            prevRequest.sent = true;
+            return axiosInstance(prevRequest);
+          });
         }
 
         return Promise.reject(err);
@@ -113,7 +119,7 @@ export const useAxiosInstance = () => {
     );
 
     return () => axiosInstance.interceptors.response.eject(responseIntercept);
-  }, [accessToken, setAccessToken]);
+  }, [accessToken, setAccessToken, setUser, navigate]);
 
   return axiosInstance;
 };

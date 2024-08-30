@@ -89,7 +89,22 @@ export const generateAccessToken = async (req: Request, res: Response) => {
       { expiresIn: "15m" }
     );
 
-    return res.status(200).json({ accessToken });
+    const newRefreshToken = jwt.sign(
+      {
+        userId: user._id,
+      },
+      process.env.JWT_REFRESH_TOKEN_KEY as string,
+      { expiresIn: "1d" }
+    );
+
+    return res
+      .status(200)
+      .cookie("refresh_token", newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 86400000,
+      })
+      .json({ accessToken });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });

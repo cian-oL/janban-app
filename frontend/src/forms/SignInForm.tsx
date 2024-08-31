@@ -32,10 +32,11 @@ const formSchema = z.object({
 const SignInForm = () => {
   const { signInUser } = useSignInUser();
   const navigate = useNavigate();
-  const { setAccessToken } = useAuthContext();
+  const { setAccessToken, setIsLoggedIn } = useAuthContext();
 
   const onSubmit = (formData: SignInFormData) => {
     signInUser(formData).then((data) => {
+      setIsLoggedIn(true);
       setAccessToken(data.accessToken);
       toast.success("Signed in");
       navigate("/");

@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuthContext } from "@/auth/AuthContext";
 import UserDropDownMenu from "./UserDropDownMenu";
+import KanbanNavbar from "./KanbanNavbar";
 
 const Header = () => {
-  const { accessToken } = useAuthContext();
+  const { isLoggedIn } = useAuthContext();
 
   return (
     <header className="py-10 bg-indigo-600 text-white">
@@ -16,7 +17,12 @@ const Header = () => {
         >
           Janban
         </Link>
-        {accessToken ? (
+        {isLoggedIn && (
+          <div className="hidden md:block">
+            <KanbanNavbar />
+          </div>
+        )}
+        {isLoggedIn ? (
           <UserDropDownMenu />
         ) : (
           <Link to="/sign-in">

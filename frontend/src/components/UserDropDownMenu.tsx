@@ -20,7 +20,7 @@ import {
 const UserDropDownMenu = () => {
   const navigate = useNavigate();
   const { currentUser } = useGetUser();
-  const { setAccessToken, user, setUser } = useAuthContext();
+  const { setAccessToken, user, setUser, setIsLoggedIn } = useAuthContext();
   const { signOutUser } = useSignOutUser();
 
   useEffect(() => {
@@ -35,6 +35,7 @@ const UserDropDownMenu = () => {
     signOutUser().then(() => {
       setAccessToken("");
       setUser(undefined);
+      setIsLoggedIn(false);
       toast.success("Signed out");
       navigate("/");
     });

@@ -2,9 +2,9 @@ import { useAuthContext } from "./AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoutes = () => {
-  const { accessToken } = useAuthContext();
+  const { isLoggedIn } = useAuthContext();
 
-  return accessToken ? <Outlet /> : <Navigate to="/" replace />;
+  return isLoggedIn ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 export default ProtectedRoutes;

@@ -12,7 +12,7 @@ import { axiosInstance } from "./axiosConfig";
 // ===== USER SIGN IN & SIGN OUT =====
 
 export const useSignInUser = () => {
-  const signInUserRequest = (
+  const signInUserRequest = async (
     formData: SignInFormData
   ): Promise<AccessTokenResponse> => {
     return axiosInstance
@@ -45,6 +45,7 @@ export const useSignInUser = () => {
 
 export const useSignOutUser = () => {
   const { accessToken } = useAuthContext();
+  const axiosInstance = useAxiosInstance();
 
   const signOutUserRequest = async (): Promise<AxiosResponse> => {
     return axiosInstance
@@ -81,21 +82,29 @@ export const useSignOutUser = () => {
 
 // ===== TOKEN MANAGEMENT =====
 
+export const generateAccessTokenFromRefreshToken =
+  async (): Promise<AccessTokenResponse> => {
+    return await axiosInstance
+      .get("/api/auth/access-token", {
+        withCredentials: true,
+      })
+      .then((response) => response.data);
+  };
+
 export const useAxiosInstance = () => {
-  const { accessToken, setAccessToken, setUser } = useAuthContext();
+  const { accessToken, setAccessToken, setUser, setIsLoggedIn } =
+    useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
     const refreshAccessToken = async (): Promise<void> => {
-      return axiosInstance
-        .get("/api/auth/access-token", {
-          withCredentials: true,
-        })
-        .then((response) => setAccessToken(response.data.accessToken))
+      return await generateAccessTokenFromRefreshToken()
+        .then((data) => setAccessToken(data.accessToken))
         .catch((err) => {
           console.log(err);
           setAccessToken("");
           setUser(undefined);
+          setIsLoggedIn(false);
           toast.warning("Signed out due to inactivity");
           navigate("/");
         });
@@ -119,7 +128,7 @@ export const useAxiosInstance = () => {
     );
 
     return () => axiosInstance.interceptors.response.eject(responseIntercept);
-  }, [accessToken, setAccessToken, setUser, navigate]);
+  }, [accessToken, setAccessToken, setUser, navigate, setIsLoggedIn]);
 
   return axiosInstance;
 };

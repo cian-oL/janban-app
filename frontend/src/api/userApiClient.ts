@@ -65,6 +65,7 @@ export const useGetUser = () => {
 
 export const useUpdateUser = () => {
   const { accessToken } = useAuthContext();
+  const axiosInstance = useAxiosInstance();
 
   const updateUserRequest = async (
     formData: UserFormData

@@ -6,6 +6,7 @@ import AppRoutes from "./AppRoutes.tsx";
 import "./global.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "./auth/AuthContext.tsx";
+import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,12 +17,14 @@ const queryClient = new QueryClient({
 });
 
 createRoot(document.getElementById("root")!).render(
-  <AuthProvider>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AppRoutes />
-        <Toaster />
-      </BrowserRouter>
-    </QueryClientProvider>
-  </AuthProvider>
+  <ThemeProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AppRoutes />
+          <Toaster />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </AuthProvider>
+  </ThemeProvider>
 );

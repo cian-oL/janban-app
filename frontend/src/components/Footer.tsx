@@ -1,6 +1,14 @@
+import { useTheme } from "@/contexts/ThemeProvider";
+
 const Footer = () => {
+  const { theme } = useTheme();
+
   return (
-    <div className="bg-indigo-600 py-5">
+    <div
+      className={`border-t border-amber-300 py-5 ${
+        theme === "light" ? "bg-indigo-600" : "bg-indigo-900"
+      }`}
+    >
       <footer className="container flex justify-between items-center">
         <span className="text-lg font-bold text-amber-300 hover:text-white">
           olearylab.com

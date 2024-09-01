@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useGetUser } from "@/api/userApiClient";
 import { useSignOutUser } from "@/api/authApiClient";
 import { useAuthContext } from "@/auth/AuthContext";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 import { Button } from "./ui/button";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ const UserDropDownMenu = () => {
   const { currentUser } = useGetUser();
   const { setAccessToken, user, setUser, setIsLoggedIn } = useAuthContext();
   const { signOutUser } = useSignOutUser();
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!currentUser) {
@@ -47,7 +49,11 @@ const UserDropDownMenu = () => {
         <User />
         {user?.name}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-indigo-500 text-white mr-2">
+      <DropdownMenuContent
+        className={`text-white mr-2 ${
+          theme === "light" ? "bg-indigo-500" : "bg-indigo-800"
+        }`}
+      >
         <DropdownMenuLabel className="font-extrabold text-lg underline">
           My Account
         </DropdownMenuLabel>

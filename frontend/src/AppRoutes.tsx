@@ -6,6 +6,7 @@ import SignInPage from "./pages/SignInPage";
 import RegisterPage from "./pages/RegisterPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import ProtectedRoutes from "./auth/ProtectedRoutes";
+import KanbanPage from "./pages/KanbanPage";
 
 const AppRoutes = () => {
   return (
@@ -42,6 +43,14 @@ const AppRoutes = () => {
           element={
             <Layout>
               <UserProfilePage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/kanban"
+          element={
+            <Layout>
+              <KanbanPage />
             </Layout>
           }
         />

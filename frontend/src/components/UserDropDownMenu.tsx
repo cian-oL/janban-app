@@ -62,6 +62,13 @@ const UserDropDownMenu = () => {
           <Link to="/my-profile">Profile Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link to="/kanban">Kanaban Board</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link to="/backlog">Backlog</Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <Button
           onClick={handleSignOut}
           className=" w-full bg-amber-300 font-bold text-black hover:bg-white"

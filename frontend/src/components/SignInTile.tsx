@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 
 const SignInTile = () => {
   return (
-    <div className="w-full p-10 mx-auto my-5 rounded-lg flex flex-col gap-5 items-center justify-evenly bg-indigo-100 md:max-w-[80%] lg:flex-row">
+    <div className="w-full p-10 mx-auto my-5 rounded-lg flex flex-col gap-5 items-center justify-evenly border border-amber-300 bg-indigo-100 md:max-w-[80%] lg:flex-row">
       <img src={janbanImage} className="py-5 lg:w-[60%]" />
       <section className="w-fit">
         <div className="mb-10">

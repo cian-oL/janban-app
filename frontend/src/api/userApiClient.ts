@@ -40,6 +40,38 @@ export const useRegisterUser = () => {
   return { registerUser };
 };
 
+export const useGetAllUsers = () => {
+  const { accessToken } = useAuthContext();
+  const axiosInstance = useAxiosInstance();
+
+  const getAllUsers = async (): Promise<User[]> => {
+    return axiosInstance
+      .get("/api/user/users", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => response.data)
+      .catch((err) => {
+        console.log(err);
+        throw new Error("Failed to get all users");
+      });
+  };
+
+  const {
+    data: users,
+    error,
+    isLoading,
+  } = useQuery("getAllUsers", getAllUsers);
+
+  if (error) {
+    console.log(error.toString());
+    toast.error("Failed to get all user data");
+  }
+
+  return { users, isLoading };
+};
+
 export const useGetUser = () => {
   const { accessToken } = useAuthContext();
   const axiosInstance = useAxiosInstance();

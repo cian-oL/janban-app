@@ -52,6 +52,16 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find({});
+    return res.status(200).json(users);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
 export const getUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.userId);

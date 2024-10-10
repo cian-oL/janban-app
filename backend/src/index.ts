@@ -31,4 +31,8 @@ app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/issues", issueRoute);
 
+app.use("/health", (req, res) => {
+  res.send("OK");
+});
+
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

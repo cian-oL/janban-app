@@ -24,7 +24,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    /* dist */
+    "outDir": "./dist"
   },
   "include": ["src"]
 }

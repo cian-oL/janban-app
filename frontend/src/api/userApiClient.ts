@@ -1,5 +1,4 @@
 import { useMutation, useQuery } from "react-query";
-import { AxiosResponse } from "axios";
 
 import { User, UserFormData } from "@/types/userTypes";
 import { AccessTokenResponse } from "@/types/authTypes";
@@ -99,9 +98,7 @@ export const useUpdateUser = () => {
   const { accessToken } = useAuthContext();
   const axiosInstance = useAxiosInstance();
 
-  const updateUserRequest = async (
-    formData: UserFormData
-  ): Promise<AxiosResponse<User>> => {
+  const updateUserRequest = async (formData: UserFormData): Promise<User> => {
     return axiosInstance
       .put("/api/user/profile", formData, {
         headers: {

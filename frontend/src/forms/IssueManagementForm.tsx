@@ -201,6 +201,7 @@ const IssueManagementForm = ({
                     max={8}
                     placeholder="1 - 8"
                     className="border rounded py-1 px-2 text-gray-700 text-sm font-normal"
+                    onChange={(e) => field.onChange(Number(e.target.value))}
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -258,6 +259,7 @@ const IssueManagementForm = ({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
+                  <SelectItem value="backlog">Backlog</SelectItem>
                   {kanbanColumns.map((column) => (
                     <SelectItem key={column.columnId} value={column.columnId}>
                       {column.title}

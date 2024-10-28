@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import { SignInFormData } from "@/types/userTypes";
 import { useSignInUser } from "@/api/authApiClient";
@@ -20,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import PasswordVisibilityButton from "@/components/PasswordVisibilityButton";
 
 const formSchema = z.object({
   racfid: z
@@ -33,6 +35,11 @@ const SignInForm = () => {
   const { signInUser } = useSignInUser();
   const navigate = useNavigate();
   const { setAccessToken, setIsLoggedIn } = useAuthContext();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   const onSubmit = (formData: SignInFormData) => {
     signInUser(formData).then((data) => {
@@ -73,7 +80,7 @@ const SignInForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal md:w-[50%]"
+                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal md:w-[50%]"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -89,11 +96,17 @@ const SignInForm = () => {
                   Password:
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="password"
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal md:w-[50%]"
-                  />
+                  <div className="flex">
+                    <Input
+                      {...field}
+                      type={isPasswordVisible ? "text" : "password"}
+                      className="py-1 px-2 border rounded w-full flex-1 font-normal md:w-[50%] md:flex-initial"
+                    />
+                    <PasswordVisibilityButton
+                      isPasswordVisible={isPasswordVisible}
+                      onToggleClick={togglePasswordVisibility}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage className="text-red-500" />
               </FormItem>

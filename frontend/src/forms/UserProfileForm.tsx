@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { User, UserFormData } from "@/types/userTypes";
 import { useAuthContext } from "@/auth/AuthContext";
+import PasswordVisibilityButton from "@/components/PasswordVisibilityButton";
 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,7 @@ const formSchema = z
 
 const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
   const { accessToken } = useAuthContext();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
@@ -77,6 +79,10 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
       name: currentUser?.name,
     });
   }, [currentUser, accessToken, form]);
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   return (
     <Form {...form}>
@@ -112,7 +118,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                   <Input
                     {...field}
                     disabled={!!currentUser}
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal"
+                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -131,7 +137,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                   <Input
                     {...field}
                     type="email"
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal"
+                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -151,7 +157,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                 <FormControl>
                   <Input
                     {...field}
-                    className="max-w-96 py-1 px-2 border rounded w-full flex-1 font-normal"
+                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal md:max-w-96"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -169,11 +175,17 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                   {currentUser && "Enter/Change"} Password:
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="password"
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal md:max-w-60"
-                  />
+                  <div className="flex">
+                    <Input
+                      {...field}
+                      type={isPasswordVisible ? "text" : "password"}
+                      className="py-1 px-2 border rounded w-full flex-1 font-normal md:max-w-60"
+                    />
+                    <PasswordVisibilityButton
+                      isPasswordVisible={isPasswordVisible}
+                      onToggleClick={togglePasswordVisibility}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage className="text-red-500" />
               </FormItem>
@@ -199,8 +211,8 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                 <FormControl>
                   <Input
                     {...field}
-                    type="password"
-                    className="py-1 px-2 border rounded w-full flex-1 font-normal"
+                    type={isPasswordVisible ? "text" : "password"}
+                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal md:w-full"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />

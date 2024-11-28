@@ -23,13 +23,14 @@ import {
 import { Issue } from "../types/kanbanTypes";
 import LoadingSpinner from "./LoadingSpinner";
 import { Button } from "./ui/button";
+import { useIssuesContext } from "@/contexts/IssueContext";
 
 const KanbanBoard = () => {
   const { allIssues, isLoading: isGetLoading } = useGetAllIssues();
   const { updateIssue, isLoading: isUpdateLoading } = useUpdateIssue();
   const { deleteIssue, isLoading: isDeleteLoading } = useDeleteIssue();
+  const { issues, setIssues } = useIssuesContext();
 
-  const [issues, setIssues] = useState<Issue[]>(allIssues || []);
   const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
 
   useEffect(() => {

@@ -8,12 +8,14 @@ import UserProfileForm from "@/forms/UserProfileForm";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const { setAccessToken } = useAuthContext();
+  const { setAccessToken, setIsLoggedIn, setUser } = useAuthContext();
   const { registerUser } = useRegisterUser();
 
   const handleRegisterUser = (formData: UserFormData) => {
     registerUser(formData).then((data) => {
+      setIsLoggedIn(true);
       setAccessToken(data.accessToken);
+      setUser(data.user);
       toast.success("User registered");
       navigate("/");
     });

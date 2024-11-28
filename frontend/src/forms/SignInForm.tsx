@@ -34,7 +34,7 @@ const formSchema = z.object({
 const SignInForm = () => {
   const { signInUser } = useSignInUser();
   const navigate = useNavigate();
-  const { setAccessToken, setIsLoggedIn } = useAuthContext();
+  const { setAccessToken, setIsLoggedIn, setUser } = useAuthContext();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -45,6 +45,7 @@ const SignInForm = () => {
     signInUser(formData).then((data) => {
       setIsLoggedIn(true);
       setAccessToken(data.accessToken);
+      setUser(data.user);
       toast.success("Signed in");
       navigate("/");
     });

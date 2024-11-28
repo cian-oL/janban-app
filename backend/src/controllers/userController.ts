@@ -45,7 +45,7 @@ export const registerUser = async (req: Request, res: Response) => {
         secure: process.env.NODE_ENV === "production",
         maxAge: 86400000,
       })
-      .json({ accessToken });
+      .json({ accessToken, user });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });

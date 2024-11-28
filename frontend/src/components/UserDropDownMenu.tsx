@@ -20,18 +20,17 @@ import {
 
 const UserDropDownMenu = () => {
   const navigate = useNavigate();
-  const { currentUser } = useGetUser();
   const { setAccessToken, user, setUser, setIsLoggedIn } = useAuthContext();
   const { signOutUser } = useSignOutUser();
   const { theme } = useTheme();
 
   useEffect(() => {
-    if (!currentUser) {
+    if (!user) {
       return;
     }
 
-    setUser(currentUser);
-  }, [currentUser, setUser]);
+    setUser(user);
+  }, [user, setUser]);
 
   const handleSignOut = () => {
     signOutUser().then(() => {

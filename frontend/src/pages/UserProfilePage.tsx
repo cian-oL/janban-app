@@ -9,8 +9,8 @@ const UserProfilePage = () => {
   const { user, setUser } = useAuthContext();
 
   const handleUpdateUser = (formData: UserFormData) => {
-    updateUser(formData).then((user) => {
-      setUser(user);
+    setUser(formData);
+    updateUser(formData).then(() => {
       toast.success("Profile Updated");
     });
   };

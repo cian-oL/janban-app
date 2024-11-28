@@ -1,4 +1,7 @@
+import BacklogBoard from "@/components/BacklogBoard";
+
 const BacklogPage = () => {
-  return <div>BacklogPage</div>;
+  return <BacklogBoard />;
 };
+
 export default BacklogPage;

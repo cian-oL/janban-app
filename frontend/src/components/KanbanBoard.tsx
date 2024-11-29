@@ -15,34 +15,21 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 import { kanbanColumns } from "../config/kanbanConfig";
 import KanbanColumnContainer from "./KanbanColumnContainer";
-import {
-  useDeleteIssue,
-  useGetAllIssues,
-  useUpdateIssue,
-} from "../api/issueApiClient";
 import { Issue } from "../types/kanbanTypes";
-import LoadingSpinner from "./LoadingSpinner";
 import { Button } from "./ui/button";
-import { useIssuesContext } from "@/contexts/IssueContext";
 
-const KanbanBoard = () => {
-  const { allIssues, isLoading: isGetLoading } = useGetAllIssues();
-  const { updateIssue, isLoading: isUpdateLoading } = useUpdateIssue();
-  const { deleteIssue, isLoading: isDeleteLoading } = useDeleteIssue();
-  const { issues, setIssues } = useIssuesContext();
+type Props = {
+  issues?: Issue[];
+  handleUpdateIssue: (issueWithUpdatedData: Issue) => void;
+  handleDeleteIssue: (issueToDelete: Issue) => void;
+};
 
+const KanbanBoard = ({
+  issues,
+  handleUpdateIssue,
+  handleDeleteIssue,
+}: Props) => {
   const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
-
-  useEffect(() => {
-    if (allIssues) {
-      try {
-        setIssues(allIssues);
-      } catch (err) {
-        console.log(err);
-        toast.error("Error fetching issues");
-      }
-    }
-  }, [allIssues]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -55,15 +42,6 @@ const KanbanBoard = () => {
     })
   );
 
-  const handleDelete = (issueToDelete: Issue) => {
-    deleteIssue(issueToDelete).then(() => {
-      setIssues(
-        issues.filter((issue) => issue.issueCode !== issueToDelete.issueCode)
-      );
-      toast.success("Issue deleted");
-    });
-  };
-
   const handleDragStart = (e: DragStartEvent) => {
     setActiveIssue(e.active.data.current?.issue);
   };
@@ -71,7 +49,7 @@ const KanbanBoard = () => {
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
 
-    if (!over) {
+    if (!over || !issues) {
       return;
     }
 
@@ -79,28 +57,28 @@ const KanbanBoard = () => {
     const activeIssueColumnId = active.data.current?.issue.columnId;
     const overId = over.id;
 
-    setIssues((issues) => {
-      const activeIssueIndex = issues.findIndex(
-        (issue) => issue.issueCode === activeIssueId
-      );
+    // setIssues((issues) => {
+    const activeIssueIndex = issues.findIndex(
+      (issue) => issue.issueCode === activeIssueId
+    );
 
-      if (activeIssueId === overId || activeIssueColumnId === overId) {
-        updateIssue(issues[activeIssueIndex]);
-        setActiveIssue(null);
-        return arrayMove(issues, activeIssueIndex, activeIssueIndex);
-      }
-
-      if (over.data.current?.type === "Column") {
-        issues[activeIssueIndex].columnId = overId.toString();
-      }
-
-      if (over.data.current?.type === "Issue") {
-        issues[activeIssueIndex].columnId = over.data.current.issue.columnId;
-      }
-
-      updateIssue(issues[activeIssueIndex]);
+    if (activeIssueId === overId || activeIssueColumnId === overId) {
+      handleUpdateIssue(issues[activeIssueIndex]);
+      setActiveIssue(null);
       return arrayMove(issues, activeIssueIndex, activeIssueIndex);
-    });
+    }
+
+    if (over.data.current?.type === "Column") {
+      issues[activeIssueIndex].columnId = overId.toString();
+    }
+
+    if (over.data.current?.type === "Issue") {
+      issues[activeIssueIndex].columnId = over.data.current.issue.columnId;
+    }
+
+    handleUpdateIssue(issues[activeIssueIndex]);
+    return arrayMove(issues, activeIssueIndex, activeIssueIndex);
+    // });
   };
 
   return (
@@ -116,23 +94,19 @@ const KanbanBoard = () => {
             Add Issue
           </Button>
         </Link>
-        {isGetLoading || isUpdateLoading || isDeleteLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <div className="flex flex-col justify-between items-center px-1 gap-4 md:flex-row">
-            {kanbanColumns.map((column) => (
-              <KanbanColumnContainer
-                key={column.columnId}
-                column={column}
-                issues={issues?.filter(
-                  (issue) => issue.columnId === column.columnId
-                )}
-                handleDelete={handleDelete}
-                activeIssue={activeIssue}
-              />
-            ))}
-          </div>
-        )}
+        <div className="flex flex-col justify-between items-center px-1 gap-4 md:flex-row">
+          {kanbanColumns.map((column) => (
+            <KanbanColumnContainer
+              key={column.columnId}
+              column={column}
+              issues={issues?.filter(
+                (issue) => issue.columnId === column.columnId
+              )}
+              handleDeleteIssue={handleDeleteIssue}
+              activeIssue={activeIssue}
+            />
+          ))}
+        </div>
       </DndContext>
     </div>
   );

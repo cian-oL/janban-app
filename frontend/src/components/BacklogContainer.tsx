@@ -47,7 +47,7 @@ const BacklogContainer = ({
             <IssueCard
               key={issue.issueCode}
               issue={issue}
-              handleDelete={handleDelete}
+              handleDeleteIssue={handleDelete}
             />
           ))}
         </div>
@@ -55,7 +55,7 @@ const BacklogContainer = ({
       {createPortal(
         <DragOverlay>
           {activeIssue && (
-            <IssueCard issue={activeIssue} handleDelete={handleDelete} />
+            <IssueCard issue={activeIssue} handleDeleteIssue={handleDelete} />
           )}
         </DragOverlay>,
         document.body

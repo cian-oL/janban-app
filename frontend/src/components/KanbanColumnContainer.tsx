@@ -9,14 +9,14 @@ import IssueCard from "./IssueCard";
 type Props = {
   column: Column;
   issues?: Issue[];
-  handleDelete: (issue: Issue) => void;
+  handleDeleteIssue: (issue: Issue) => void;
   activeIssue: Issue | null;
 };
 
 const KanbanColumnContainer = ({
   column,
   issues,
-  handleDelete,
+  handleDeleteIssue,
   activeIssue,
 }: Props) => {
   const columnIssueIds: string[] = useMemo(() => {
@@ -51,7 +51,7 @@ const KanbanColumnContainer = ({
             <IssueCard
               key={issue.issueCode}
               issue={issue}
-              handleDelete={handleDelete}
+              handleDeleteIssue={handleDeleteIssue}
             />
           ))}
         </div>
@@ -64,7 +64,10 @@ const KanbanColumnContainer = ({
       {createPortal(
         <DragOverlay>
           {activeIssue && (
-            <IssueCard issue={activeIssue} handleDelete={handleDelete} />
+            <IssueCard
+              issue={activeIssue}
+              handleDeleteIssue={handleDeleteIssue}
+            />
           )}
         </DragOverlay>,
         document.body

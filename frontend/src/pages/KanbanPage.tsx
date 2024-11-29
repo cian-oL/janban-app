@@ -8,12 +8,13 @@ import {
 } from "@/api/issueApiClient";
 import { useIssuesContext } from "@/contexts/IssueContext";
 import KanbanBoard from "@/components/KanbanBoard";
-import { set } from "zod";
+import { Issue } from "@/types/kanbanTypes";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const KanbanPage = () => {
   const { allIssues, isLoading: isGetLoading } = useGetAllIssues();
-  const { updateIssue, isLoading: isUpdateLoading } = useUpdateIssue();
-  const { deleteIssue, isLoading: isDeleteLoading } = useDeleteIssue();
+  const { updateIssue } = useUpdateIssue();
+  const { deleteIssue } = useDeleteIssue();
   const { issues, setIssues } = useIssuesContext();
 
   useEffect(() => {
@@ -27,17 +28,51 @@ const KanbanPage = () => {
     }
   }, [allIssues, setIssues]);
 
-  const handleUpdateIssue = async (issue: Issue) => {
+  const handleUpdateIssue = async (issueWithUpdatedData: Issue) => {
     try {
-      // START HERE
-      await updateIssue(issue);
+      setIssues((prevIssues) =>
+        prevIssues?.map((issue) => {
+          if (issue.issueCode === issueWithUpdatedData.issueCode) {
+            return issueWithUpdatedData;
+          }
+          return issue;
+        })
+      );
+
+      await updateIssue(issueWithUpdatedData);
+      toast.success("Issue updated");
     } catch (err) {
       console.log(err);
       toast.error("Error updating issue");
     }
   };
 
-  return <KanbanBoard issues={issues} />;
+  const handleDeleteIssue = async (issueToDelete: Issue) => {
+    try {
+      setIssues(
+        issues?.filter((issue) => issue.issueCode !== issueToDelete.issueCode)
+      );
+      await deleteIssue(issueToDelete);
+      toast.success("Issue deleted");
+    } catch (err) {
+      console.log(err);
+      toast.error("Error deleting issue");
+    }
+  };
+
+  return (
+    <>
+      {isGetLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <KanbanBoard
+          issues={issues}
+          handleUpdateIssue={handleUpdateIssue}
+          handleDeleteIssue={handleDeleteIssue}
+        />
+      )}
+    </>
+  );
 };
 
 export default KanbanPage;

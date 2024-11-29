@@ -1,7 +1,6 @@
 import { SortableContext } from "@dnd-kit/sortable";
 import { useMemo } from "react";
-import { DragOverlay, useDroppable } from "@dnd-kit/core";
-import { createPortal } from "react-dom";
+import { useDroppable } from "@dnd-kit/core";
 
 import { Column, Issue } from "@/types/kanbanTypes";
 import IssueCard from "./IssueCard";
@@ -10,14 +9,12 @@ type Props = {
   column: Column;
   issues?: Issue[];
   handleDeleteIssue: (issue: Issue) => void;
-  activeIssue: Issue | null;
 };
 
 const KanbanColumnContainer = ({
   column,
   issues,
   handleDeleteIssue,
-  activeIssue,
 }: Props) => {
   const columnIssueIds: string[] = useMemo(() => {
     if (!issues) {
@@ -43,8 +40,10 @@ const KanbanColumnContainer = ({
       <SortableContext items={columnIssueIds}>
         <div
           ref={DroppableNodeRef}
-          className={`flex flex-col flex-1 gap-4 p-2 overflow-x-hidden overflow-y-auto bg-indigo-300 border border-amber-300 ${
-            isOver && "border-4 border-amber-600"
+          className={`flex flex-col flex-1 gap-4 p-2 overflow-x-hidden overflow-y-auto bg-indigo-300 border-2 transition-all duration-75 ${
+            isOver
+              ? "border-amber-500 bg-slate-500 shadow-inner"
+              : "border-amber-300"
           }`}
         >
           {issues?.map((issue) => (
@@ -61,17 +60,6 @@ const KanbanColumnContainer = ({
           {column.title}
         </p>
       </div>
-      {createPortal(
-        <DragOverlay>
-          {activeIssue && (
-            <IssueCard
-              issue={activeIssue}
-              handleDeleteIssue={handleDeleteIssue}
-            />
-          )}
-        </DragOverlay>,
-        document.body
-      )}
     </div>
   );
 };

@@ -12,10 +12,10 @@ import {
 
 type Props = {
   issue: Issue;
-  handleDelete: (issue: Issue) => void;
+  handleDeleteIssue: (issue: Issue) => void;
 };
 
-const DeleteIssueDialog = ({ issue, handleDelete }: Props) => {
+const DeleteIssueDialog = ({ issue, handleDeleteIssue }: Props) => {
   return (
     <AlertDialogContent>
       <AlertDialogHeader>
@@ -30,7 +30,7 @@ const DeleteIssueDialog = ({ issue, handleDelete }: Props) => {
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
-          onClick={() => handleDelete(issue)}
+          onClick={() => handleDeleteIssue(issue)}
           className="rounded-lg text-white font-bold bg-red-500 hover:bg-red-700"
         >
           Delete Issue

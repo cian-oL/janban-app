@@ -40,7 +40,6 @@ const KanbanPage = () => {
       );
 
       await updateIssue(issueWithUpdatedData);
-      toast.success("Issue updated");
     } catch (err) {
       console.log(err);
       toast.error("Error updating issue");

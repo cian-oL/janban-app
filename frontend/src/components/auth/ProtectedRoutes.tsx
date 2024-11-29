@@ -1,10 +1,8 @@
-import { useAuthenticateUserSession } from "@/hooks/auth";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoutes = () => {
-  const { checkSessionAuth } = useAuthenticateUserSession();
-
-  const isLoggedIn = checkSessionAuth();
+  const { isLoggedIn } = useAuthContext();
 
   return isLoggedIn ? <Outlet /> : <Navigate to="/" replace />;
 };

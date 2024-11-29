@@ -1,7 +1,6 @@
 import { SortableContext } from "@dnd-kit/sortable";
 import { useMemo } from "react";
-import { DragOverlay, useDroppable } from "@dnd-kit/core";
-import { createPortal } from "react-dom";
+import { useDroppable } from "@dnd-kit/core";
 
 import { Column, Issue } from "@/types/kanbanTypes";
 import IssueCard from "./IssueCard";
@@ -9,15 +8,13 @@ import IssueCard from "./IssueCard";
 type Props = {
   containerTitle: "Active Board" | "Backlog";
   issues?: Issue[];
-  handleDelete: (issue: Issue) => void;
-  activeIssue: Issue | null;
+  handleDeleteIssue: (issue: Issue) => void;
 };
 
 const BacklogContainer = ({
   containerTitle,
   issues,
-  handleDelete,
-  activeIssue,
+  handleDeleteIssue,
 }: Props) => {
   const columnIssueIds: string[] = useMemo(() => {
     if (!issues) {
@@ -33,33 +30,27 @@ const BacklogContainer = ({
 
   return (
     <div className="flex flex-col w-full p-5">
-      <div className="bg-indigo-600 text-white font-bold cursor-grab rounded-t-md  border border-b-2 border-amber-300 p-1 h-16">
+      <div className="bg-indigo-600 text-white font-bold rounded-t-md border border-b-2 border-amber-300 p-1 h-16">
         <h2>{containerTitle}</h2>
       </div>
       <SortableContext items={columnIssueIds}>
         <div
           ref={DroppableNodeRef}
-          className={`flex flex-col flex-1 gap-4 p-2 overflow-x-hidden overflow-y-auto bg-indigo-300 border border-amber-300 ${
-            isOver && "border-4 border-amber-600"
+          className={`flex flex-col flex-1 gap-4 p-2 pb-20 overflow-x-hidden overflow-y-auto bg-indigo-300 border-2 transition-all duration-75 ${
+            isOver
+              ? "border-amber-500 bg-slate-500 shadow-inner"
+              : "border-amber-300"
           }`}
         >
           {issues?.map((issue) => (
             <IssueCard
               key={issue.issueCode}
               issue={issue}
-              handleDeleteIssue={handleDelete}
+              handleDeleteIssue={handleDeleteIssue}
             />
           ))}
         </div>
       </SortableContext>
-      {createPortal(
-        <DragOverlay>
-          {activeIssue && (
-            <IssueCard issue={activeIssue} handleDeleteIssue={handleDelete} />
-          )}
-        </DragOverlay>,
-        document.body
-      )}
     </div>
   );
 };

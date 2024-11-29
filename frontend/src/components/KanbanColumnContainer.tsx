@@ -34,6 +34,7 @@ const KanbanColumnContainer = ({
 
   return (
     <div className="flex flex-col min-h-screen w-full p-5 md:w-[20%]">
+      ~{" "}
       <div className="bg-indigo-600 text-white font-bold rounded-t-md border border-b-2 border-amber-300 p-1 h-16">
         <h2>{column.title}</h2>
       </div>

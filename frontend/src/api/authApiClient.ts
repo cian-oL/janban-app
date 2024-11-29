@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { SignInFormData } from "@/types/userTypes";
 import { AccessTokenResponse } from "@/types/authTypes";
 import { toast } from "sonner";
-import { useAuthContext } from "@/auth/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { axiosInstance } from "./axiosConfig";
+import { useAuthenticateUserSession } from "@/hooks/auth";
 
 // ===== USER SIGN IN & SIGN OUT =====
 
@@ -92,8 +93,8 @@ export const generateAccessTokenFromRefreshToken =
   };
 
 export const useAxiosInstance = () => {
-  const { accessToken, setAccessToken, setUser, setIsLoggedIn } =
-    useAuthContext();
+  const { accessToken, setAccessToken, setUser } = useAuthContext();
+  const { logoutUserSession } = useAuthenticateUserSession();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,9 +103,7 @@ export const useAxiosInstance = () => {
         .then((data) => setAccessToken(data.accessToken))
         .catch((err) => {
           console.log(err);
-          setAccessToken("");
-          setUser(undefined);
-          setIsLoggedIn(false);
+          logoutUserSession();
           toast.warning("Signed out due to inactivity");
           navigate("/");
         });
@@ -128,7 +127,7 @@ export const useAxiosInstance = () => {
     );
 
     return () => axiosInstance.interceptors.response.eject(responseIntercept);
-  }, [accessToken, setAccessToken, setUser, navigate, setIsLoggedIn]);
+  }, [accessToken, setAccessToken, setUser, logoutUserSession, navigate]);
 
   return axiosInstance;
 };

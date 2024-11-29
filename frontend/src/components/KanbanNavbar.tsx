@@ -20,7 +20,7 @@ const KanbanNavbar = () => {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link to="/backlog">
+            <Link to="/kanban/backlog">
               <MdOutlineTableRows className="bg-amber-300 font-bold text-black hover:text-white" />
             </Link>
           </NavigationMenuItem>

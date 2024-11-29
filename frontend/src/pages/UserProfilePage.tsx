@@ -1,5 +1,5 @@
 import { useUpdateUser } from "@/api/userApiClient";
-import { useAuthContext } from "@/auth/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
 import UserProfileForm from "@/forms/UserProfileForm";
 import { UserFormData } from "@/types/userTypes";
 import { toast } from "sonner";
@@ -9,8 +9,8 @@ const UserProfilePage = () => {
   const { user, setUser } = useAuthContext();
 
   const handleUpdateUser = (formData: UserFormData) => {
-    updateUser(formData).then((user) => {
-      setUser(user);
+    setUser(formData);
+    updateUser(formData).then(() => {
       toast.success("Profile Updated");
     });
   };

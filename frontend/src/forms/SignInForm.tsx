@@ -2,16 +2,12 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import { SignInFormData } from "@/types/userTypes";
-import { useSignInUser } from "@/api/authApiClient";
-import { useAuthContext } from "@/auth/AuthContext";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -23,6 +19,10 @@ import {
 } from "@/components/ui/form";
 import PasswordVisibilityButton from "@/components/PasswordVisibilityButton";
 
+type Props = {
+  onSave: (formData: SignInFormData) => void;
+};
+
 const formSchema = z.object({
   racfid: z
     .string()
@@ -31,23 +31,11 @@ const formSchema = z.object({
   password: z.string().min(1, "Required"),
 });
 
-const SignInForm = () => {
-  const { signInUser } = useSignInUser();
-  const navigate = useNavigate();
-  const { setAccessToken, setIsLoggedIn } = useAuthContext();
+const SignInForm = ({ onSave }: Props) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
-  };
-
-  const onSubmit = (formData: SignInFormData) => {
-    signInUser(formData).then((data) => {
-      setIsLoggedIn(true);
-      setAccessToken(data.accessToken);
-      toast.success("Signed in");
-      navigate("/");
-    });
   };
 
   const form = useForm<SignInFormData>({
@@ -61,7 +49,7 @@ const SignInForm = () => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSave)}
         className="p-5 mx-auto my-5 rounded-lg flex flex-col gap-5 bg-indigo-100 md:max-w-[60%]"
       >
         <h1 className="mx-2 text-2xl font-bold underline">Sign In</h1>

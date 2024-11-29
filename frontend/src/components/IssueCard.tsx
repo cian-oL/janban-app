@@ -10,10 +10,10 @@ import DeleteIssueDialog from "./DeleteIssueDialog";
 
 type Props = {
   issue: Issue;
-  handleDelete: (issue: Issue) => void;
+  handleDeleteIssue: (issue: Issue) => void;
 };
 
-const IssueCard = ({ issue, handleDelete }: Props) => {
+const IssueCard = ({ issue, handleDeleteIssue }: Props) => {
   const [mouseIsOver, setMouseIsOver] = useState<boolean>(false);
 
   const {
@@ -38,6 +38,7 @@ const IssueCard = ({ issue, handleDelete }: Props) => {
 
   return (
     <div
+      data-issue-id={issue.issueCode}
       onMouseEnter={() => setMouseIsOver(true)}
       onMouseLeave={() => setMouseIsOver(false)}
       ref={setDraggableNodeRef}
@@ -63,7 +64,10 @@ const IssueCard = ({ issue, handleDelete }: Props) => {
             <AlertDialogTrigger className="w-4 mr-2 bg-lloyds-green text-white text-xs hover:text-red-500 hover:bg-indigo-800 hover:cursor-pointer">
               <TrashIcon className="h-4" />
             </AlertDialogTrigger>
-            <DeleteIssueDialog issue={issue} handleDelete={handleDelete} />
+            <DeleteIssueDialog
+              issue={issue}
+              handleDeleteIssue={handleDeleteIssue}
+            />
           </AlertDialog>
         )}
       </div>

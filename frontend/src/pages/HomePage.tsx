@@ -1,11 +1,11 @@
-import { useAuthContext } from "@/auth/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
 import HomePageTile from "@/components/HomePageTile";
 import SignInTile from "@/components/SignInTile";
 
 const HomePage = () => {
-  const { accessToken } = useAuthContext();
+  const { isLoggedIn } = useAuthContext();
 
-  return <>{accessToken ? <HomePageTile /> : <SignInTile />}</>;
+  return <>{isLoggedIn ? <HomePageTile /> : <SignInTile />}</>;
 };
 
 export default HomePage;

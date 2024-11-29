@@ -1,19 +1,19 @@
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { useRegisterUser } from "@/api/userApiClient";
-import { useAuthContext } from "@/auth/AuthContext";
 import { UserFormData } from "@/types/userTypes";
-import { toast } from "sonner";
 import UserProfileForm from "@/forms/UserProfileForm";
+import { useAuthenticateUserSession } from "@/hooks/auth";
 
 const RegisterPage = () => {
-  const navigate = useNavigate();
-  const { setAccessToken } = useAuthContext();
   const { registerUser } = useRegisterUser();
+  const navigate = useNavigate();
+  const { authenticateUserSession } = useAuthenticateUserSession();
 
   const handleRegisterUser = (formData: UserFormData) => {
     registerUser(formData).then((data) => {
-      setAccessToken(data.accessToken);
+      authenticateUserSession(data);
       toast.success("User registered");
       navigate("/");
     });

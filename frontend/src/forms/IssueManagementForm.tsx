@@ -75,7 +75,7 @@ const IssueManagementForm = ({
     },
   });
 
-  const handleDelete = (issueToDelete: Issue) => {
+  const handleDeleteIssue = (issueToDelete: Issue) => {
     deleteIssue(issueToDelete).then(() => {
       navigate("/kanban");
       toast.success("Issue deleted");
@@ -281,6 +281,13 @@ const IssueManagementForm = ({
           >
             {isLoading ? "Saving..." : "Submit"}
           </Button>
+          <Button
+            onClick={() => navigate("/kanban")}
+            disabled={isLoading}
+            className="my-2 w-full rounded-lg bg-amber-300 text-black font-bold hover:bg-amber-400 md:w-fit"
+          >
+            Cancel
+          </Button>
           {currentIssue && (
             <AlertDialog>
               <AlertDialogTrigger
@@ -291,7 +298,7 @@ const IssueManagementForm = ({
               </AlertDialogTrigger>
               <DeleteIssueDialog
                 issue={currentIssue}
-                handleDelete={handleDelete}
+                handleDeleteIssue={handleDeleteIssue}
               />
             </AlertDialog>
           )}

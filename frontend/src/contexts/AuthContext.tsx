@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { User } from "@/types/userTypes";
 import { generateAccessTokenFromRefreshToken } from "@/api/authApiClient";
+import { set } from "zod";
 
 type Props = {
   children: React.ReactNode;
@@ -26,11 +27,10 @@ export const AuthProvider = ({ children }: Props) => {
   const handleAccessTokenGeneration = async () => {
     const responseData = await generateAccessTokenFromRefreshToken();
     setAccessToken(responseData.accessToken);
-    setIsLoggedIn(true);
   };
 
   useEffect(() => {
-    if (!isLoggedIn || !accessToken) {
+    if (!accessToken) {
       handleAccessTokenGeneration();
     }
   });

@@ -6,10 +6,11 @@ import HomePage from "./pages/HomePage";
 import SignInPage from "./pages/SignInPage";
 import RegisterPage from "./pages/RegisterPage";
 import UserProfilePage from "./pages/UserProfilePage";
-import ProtectedRoutes from "./auth/ProtectedRoutes";
+import ProtectedRoutes from "./components/auth/ProtectedRoutes";
 import KanbanPage from "./pages/KanbanPage";
 import CreateIssuePage from "./pages/CreateIssuePage";
 import IssueManagementPage from "./pages/IssueManagementPage";
+import BacklogPage from "./pages/BacklogPage";
 
 const AppRoutes = () => {
   return (
@@ -73,7 +74,16 @@ const AppRoutes = () => {
             </Layout>
           }
         />
+        {/* Put backlog in protect once online! */}
       </Route>
+      <Route
+        path="/kanban/backlog"
+        element={
+          <Layout>
+            <BacklogPage />
+          </Layout>
+        }
+      />
 
       {/* redirect */}
       <Route path="*" element={<Navigate to="/" />} />

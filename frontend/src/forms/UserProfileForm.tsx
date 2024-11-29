@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 
 import { User, UserFormData } from "@/types/userTypes";
-import { useAuthContext } from "@/auth/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
 import PasswordVisibilityButton from "@/components/PasswordVisibilityButton";
 
 import { toast } from "sonner";

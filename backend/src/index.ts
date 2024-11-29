@@ -9,7 +9,7 @@ import authRoute from "./routes/authRoute";
 import issueRoute from "./routes/issueRoute";
 
 const PORT = process.env.SERVER_PORT || 8080;
-const dbConnection = process.env.MONGO_DB_CONNECTION_STRING;
+const dbConnection = process.env.MONGO_DB_CONNECTION_STRING as string;
 
 mongoose
   .connect(dbConnection as string)

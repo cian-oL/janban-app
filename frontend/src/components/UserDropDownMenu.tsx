@@ -4,7 +4,8 @@ import { useEffect } from "react";
 
 import { useGetUser } from "@/api/userApiClient";
 import { useSignOutUser } from "@/api/authApiClient";
-import { useAuthContext } from "@/auth/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { useAuthenticateUserSession } from "@/hooks/auth";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 import { Button } from "./ui/button";
@@ -20,23 +21,23 @@ import {
 
 const UserDropDownMenu = () => {
   const navigate = useNavigate();
-  const { setAccessToken, user, setUser, setIsLoggedIn } = useAuthContext();
+  const { currentUser } = useGetUser();
+  const { user, setUser } = useAuthContext();
   const { signOutUser } = useSignOutUser();
+  const { logoutUserSession } = useAuthenticateUserSession();
   const { theme } = useTheme();
 
   useEffect(() => {
-    if (!user) {
+    if (!currentUser) {
       return;
     }
 
-    setUser(user);
-  }, [user, setUser]);
+    setUser(currentUser);
+  }, [currentUser, setUser]);
 
   const handleSignOut = () => {
     signOutUser().then(() => {
-      setAccessToken("");
-      setUser(undefined);
-      setIsLoggedIn(false);
+      logoutUserSession();
       toast.success("Signed out");
       navigate("/");
     });

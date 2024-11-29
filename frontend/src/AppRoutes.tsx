@@ -6,7 +6,7 @@ import HomePage from "./pages/HomePage";
 import SignInPage from "./pages/SignInPage";
 import RegisterPage from "./pages/RegisterPage";
 import UserProfilePage from "./pages/UserProfilePage";
-import ProtectedRoutes from "./auth/ProtectedRoutes";
+import ProtectedRoutes from "./components/auth/ProtectedRoutes";
 import KanbanPage from "./pages/KanbanPage";
 import CreateIssuePage from "./pages/CreateIssuePage";
 import IssueManagementPage from "./pages/IssueManagementPage";

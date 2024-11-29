@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 import { Button } from "./ui/button";
-import { useAuthContext } from "@/auth/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
 import UserDropDownMenu from "./UserDropDownMenu";
 import KanbanNavbar from "./KanbanNavbar";
 import ModeToggle from "./ModeToggle";

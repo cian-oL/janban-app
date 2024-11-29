@@ -1,5 +1,5 @@
 import { useUpdateUser } from "@/api/userApiClient";
-import { useAuthContext } from "@/auth/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
 import UserProfileForm from "@/forms/UserProfileForm";
 import { UserFormData } from "@/types/userTypes";
 import { toast } from "sonner";

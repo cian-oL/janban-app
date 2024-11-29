@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { Issue, IssueFormData } from "../types/kanbanTypes";
 import { useAxiosInstance } from "./authApiClient";
-import { useAuthContext } from "@/auth/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 type DeleteIssueResponse = {

@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "react-query";
 import { User, UserFormData } from "@/types/userTypes";
 import { AccessTokenResponse } from "@/types/authTypes";
 import { toast } from "sonner";
-import { useAuthContext } from "@/auth/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { axiosInstance } from "./axiosConfig";
 import { useAxiosInstance } from "./authApiClient";
 

@@ -28,10 +28,7 @@ type Props = {
 
 const formSchema = z
   .object({
-    racfid: z
-      .string()
-      .min(1, "Required")
-      .regex(/J\d{6}/, "Employee ID begins with J and contains 6 numbers"),
+    racfid: z.string(),
     password: z
       .string()
       .min(1, "Required")
@@ -117,7 +114,8 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={!!currentUser}
+                    disabled
+                    placeholder="JXXXXXX"
                     className="py-1 px-2 border rounded w-[94%] flex-1 font-normal"
                   />
                 </FormControl>

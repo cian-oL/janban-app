@@ -14,7 +14,7 @@ const RegisterPage = () => {
   const handleRegisterUser = (formData: UserFormData) => {
     registerUser(formData).then((data) => {
       authenticateUserSession(data);
-      toast.success("User registered");
+      toast.success(`User ${data.user?.racfid} registered`);
       navigate("/");
     });
   };

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { validationResult } from "express-validator";
 
 import User from "../models/user";
-import { validationResult } from "express-validator";
 
 export const registerUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -12,14 +12,24 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const { racfid } = req.body;
-
-    const existingUser = await User.findOne({ racfid });
+    const allUsers = await User.find({});
+    const existingUser = allUsers.find((user) => user.email === req.body.email);
 
     if (existingUser) {
       return res.status(409).json({ message: "User already exists" });
     }
+
     const user = new User(req.body);
+    let arrayLength = allUsers.length;
+    user.racfid = generateRacfid(arrayLength);
+
+    while (await checkDatabaseForRacfid(user.racfid)) {
+      arrayLength += 1;
+      user.racfid = generateRacfid(arrayLength);
+    }
+
+    console.log(user);
+
     await user.save();
 
     const accessToken = jwt.sign(
@@ -96,4 +106,20 @@ export const updateUser = async (req: Request, res: Response) => {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });
   }
+};
+
+const generateRacfid = (count: number) => {
+  const prefix = "J";
+  const suffix = count.toString().padStart(6, "0");
+  return `${prefix}${suffix}`;
+};
+
+const checkDatabaseForRacfid = async (racfid: string) => {
+  const user = await User.findOne({ racfid });
+
+  if (user) {
+    return true;
+  }
+
+  return false;
 };

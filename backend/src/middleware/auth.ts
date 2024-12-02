@@ -13,9 +13,6 @@ declare global {
 }
 
 export const validateRegistration = [
-  check("racfid", "Employee ID begins with J and contains 6 numbers").matches(
-    /J\d{6}/
-  ),
   check(
     "password",
     "Passwords must meet strong password criteria"

@@ -28,8 +28,6 @@ export const registerUser = async (req: Request, res: Response) => {
       user.racfid = generateRacfid(arrayLength);
     }
 
-    console.log(user);
-
     await user.save();
 
     const accessToken = jwt.sign(

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { User } from "@/types/userTypes";
 import { generateAccessTokenFromRefreshToken } from "@/api/authApiClient";
-import { set } from "zod";
 
 type Props = {
   children: React.ReactNode;

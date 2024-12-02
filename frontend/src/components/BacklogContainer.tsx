@@ -2,7 +2,7 @@ import { SortableContext } from "@dnd-kit/sortable";
 import { useMemo } from "react";
 import { useDroppable } from "@dnd-kit/core";
 
-import { Column, Issue } from "@/types/kanbanTypes";
+import { Issue } from "@/types/kanbanTypes";
 import IssueCard from "./IssueCard";
 
 type Props = {

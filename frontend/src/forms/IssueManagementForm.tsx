@@ -39,10 +39,7 @@ type Props = {
 
 const formSchema = z.object({
   issueCategory: z.string().min(1, "Required"),
-  issueCode: z
-    .string()
-    .min(1, "Required")
-    .regex(/JI-\d{6}/, 'Write in format "JI-XXXXXX" with 6 numbers'),
+  issueCode: z.string(),
   name: z.string().min(1, "Required"),
   description: z.string().min(1, "Required"),
   storyPoints: z
@@ -138,7 +135,7 @@ const IssueManagementForm = ({
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={!!currentIssue}
+                    disabled
                     placeholder="JI-XXXXXX"
                     className="border rounded py-1 px-2 text-gray-700 text-sm font-normal"
                   />

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import { toast } from "sonner";
 import IssueManagementForm from "@/forms/IssueManagementForm";
-import { IssueFormData } from "../types/kanbanTypes";
+import { Issue, IssueFormData } from "../types/kanbanTypes";
 import { useCreateIssue } from "@/api/issueApiClient";
 
 const CreateIssuePage = () => {
@@ -10,8 +10,8 @@ const CreateIssuePage = () => {
   const { createIssue, isLoading } = useCreateIssue();
 
   const handleSave = (formData: IssueFormData) => {
-    createIssue(formData).then(() => {
-      toast.success("Issue successfully created");
+    createIssue(formData).then((issue: Issue) => {
+      toast.success(`Issue ${issue.issueCode} created`);
       navigate("/kanban");
     });
   };

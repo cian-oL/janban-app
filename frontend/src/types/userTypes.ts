@@ -6,7 +6,7 @@ export type User = {
 };
 
 export type UserFormData = {
-  racfid: string;
+  racfid?: string;
   password: string;
   email: string;
   name: string;

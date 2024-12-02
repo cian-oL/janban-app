@@ -12,15 +12,17 @@ export const createIssue = async (req: Request, res: Response) => {
   }
 
   try {
-    const { issueCode } = req.body;
+    const allIssues = await Issue.find({});
+    let arrayLength = allIssues.length;
 
-    let issue = await Issue.findOne({ issueCode });
+    const issue = new Issue(req.body);
+    issue.issueCode = generateIssueCode(arrayLength);
 
-    if (issue) {
-      return res.status(409).json({ message: "Issue already exists" });
+    while (await checkDatabaseForIssueCode(issue.issueCode)) {
+      arrayLength += 1;
+      issue.issueCode = generateIssueCode(arrayLength);
     }
 
-    issue = new Issue(req.body);
     issue.createdAt = new Date();
     issue.lastUpdated = new Date();
     await issue.save();
@@ -109,4 +111,15 @@ export const deleteIssue = async (req: Request, res: Response) => {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });
   }
+};
+
+const generateIssueCode = (count: number) => {
+  const prefix = "JI";
+  const suffix = count.toString().padStart(6, "0");
+  return `${prefix}${suffix}`;
+};
+
+const checkDatabaseForIssueCode = async (issueCode: string) => {
+  const existingIssue = await Issue.findOne({ issueCode });
+  return !!existingIssue;
 };

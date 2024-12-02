@@ -72,7 +72,8 @@ const BacklogPage = () => {
           handleUpdateIssue={handleUpdateIssue}
           handleDeleteIssue={handleDeleteIssue}
         />
-      )}  
+      )}
+    </>
   );
 };
 

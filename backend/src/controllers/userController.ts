@@ -13,6 +13,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
   try {
     const allUsers = await User.find({});
+    let arrayLength = allUsers.length;
     const existingUser = allUsers.find((user) => user.email === req.body.email);
 
     if (existingUser) {
@@ -20,7 +21,6 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 
     const user = new User(req.body);
-    let arrayLength = allUsers.length;
     user.racfid = generateRacfid(arrayLength);
 
     while (await checkDatabaseForRacfid(user.racfid)) {
@@ -115,9 +115,5 @@ const generateRacfid = (count: number) => {
 const checkDatabaseForRacfid = async (racfid: string) => {
   const user = await User.findOne({ racfid });
 
-  if (user) {
-    return true;
-  }
-
-  return false;
+  return !!user;
 };

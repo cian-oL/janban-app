@@ -4,17 +4,22 @@ import { Button } from "@/components/ui/button";
 
 type Props = {
   isPasswordVisible: boolean;
-  onToggleClick: () => void;
+  setIsPasswordVisible: (value: boolean) => void;
 };
 
 const PasswordVisibilityButton = ({
   isPasswordVisible,
-  onToggleClick,
+  setIsPasswordVisible,
 }: Props) => {
+  const togglePasswordVisibility = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
     <div className="flex items-center">
       <Button
-        onClick={onToggleClick}
+        onClick={togglePasswordVisibility}
         variant="ghost"
         className="translate-x-[-40px] p-0 bg-none"
       >

@@ -34,10 +34,6 @@ const formSchema = z.object({
 const SignInForm = ({ onSave }: Props) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
-
   const form = useForm<SignInFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -92,7 +88,7 @@ const SignInForm = ({ onSave }: Props) => {
                     />
                     <PasswordVisibilityButton
                       isPasswordVisible={isPasswordVisible}
-                      onToggleClick={togglePasswordVisibility}
+                      setIsPasswordVisible={setIsPasswordVisible}
                     />
                   </div>
                 </FormControl>

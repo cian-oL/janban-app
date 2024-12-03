@@ -77,10 +77,6 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
     });
   }, [currentUser, accessToken, form]);
 
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
-
   return (
     <Form {...form}>
       <form
@@ -181,7 +177,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                     />
                     <PasswordVisibilityButton
                       isPasswordVisible={isPasswordVisible}
-                      onToggleClick={togglePasswordVisibility}
+                      setIsPasswordVisible={setIsPasswordVisible}
                     />
                   </div>
                 </FormControl>

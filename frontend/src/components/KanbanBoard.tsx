@@ -9,6 +9,7 @@ import {
   useSensors,
   DragStartEvent,
   DragEndEvent,
+  DragOverlay,
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
@@ -45,14 +46,6 @@ const KanbanBoard = ({
     const issue = e.active.data.current?.issue;
     if (issue) {
       setActiveIssue(issue);
-
-      // Hide the original issue during drag
-      const originalIssue = document.querySelector(
-        `[data-issue-id="${issue.issueCode}"]`
-      );
-      if (originalIssue) {
-        (originalIssue as HTMLElement).style.opacity = "0";
-      }
     }
   };
 
@@ -60,15 +53,6 @@ const KanbanBoard = ({
     const { active, over } = e;
 
     if (!over || !issues) {
-      // Show the original issue if drag is cancelled
-      if (activeIssue) {
-        const originalIssue = document.querySelector(
-          `[data-issue-id="${activeIssue.issueCode}"]`
-        );
-        if (originalIssue) {
-          (originalIssue as HTMLElement).style.opacity = "1";
-        }
-      }
       setActiveIssue(null);
       return;
     }
@@ -82,15 +66,6 @@ const KanbanBoard = ({
     );
 
     if (activeIssueId === overId || activeIssueColumnId === overId) {
-      // Show the original issue if no change
-      if (activeIssue) {
-        const element = document.querySelector(
-          `[data-issue-id="${activeIssue.issueCode}"]`
-        );
-        if (element) {
-          (element as HTMLElement).style.opacity = "1";
-        }
-      }
       setActiveIssue(null);
       return;
     }
@@ -132,6 +107,15 @@ const KanbanBoard = ({
             />
           ))}
         </div>
+        <DragOverlay>
+          {activeIssue ? (
+            <div className="w-[100px] p-4 rounded-lg border border-white bg-indigo-800 opacity-50 text-white">
+              <p className="font-bold underline text-sm hover:text-amber-400">
+                {activeIssue.issueCode}
+              </p>
+            </div>
+          ) : null}
+        </DragOverlay>
       </DndContext>
     </div>
   );

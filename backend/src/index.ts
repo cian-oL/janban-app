@@ -9,12 +9,17 @@ import authRoute from "./routes/authRoute";
 import issueRoute from "./routes/issueRoute";
 
 const PORT = process.env.SERVER_PORT || 8080;
-const dbConnection = process.env.MONGO_DB_CONNECTION_STRING as string;
+const dbConnection =
+  (process.env.MONGO_DB_CONNECTION_STRING as string) ||
+  "mongodb://root:example@localhost:27017/";
 
 mongoose
   .connect(dbConnection as string)
   .then(() => console.log("Database connected successfully"))
-  .catch((err) => console.log("Database failed to connect: ", err));
+  .catch((err) => {
+    console.log("Database failed to connect: ", err);
+    process.exit(1);
+  });
 
 const app = express();
 app.use(

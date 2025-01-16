@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import NewNavbar from "@/components/NewNavbar";
+import MainSidebar from "@/components/MainSidebar";
 import { useAuthContext } from "@/contexts/AuthContext";
 
 type Props = {
@@ -13,10 +13,10 @@ const Layout = ({ children }: Props) => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="my-5 container flex-1">
-        {isLoggedIn && <NewNavbar />}
-        {children}
-      </main>
+      <div className="container pl-0 flex-1 flex">
+        {isLoggedIn && <MainSidebar />}
+        <main className="h-full my-auto">{children}</main>
+      </div>
       <Footer />
     </div>
   );

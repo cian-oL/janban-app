@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuthContext } from "@/contexts/AuthContext";
 import UserDropDownMenu from "./UserDropDownMenu";
-import KanbanNavbar from "./KanbanNavbar";
 import ModeToggle from "./ModeToggle";
 import { useTheme } from "@/contexts/ThemeProvider";
 
@@ -24,11 +23,7 @@ const Header = () => {
         >
           Janban
         </Link>
-        {isLoggedIn && (
-          <div className="hidden md:block">
-            <KanbanNavbar />
-          </div>
-        )}
+        {isLoggedIn && <div className="hidden md:block">SEARCHBAR TODO</div>}
         <div className=" flex justify-between items-center gap-5">
           <ModeToggle />
           {isLoggedIn ? (

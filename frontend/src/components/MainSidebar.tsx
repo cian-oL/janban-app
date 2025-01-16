@@ -3,6 +3,7 @@ import { RiKanbanView2 } from "react-icons/ri";
 import { MdOutlineTableRows } from "react-icons/md";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useState } from "react";
+import { Button } from "./ui/button";
 
 const MainSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -15,7 +16,7 @@ const MainSidebar = () => {
     >
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-4 bg-indigo-300 rounded-full p-1 hover:bg-amber-400"
+        className="bg-amber-300 border rounded-full p-1 hover:bg-amber-400"
       >
         {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
       </button>

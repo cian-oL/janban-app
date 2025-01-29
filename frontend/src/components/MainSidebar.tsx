@@ -3,7 +3,6 @@ import { RiKanbanView2 } from "react-icons/ri";
 import { MdOutlineTableRows } from "react-icons/md";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useState } from "react";
-import { Button } from "./ui/button";
 
 const MainSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);

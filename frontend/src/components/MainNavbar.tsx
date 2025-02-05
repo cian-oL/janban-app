@@ -20,7 +20,7 @@ const MainNavbar = () => {
         >
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="bg-amber-300 border rounded-full p-1 hover:bg-amber-400"
+            className="bg-amber-300 border border-gray-700 rounded-full ml-1 p-1 hover:bg-amber-400"
           >
             {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
           </button>

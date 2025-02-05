@@ -8,13 +8,13 @@ const MainNavigation = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <>
+    <div className="self-stretch">
       {/* Vertical sidebar for md and larger screens */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block h-full">
         <div
           className={`${
             isCollapsed ? "w-16" : "w-content"
-          } bg-amber-300 transition-all duration-300`}
+          } bg-amber-300 transition-all duration-300 h-full border-r-2 border-gray-700`}
         >
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -50,8 +50,8 @@ const MainNavigation = () => {
       </div>
 
       {/* Horizontal bar for small screens */}
-      <div className="md:hidden w-full">
-        <div className="bg-amber-300 h-auto">
+      <div className="w-full lg:hidden">
+        <div className="bg-amber-300 h-auto border-b-2 border-gray-700">
           <nav className="flex items-center justify-evenly p-2">
             <Link
               to="/kanban"
@@ -69,7 +69,7 @@ const MainNavigation = () => {
           </nav>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

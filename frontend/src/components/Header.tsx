@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuthContext } from "@/contexts/AuthContext";
 import UserDropDownMenu from "./UserDropDownMenu";
-import KanbanNavbar from "./KanbanNavbar";
 import ModeToggle from "./ModeToggle";
 import { useTheme } from "@/contexts/ThemeProvider";
 
@@ -13,7 +12,7 @@ const Header = () => {
 
   return (
     <header
-      className={`py-10 border-b border-amber-300 text-white ${
+      className={`py-10 border-b-2 border-amber-300 text-white ${
         theme === "light" ? "bg-indigo-600" : "bg-indigo-900"
       }`}
     >
@@ -24,11 +23,6 @@ const Header = () => {
         >
           Janban
         </Link>
-        {isLoggedIn && (
-          <div className="hidden md:block">
-            <KanbanNavbar />
-          </div>
-        )}
         <div className=" flex justify-between items-center gap-5">
           <ModeToggle />
           {isLoggedIn ? (

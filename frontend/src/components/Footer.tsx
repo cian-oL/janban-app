@@ -5,7 +5,7 @@ const Footer = () => {
 
   return (
     <div
-      className={`border-t border-amber-300 py-5 ${
+      className={`border-t-2 border-amber-300 py-5 ${
         theme === "light" ? "bg-indigo-600" : "bg-indigo-900"
       }`}
     >

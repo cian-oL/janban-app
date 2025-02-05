@@ -47,7 +47,7 @@ const UserDropDownMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger className="flex gap-2 bg-amber-300 rounded p-2 text-black font-bold hover:bg-white">
         <User />
-        {user?.name}
+        <span>{user?.name}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className={`text-white mr-2 ${

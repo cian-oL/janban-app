@@ -107,6 +107,10 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 const generateRacfid = (count: number) => {
+  if (count === 0) {
+    return "J000001";
+  }
+
   const prefix = "J";
   const suffix = count.toString().padStart(6, "0");
   return `${prefix}${suffix}`;

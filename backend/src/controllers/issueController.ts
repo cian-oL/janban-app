@@ -114,6 +114,10 @@ export const deleteIssue = async (req: Request, res: Response) => {
 };
 
 const generateIssueCode = (count: number) => {
+  if (count === 0) {
+    return "JI000001";
+  }
+
   const prefix = "JI";
   const suffix = count.toString().padStart(6, "0");
   return `${prefix}${suffix}`;

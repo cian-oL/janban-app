@@ -114,7 +114,7 @@ export const generateAccessToken = async (req: Request, res: Response) => {
             secure: process.env.NODE_ENV === "production",
             maxAge: 86400000,
           })
-          .json({ accessToken });
+          .json({ accessToken, user });
       }
     );
   } catch (err) {

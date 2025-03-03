@@ -21,6 +21,7 @@ const PasswordVisibilityButton = ({
       <Button
         onClick={togglePasswordVisibility}
         variant="ghost"
+        type="button"
         className="translate-x-[-40px] p-0 bg-none"
       >
         {isPasswordVisible ? <EyeOff /> : <Eye />}

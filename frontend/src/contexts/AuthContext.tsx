@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { User } from "@/types/userTypes";
 import { generateAccessTokenFromRefreshToken } from "@/api/authApiClient";
+import { toast } from "sonner";
 
 type Props = {
   children: React.ReactNode;
@@ -24,15 +25,26 @@ export const AuthProvider = ({ children }: Props) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const handleAccessTokenGeneration = async () => {
-    const responseData = await generateAccessTokenFromRefreshToken();
-    setAccessToken(responseData.accessToken);
+    try {
+      const responseData = await generateAccessTokenFromRefreshToken();
+
+      if (responseData) {
+        setAccessToken(responseData.accessToken);
+        setIsLoggedIn(true);
+        setUser(responseData.user);
+      }
+    } catch (error) {
+      console.error("Session expired", error);
+      setIsLoggedIn(false);
+      toast.error("Please sign in again");
+    }
   };
 
   useEffect(() => {
     if (!accessToken) {
       handleAccessTokenGeneration();
     }
-  });
+  }, [accessToken]);
 
   return (
     <AuthContext.Provider

@@ -57,14 +57,13 @@ const BacklogBoard = ({
     }
 
     const activeIssueId = active.id;
-    const activeIssueColumnId = active.data.current?.issue.columnId;
     const overId = over.id;
 
     const activeIssueIndex = issues.findIndex(
       (issue) => issue.issueCode === activeIssueId
     );
 
-    if (activeIssueId === overId || activeIssueColumnId === overId) {
+    if (activeIssueId === overId) {
       setActiveIssue(null);
       return;
     }
@@ -72,12 +71,12 @@ const BacklogBoard = ({
     const updatedIssue = { ...issues[activeIssueIndex] };
 
     if (over.data.current?.type === "Column") {
-      updatedIssue.columnId = overId.toString();
+      updatedIssue.isOnActiveBoard = overId === "Active Board";
     } else if (over.data.current?.type === "Issue") {
-      updatedIssue.columnId = over.data.current.issue.columnId;
+      updatedIssue.isOnActiveBoard = over.data.current.issue.isOnActiveBoard;
     }
 
-    handleUpdateIssue(issues[activeIssueIndex]);
+    handleUpdateIssue(updatedIssue);
     setActiveIssue(null);
   };
 
@@ -97,12 +96,12 @@ const BacklogBoard = ({
         <div className="flex flex-col justify-between items-center px-1 gap-4">
           <BacklogContainer
             column="Active Board"
-            issues={issues?.filter((issue) => issue.columnId !== "backlog")}
+            issues={issues?.filter((issue) => issue.isOnActiveBoard)}
             handleDeleteIssue={handleDeleteIssue}
           />
           <BacklogContainer
             column="Backlog"
-            issues={issues?.filter((issue) => issue.columnId === "backlog")}
+            issues={issues?.filter((issue) => !issue.isOnActiveBoard)}
             handleDeleteIssue={handleDeleteIssue}
           />
         </div>

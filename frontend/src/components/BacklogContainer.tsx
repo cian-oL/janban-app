@@ -22,6 +22,10 @@ const BacklogContainer = ({ column, issues, handleDeleteIssue }: Props) => {
 
   const { isOver, setNodeRef: DroppableNodeRef } = useDroppable({
     id: column,
+    data: {
+      type: "Column",
+      column,
+    },
   });
 
   return (

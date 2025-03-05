@@ -19,6 +19,7 @@ export type Issue = {
 
 export type IssueFormData = {
   issueCategory: string;
+  isOnActiveBoard: boolean;
   issueCode: string;
   name: string;
   description: string;

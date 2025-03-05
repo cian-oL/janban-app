@@ -68,6 +68,7 @@ export const updateIssue = async (req: Request, res: Response) => {
     const { issueCode } = req.params;
     const {
       issueCategory,
+      isOnActiveBoard,
       name,
       description,
       storyPoints,
@@ -82,6 +83,7 @@ export const updateIssue = async (req: Request, res: Response) => {
     }
 
     existingIssue.issueCategory = issueCategory;
+    existingIssue.isOnActiveBoard = isOnActiveBoard;
     existingIssue.name = name;
     existingIssue.description = description;
     existingIssue.storyPoints = storyPoints;

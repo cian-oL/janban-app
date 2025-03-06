@@ -71,9 +71,9 @@ const BacklogBoard = ({
     const updatedIssue = { ...issues[activeIssueIndex] };
 
     if (over.data.current?.type === "Column") {
-      updatedIssue.isOnActiveBoard = overId === "Active Board";
+      updatedIssue.isBacklog = overId === "Backlog";
     } else if (over.data.current?.type === "Issue") {
-      updatedIssue.isOnActiveBoard = over.data.current.issue.isOnActiveBoard;
+      updatedIssue.isBacklog = over.data.current.issue.isBacklog;
     }
 
     handleUpdateIssue(updatedIssue);
@@ -96,12 +96,12 @@ const BacklogBoard = ({
         <div className="flex flex-col justify-between items-center px-1 gap-4">
           <BacklogContainer
             column="Active Board"
-            issues={issues?.filter((issue) => issue.isOnActiveBoard)}
+            issues={issues?.filter((issue) => !issue.isBacklog)}
             handleDeleteIssue={handleDeleteIssue}
           />
           <BacklogContainer
             column="Backlog"
-            issues={issues?.filter((issue) => !issue.isOnActiveBoard)}
+            issues={issues?.filter((issue) => issue.isBacklog)}
             handleDeleteIssue={handleDeleteIssue}
           />
         </div>

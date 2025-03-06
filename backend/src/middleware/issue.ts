@@ -6,4 +6,5 @@ export const validateIssueCreation = [
   check("description", "Issue Description is required").notEmpty().isString(),
   check("storyPoints", "Story point data type should be a number").isNumeric(),
   check("columnId", "Column ID/issue status required").notEmpty().isString(),
+  check("isBacklog", "Backlog status is required").notEmpty().isBoolean(),
 ];

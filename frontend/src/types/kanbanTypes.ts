@@ -6,7 +6,7 @@ export type Column = {
 export type Issue = {
   _id: string;
   issueCategory: string;
-  isOnActiveBoard: boolean;
+  isBacklog: boolean;
   issueCode: string;
   name: string;
   description: string;
@@ -19,7 +19,7 @@ export type Issue = {
 
 export type IssueFormData = {
   issueCategory: string;
-  isOnActiveBoard: boolean;
+  isBacklog: boolean;
   issueCode: string;
   name: string;
   description: string;

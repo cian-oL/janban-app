@@ -40,7 +40,7 @@ type Props = {
 
 const formSchema = z.object({
   issueCategory: z.string().min(1, "Required"),
-  isOnActiveBoard: z.boolean({ required_error: "Required" }).default(false),
+  isBacklog: z.boolean({ required_error: "Required" }).default(false),
   issueCode: z.string(),
   name: z.string().min(1, "Required"),
   description: z.string().min(1, "Required"),
@@ -65,7 +65,7 @@ const IssueManagementForm = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       issueCategory: "",
-      isOnActiveBoard: false,
+      isBacklog: false,
       issueCode: "",
       name: "",
       description: "",
@@ -272,7 +272,7 @@ const IssueManagementForm = ({
         />
         <FormField
           control={form.control}
-          name="isOnActiveBoard"
+          name="isBacklog"
           render={({ field }) => (
             <FormItem className="flex items-center space-y-0">
               <FormLabel className="mx-2 text-slate-700 text-sm font-bold">

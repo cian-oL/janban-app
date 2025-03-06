@@ -68,7 +68,7 @@ export const updateIssue = async (req: Request, res: Response) => {
     const { issueCode } = req.params;
     const {
       issueCategory,
-      isOnActiveBoard,
+      isBacklog,
       name,
       description,
       storyPoints,
@@ -83,12 +83,13 @@ export const updateIssue = async (req: Request, res: Response) => {
     }
 
     existingIssue.issueCategory = issueCategory;
-    existingIssue.isOnActiveBoard = isOnActiveBoard;
+    existingIssue.isBacklog = isBacklog;
     existingIssue.name = name;
     existingIssue.description = description;
     existingIssue.storyPoints = storyPoints;
     existingIssue.assignee = assignee;
     existingIssue.columnId = columnId;
+    existingIssue.lastUpdated = new Date();
     await existingIssue.save();
 
     return res.status(200).json(existingIssue);

@@ -101,7 +101,8 @@ const KanbanBoard = ({
               key={column.columnId}
               column={column}
               issues={issues?.filter(
-                (issue) => issue.columnId === column.columnId
+                (issue) =>
+                  issue.columnId === column.columnId && !issue.isBacklog
               )}
               handleDeleteIssue={handleDeleteIssue}
             />

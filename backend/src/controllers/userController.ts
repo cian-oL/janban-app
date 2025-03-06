@@ -4,6 +4,7 @@ import { validationResult } from "express-validator";
 
 import User from "../models/user";
 
+// "/api/user/register"
 export const registerUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
 
@@ -28,6 +29,8 @@ export const registerUser = async (req: Request, res: Response) => {
       user.racfid = generateRacfid(arrayLength);
     }
 
+    user.createdAt = new Date();
+    user.lastUpdated = new Date();
     await user.save();
 
     const accessToken = jwt.sign(
@@ -60,6 +63,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+// "/api/user/users"
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find({});
@@ -70,6 +74,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+// "/api/user/profile"
 export const getUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.userId);
@@ -97,6 +102,7 @@ export const updateUser = async (req: Request, res: Response) => {
     user.email = email;
     user.name = name;
     user.password = password;
+    user.lastUpdated = new Date();
     await user.save();
 
     return res.status(200).json(user);

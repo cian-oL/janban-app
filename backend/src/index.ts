@@ -11,7 +11,7 @@ import issueRoute from "./routes/issueRoute";
 const PORT = process.env.SERVER_PORT || 8080;
 const dbConnection =
   (process.env.MONGO_DB_CONNECTION_STRING as string) ||
-  "mongodb://root:example@localhost:27017/";
+  "mongodb://root:example@localhost:27017/janban-app?authSource=admin";
 
 mongoose
   .connect(dbConnection as string)

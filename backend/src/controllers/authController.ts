@@ -5,6 +5,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import User from "../models/user";
 import { validationResult } from "express-validator";
 
+// "/api/auth/sign-in"
 export const signInUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
 
@@ -57,11 +58,13 @@ export const signInUser = async (req: Request, res: Response) => {
   }
 };
 
+// "/api/auth/sign-out";
 export const signOutUser = (req: Request, res: Response) => {
   res.clearCookie("refresh_token");
   return res.sendStatus(204);
 };
 
+// "/api/auth/access-token"
 export const generateAccessToken = async (req: Request, res: Response) => {
   try {
     const refreshToken: string = req.cookies["refresh_token"];

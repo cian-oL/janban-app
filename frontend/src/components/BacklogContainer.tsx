@@ -6,16 +6,12 @@ import { Issue } from "@/types/kanbanTypes";
 import IssueCard from "./IssueCard";
 
 type Props = {
-  containerTitle: "Active Board" | "Backlog";
+  column: "Active Board" | "Backlog";
   issues?: Issue[];
   handleDeleteIssue: (issue: Issue) => void;
 };
 
-const BacklogContainer = ({
-  containerTitle,
-  issues,
-  handleDeleteIssue,
-}: Props) => {
+const BacklogContainer = ({ column, issues, handleDeleteIssue }: Props) => {
   const columnIssueIds: string[] = useMemo(() => {
     if (!issues) {
       return [""];
@@ -25,13 +21,17 @@ const BacklogContainer = ({
   }, [issues]);
 
   const { isOver, setNodeRef: DroppableNodeRef } = useDroppable({
-    id: containerTitle,
+    id: column,
+    data: {
+      type: "Column",
+      column,
+    },
   });
 
   return (
     <div className="flex flex-col w-full p-5">
       <div className="bg-indigo-600 text-white font-bold rounded-t-md border border-b-2 border-amber-300 p-1 h-16">
-        <h2>{containerTitle}</h2>
+        <h2>{column}</h2>
       </div>
       <SortableContext items={columnIssueIds}>
         <div

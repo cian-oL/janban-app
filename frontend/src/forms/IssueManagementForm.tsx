@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog, AlertDialogTrigger } from "../components/ui/alert-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -39,6 +40,7 @@ type Props = {
 
 const formSchema = z.object({
   issueCategory: z.string().min(1, "Required"),
+  isBacklog: z.boolean({ required_error: "Required" }).default(false),
   issueCode: z.string(),
   name: z.string().min(1, "Required"),
   description: z.string().min(1, "Required"),
@@ -63,6 +65,7 @@ const IssueManagementForm = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       issueCategory: "",
+      isBacklog: false,
       issueCode: "",
       name: "",
       description: "",
@@ -256,7 +259,6 @@ const IssueManagementForm = ({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="backlog">Backlog</SelectItem>
                   {kanbanColumns.map((column) => (
                     <SelectItem key={column.columnId} value={column.columnId}>
                       {column.title}
@@ -264,8 +266,25 @@ const IssueManagementForm = ({
                   ))}
                 </SelectContent>
               </Select>
-
               <FormMessage className="text-red-500" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="isBacklog"
+          render={({ field }) => (
+            <FormItem className="flex items-center space-y-0">
+              <FormLabel className="mx-2 text-slate-700 text-sm font-bold">
+                Place in Backlog:
+              </FormLabel>
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  className="bg-white ml-2"
+                />
+              </FormControl>
             </FormItem>
           )}
         />

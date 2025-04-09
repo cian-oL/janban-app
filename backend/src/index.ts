@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import userRoute from "./routes/userRoute";
 import authRoute from "./routes/authRoute";
 import issueRoute from "./routes/issueRoute";
+import projectRoute from "./routes/projectRoute";
 
 const PORT = process.env.SERVER_PORT || 8080;
 const dbConnection =
@@ -35,6 +36,7 @@ app.use(cookieParser());
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/issues", issueRoute);
+app.use("/api/projects", projectRoute);
 
 app.use("/health", (req, res) => {
   res.send("OK");

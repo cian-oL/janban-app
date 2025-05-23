@@ -5,7 +5,7 @@ import {
   useDeleteIssue,
   useGetAllIssues,
   useUpdateIssue,
-} from "@/hooks/useIssueData";
+} from "@/hooks/useIssue";
 import { useIssuesContext } from "@/contexts/IssueContext";
 import BacklogBoard from "@/components/BacklogBoard";
 import { Issue } from "@/types/kanbanTypes";

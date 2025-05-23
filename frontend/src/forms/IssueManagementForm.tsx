@@ -3,14 +3,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-import { Issue, IssueFormData } from "../types/kanbanTypes";
-import { useGetAllUsers } from "@/api/userApiClient";
-import { useDeleteIssue } from "../hooks/useIssueData";
+import { useGetAllUsers } from "@/hooks/useUser";
+import { useDeleteIssue } from "../hooks/useIssue";
 import { issueCategories, kanbanColumns } from "../config/kanbanConfig";
 import DeleteIssueDialog from "../components/DeleteIssueDialog";
 
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,9 +31,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import type { Issue } from "../types/kanbanTypes";
+import { User } from "@/types/userTypes";
+
 type Props = {
   currentIssue?: Issue;
-  onSave: (formData: IssueFormData) => void;
+  onSave: (formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">) => void;
   isLoading: boolean;
 };
 
@@ -59,9 +61,10 @@ const IssueManagementForm = ({
 }: Props) => {
   const navigate = useNavigate();
   const { users } = useGetAllUsers();
-  const { deleteIssue, isLoading: isDeleteLoading } = useDeleteIssue();
+  const { mutateAsync: deleteIssue, isPending: isDeleteLoading } =
+    useDeleteIssue();
 
-  const form = useForm<IssueFormData>({
+  const form = useForm<Omit<Issue, "_id" | "createdAt" | "lastUpdated">>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       issueCategory: "",
@@ -226,7 +229,7 @@ const IssueManagementForm = ({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {users?.map((user) => (
+                    {users?.map((user: User) => (
                       <SelectItem key={user.racfid} value={user.name}>
                         {user.name}
                       </SelectItem>

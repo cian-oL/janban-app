@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-import { useRegisterUser } from "@/api/userApiClient";
+import { useRegisterUser } from "@/hooks/useUser";
 import { UserFormData } from "@/types/userTypes";
 import UserProfileForm from "@/forms/UserProfileForm";
 import { useAuthenticateUserSession } from "@/hooks/auth";

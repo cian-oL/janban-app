@@ -2,7 +2,7 @@ import { User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-import { useGetUser } from "@/api/userApiClient";
+import { useGetUser } from "@/hooks/useUser";
 import { useSignOutUser } from "@/api/authApiClient";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useAuthenticateUserSession } from "@/hooks/auth";

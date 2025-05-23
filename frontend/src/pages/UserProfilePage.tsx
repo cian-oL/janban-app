@@ -1,4 +1,4 @@
-import { useUpdateUser } from "@/api/userApiClient";
+import { useUpdateUser } from "@/hooks/useUser";
 import { useAuthContext } from "@/contexts/AuthContext";
 import UserProfileForm from "@/forms/UserProfileForm";
 import { UserFormData } from "@/types/userTypes";

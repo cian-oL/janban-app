@@ -5,7 +5,7 @@ import {
   useDeleteIssue,
   useGetAllIssues,
   useUpdateIssue,
-} from "@/api/issueApiClient";
+} from "@/hooks/useIssueData";
 import { useIssuesContext } from "@/contexts/IssueContext";
 import KanbanBoard from "@/components/KanbanBoard";
 import { Issue } from "@/types/kanbanTypes";
@@ -23,7 +23,7 @@ const KanbanPage = () => {
         setIssues(allIssues);
       } catch (err) {
         console.log(err);
-        toast.error("Error fetching issues");
+        toast.error("Error displaying all issues");
       }
     }
   }, [allIssues, setIssues]);

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Issue, IssueFormData } from "../types/kanbanTypes";
 import { useGetAllUsers } from "@/api/userApiClient";
-import { useDeleteIssue } from "../api/issueApiClient";
+import { useDeleteIssue } from "../hooks/useIssueData";
 import { issueCategories, kanbanColumns } from "../config/kanbanConfig";
 import DeleteIssueDialog from "../components/DeleteIssueDialog";
 

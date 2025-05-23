@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import IssueManagementForm from "@/forms/IssueManagementForm";
 import { Issue, IssueFormData } from "../types/kanbanTypes";
-import { useCreateIssue } from "@/api/issueApiClient";
+import { useCreateIssue } from "@/hooks/useIssueData";
 
 const CreateIssuePage = () => {
   const navigate = useNavigate();

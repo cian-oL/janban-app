@@ -3,15 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import IssueManagementForm from "../forms/IssueManagementForm";
 import { IssueFormData } from "../types/kanbanTypes";
-import {
-  useGetIssueByIssueCode,
-  useUpdateIssueByFormData,
-} from "../api/issueApiClient";
+import { useGetIssue, useUpdateIssueByFormData } from "../hooks/useIssueData";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 const IssueManagementPage = () => {
   const navigate = useNavigate();
-  const { currentIssue, isLoading: isGetLoading } = useGetIssueByIssueCode();
+  const { currentIssue, isLoading: isGetLoading } = useGetIssue();
   const { updateIssue, isLoading: isUpdateLoading } =
     useUpdateIssueByFormData();
 

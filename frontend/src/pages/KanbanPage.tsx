@@ -1,44 +1,21 @@
-import { useEffect } from "react";
 import { toast } from "sonner";
 
 import {
   useDeleteIssue,
   useGetAllIssues,
   useUpdateIssue,
-} from "@/api/issueApiClient";
-import { useIssuesContext } from "@/contexts/IssueContext";
+} from "@/hooks/useIssue";
 import KanbanBoard from "@/components/KanbanBoard";
 import { Issue } from "@/types/kanbanTypes";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 const KanbanPage = () => {
-  const { allIssues, isLoading: isGetLoading } = useGetAllIssues();
-  const { updateIssue } = useUpdateIssue();
-  const { deleteIssue } = useDeleteIssue();
-  const { issues, setIssues } = useIssuesContext();
-
-  useEffect(() => {
-    if (allIssues) {
-      try {
-        setIssues(allIssues);
-      } catch (err) {
-        console.log(err);
-        toast.error("Error fetching issues");
-      }
-    }
-  }, [allIssues, setIssues]);
+  const { data: issues, isLoading: isGetLoading } = useGetAllIssues();
+  const { mutateAsync: updateIssue } = useUpdateIssue();
+  const { mutateAsync: deleteIssue } = useDeleteIssue();
 
   const handleUpdateIssue = async (issueWithUpdatedData: Issue) => {
     try {
-      setIssues((prevIssues) =>
-        prevIssues?.map((issue) => {
-          if (issue.issueCode === issueWithUpdatedData.issueCode) {
-            return issueWithUpdatedData;
-          }
-          return issue;
-        })
-      );
-
       await updateIssue(issueWithUpdatedData);
     } catch (err) {
       console.log(err);
@@ -48,9 +25,6 @@ const KanbanPage = () => {
 
   const handleDeleteIssue = async (issueToDelete: Issue) => {
     try {
-      setIssues(
-        issues?.filter((issue) => issue.issueCode !== issueToDelete.issueCode)
-      );
       await deleteIssue(issueToDelete);
       toast.success("Issue deleted");
     } catch (err) {

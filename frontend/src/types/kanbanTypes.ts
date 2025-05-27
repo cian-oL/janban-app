@@ -16,14 +16,3 @@ export type Issue = {
   createdAt: Date;
   lastUpdated: Date;
 };
-
-export type IssueFormData = {
-  issueCategory: string;
-  isBacklog: boolean;
-  issueCode: string;
-  name: string;
-  description: string;
-  storyPoints: number;
-  assignee: string;
-  columnId: string;
-};

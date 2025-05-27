@@ -1,25 +1,30 @@
 import { useNavigate } from "react-router-dom";
-
 import { toast } from "sonner";
+
 import IssueManagementForm from "../forms/IssueManagementForm";
-import { IssueFormData } from "../types/kanbanTypes";
-import {
-  useGetIssueByIssueCode,
-  useUpdateIssueByFormData,
-} from "../api/issueApiClient";
+import { useGetIssue, useUpdateIssueByFormData } from "../hooks/useIssue";
 import LoadingSpinner from "@/components/LoadingSpinner";
+
+import type { Issue } from "../types/kanbanTypes";
 
 const IssueManagementPage = () => {
   const navigate = useNavigate();
-  const { currentIssue, isLoading: isGetLoading } = useGetIssueByIssueCode();
-  const { updateIssue, isLoading: isUpdateLoading } =
+  const { data: currentIssue, isLoading: isGetLoading } = useGetIssue();
+  const { mutateAsync: updateIssue, isPending: isUpdateLoading } =
     useUpdateIssueByFormData();
 
-  const handleSave = (formData: IssueFormData) => {
-    updateIssue(formData).then(() => {
-      toast.success("Issue successfully updated");
-      navigate("/kanban");
-    });
+  const handleSave = (
+    formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">
+  ) => {
+    try {
+      updateIssue(formData).then(() => {
+        toast.success("Issue successfully updated");
+        navigate("/kanban");
+      });
+    } catch (err) {
+      console.log("Error updating issue:", err);
+      toast.error("Error updating issue. Please try again");
+    }
   };
 
   return (

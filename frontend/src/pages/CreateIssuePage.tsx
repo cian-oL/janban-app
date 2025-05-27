@@ -1,19 +1,27 @@
 import { useNavigate } from "react-router-dom";
-
 import { toast } from "sonner";
+
 import IssueManagementForm from "@/forms/IssueManagementForm";
-import { Issue, IssueFormData } from "../types/kanbanTypes";
-import { useCreateIssue } from "@/api/issueApiClient";
+import { useCreateIssue } from "@/hooks/useIssue";
+
+import type { Issue } from "../types/kanbanTypes";
 
 const CreateIssuePage = () => {
   const navigate = useNavigate();
-  const { createIssue, isLoading } = useCreateIssue();
+  const { mutateAsync: createIssue, isPending: isLoading } = useCreateIssue();
 
-  const handleSave = (formData: IssueFormData) => {
-    createIssue(formData).then((issue: Issue) => {
-      toast.success(`Issue ${issue.issueCode} created`);
-      navigate("/kanban");
-    });
+  const handleSave = (
+    formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">
+  ) => {
+    try {
+      createIssue(formData).then((issue: Issue) => {
+        toast.success(`Issue ${issue.issueCode} created`);
+        navigate("/kanban");
+      });
+    } catch (err) {
+      console.log("Error creating issue:", err);
+      toast.error("Error creating issue. Please try again");
+    }
   };
 
   return (

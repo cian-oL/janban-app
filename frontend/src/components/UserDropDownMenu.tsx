@@ -1,11 +1,10 @@
 import { User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
-import { useGetUser } from "@/api/userApiClient";
-import { useSignOutUser } from "@/api/authApiClient";
+import { useGetUser } from "@/hooks/useUser";
+import { signOutUser } from "@/api/authApiClient";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useAuthenticateUserSession } from "@/hooks/auth";
+import { useAuthenticateUserSession } from "@/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 import { Button } from "./ui/button";
@@ -18,36 +17,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import LoadingSpinner from "./LoadingSpinner";
 
 const UserDropDownMenu = () => {
   const navigate = useNavigate();
-  const { currentUser } = useGetUser();
-  const { user, setUser } = useAuthContext();
-  const { signOutUser } = useSignOutUser();
+  const { data: currentUser, isLoading } = useGetUser();
+  const { accessToken } = useAuthContext();
   const { logoutUserSession } = useAuthenticateUserSession();
   const { theme } = useTheme();
 
-  useEffect(() => {
-    if (!currentUser) {
-      return;
-    }
-
-    setUser(currentUser);
-  }, [currentUser, setUser]);
-
   const handleSignOut = () => {
-    signOutUser().then(() => {
+    signOutUser(accessToken).then(() => {
       logoutUserSession();
       toast.success("Signed out");
       navigate("/");
     });
   };
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex gap-2 bg-amber-300 rounded p-2 text-black font-bold hover:bg-white">
         <User />
-        <span>{user?.name}</span>
+        <span>{currentUser?.name}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className={`text-white mr-2 ${

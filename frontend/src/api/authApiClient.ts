@@ -1,4 +1,3 @@
-import { useMutation } from "react-query";
 import { useEffect } from "react";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
@@ -8,77 +7,46 @@ import { AccessTokenResponse } from "@/types/authTypes";
 import { toast } from "sonner";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { axiosInstance } from "./axiosConfig";
-import { useAuthenticateUserSession } from "@/hooks/auth";
+import { useAuthenticateUserSession } from "@/hooks/useAuth";
 
 // ===== USER SIGN IN & SIGN OUT =====
 
-export const useSignInUser = () => {
-  const signInUserRequest = async (
-    formData: SignInFormData
-  ): Promise<AccessTokenResponse> => {
-    return axiosInstance
-      .post("/api/auth/sign-in", formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      })
-      .then((response) => response.data)
-      .catch(() => {
-        throw new Error("Failed to sign in");
-      });
-  };
-
-  const {
-    mutateAsync: signInUser,
-    error,
-    reset,
-  } = useMutation(signInUserRequest);
-
-  if (error) {
-    console.log(error.toString());
-    toast.error("Failed to sign in");
-    reset();
-  }
-
-  return { signInUser };
+export const signInUser = async (
+  formData: SignInFormData
+): Promise<AccessTokenResponse> => {
+  return axiosInstance
+    .post("/api/auth/sign-in", formData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    })
+    .then((response) => response.data)
+    .catch((err) => {
+      console.log(err);
+      throw new Error("Error with sign in user request");
+    });
 };
 
-export const useSignOutUser = () => {
-  const { accessToken } = useAuthContext();
-  const axiosInstance = useAxiosInstance();
-
-  const signOutUserRequest = async (): Promise<AxiosResponse> => {
-    return axiosInstance
-      .post(
-        "/api/auth/sign-out",
-        {},
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          withCredentials: true,
-        }
-      )
-      .catch(() => {
-        throw new Error("Failed to sign out");
-      });
-  };
-
-  const {
-    mutateAsync: signOutUser,
-    error,
-    reset,
-  } = useMutation(signOutUserRequest);
-
-  if (error) {
-    console.log(error.toString());
-    toast.error("Failed to sign out");
-    reset();
-  }
-
-  return { signOutUser };
+export const signOutUser = async (
+  accessToken: string
+): Promise<AxiosResponse> => {
+  return axiosInstance
+    .post(
+      "/api/auth/sign-out",
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        withCredentials: true,
+      }
+    )
+    .catch((err) => {
+      console.log(err);
+      throw new Error("Error with sign out request");
+    });
 };
 
 // ===== TOKEN MANAGEMENT =====
@@ -93,7 +61,7 @@ export const generateAccessTokenFromRefreshToken =
   };
 
 export const useAxiosInstance = () => {
-  const { accessToken, setAccessToken, setUser } = useAuthContext();
+  const { accessToken, setAccessToken } = useAuthContext();
   const { logoutUserSession } = useAuthenticateUserSession();
   const navigate = useNavigate();
 
@@ -127,7 +95,7 @@ export const useAxiosInstance = () => {
     );
 
     return () => axiosInstance.interceptors.response.eject(responseIntercept);
-  }, [accessToken, setAccessToken, setUser, logoutUserSession, navigate]);
+  }, [accessToken, setAccessToken, logoutUserSession, navigate]);
 
   return axiosInstance;
 };

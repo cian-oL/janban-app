@@ -1,5 +1,5 @@
 import type { Issue } from "@/types/kanbanTypes";
-import type { AxiosInstance } from "axios";
+import { axiosInstance } from "./axiosConfig";
 
 type DeleteIssueResponse = {
   message: string;
@@ -7,7 +7,6 @@ type DeleteIssueResponse = {
 
 export const createIssue = async (
   formData: Partial<Issue>,
-  axiosInstance: AxiosInstance,
   accessToken: string
 ): Promise<Issue> => {
   return await axiosInstance
@@ -23,10 +22,7 @@ export const createIssue = async (
     });
 };
 
-export const getAllIssues = async (
-  axiosInstance: AxiosInstance,
-  accessToken: string
-): Promise<Issue[]> => {
+export const getAllIssues = async (accessToken: string): Promise<Issue[]> => {
   return await axiosInstance
     .get("/api/issues", {
       headers: {
@@ -41,7 +37,6 @@ export const getAllIssues = async (
 
 export const getIssue = async (
   issueCode: string,
-  axiosInstance: AxiosInstance,
   accessToken: string
 ): Promise<Issue> => {
   return await axiosInstance
@@ -58,7 +53,6 @@ export const getIssue = async (
 
 export const updateIssueByFormData = async (
   issueData: Partial<Issue>,
-  axiosInstance: AxiosInstance,
   accessToken: string
 ): Promise<Issue> => {
   return await axiosInstance
@@ -76,7 +70,6 @@ export const updateIssueByFormData = async (
 
 export const updateIssue = async (
   issue: Issue,
-  axiosInstance: AxiosInstance,
   accessToken: string
 ): Promise<Issue> => {
   return await axiosInstance
@@ -94,7 +87,6 @@ export const updateIssue = async (
 
 export const deleteIssue = async (
   issue: Issue,
-  axiosInstance: AxiosInstance,
   accessToken: string
 ): Promise<DeleteIssueResponse> => {
   return await axiosInstance

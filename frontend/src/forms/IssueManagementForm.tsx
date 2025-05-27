@@ -60,7 +60,7 @@ const IssueManagementForm = ({
   isLoading: isLoading,
 }: Props) => {
   const navigate = useNavigate();
-  const { users } = useGetAllUsers();
+  const { data: users } = useGetAllUsers();
   const { mutateAsync: deleteIssue, isPending: isDeleteLoading } =
     useDeleteIssue();
 

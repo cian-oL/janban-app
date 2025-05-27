@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 import { useGetUser } from "@/hooks/useUser";
-import { useSignOutUser } from "@/api/authApiClient";
+import { signOutUser } from "@/api/authApiClient";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useAuthenticateUserSession } from "@/hooks/auth";
+import { useAuthenticateUserSession } from "@/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 import { Button } from "./ui/button";
@@ -21,9 +21,8 @@ import {
 
 const UserDropDownMenu = () => {
   const navigate = useNavigate();
-  const { currentUser } = useGetUser();
-  const { user, setUser } = useAuthContext();
-  const { signOutUser } = useSignOutUser();
+  const { data: currentUser } = useGetUser();
+  const { accessToken, user, setUser } = useAuthContext();
   const { logoutUserSession } = useAuthenticateUserSession();
   const { theme } = useTheme();
 
@@ -36,7 +35,7 @@ const UserDropDownMenu = () => {
   }, [currentUser, setUser]);
 
   const handleSignOut = () => {
-    signOutUser().then(() => {
+    signOutUser(accessToken).then(() => {
       logoutUserSession();
       toast.success("Signed out");
       navigate("/");

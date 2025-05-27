@@ -1,10 +1,9 @@
-import type { AxiosInstance } from "axios";
+import { axiosInstance } from "./axiosConfig";
 import type { User } from "@/types/userTypes";
 import type { AccessTokenResponse } from "@/types/authTypes";
 
 export const createUser = async (
-  formData: User & { confirmPassword: string },
-  axiosInstance: AxiosInstance
+  formData: User & { confirmPassword: string }
 ): Promise<AccessTokenResponse> => {
   return axiosInstance
     .post("/api/user/register", formData, {
@@ -20,10 +19,7 @@ export const createUser = async (
     });
 };
 
-export const getAllUsers = async (
-  axiosInstance: AxiosInstance,
-  accessToken: string
-): Promise<User[]> => {
+export const getAllUsers = async (accessToken: string): Promise<User[]> => {
   return axiosInstance
     .get("/api/user/users", {
       headers: {
@@ -33,14 +29,11 @@ export const getAllUsers = async (
     .then((response) => response.data)
     .catch((err) => {
       console.log(err);
-      throw new Error("FError with fetching all users");
+      throw new Error("Error with fetching all users");
     });
 };
 
-export const getUser = async (
-  axiosInstance: AxiosInstance,
-  accessToken: string
-): Promise<User> => {
+export const getUser = async (accessToken: string): Promise<User> => {
   return axiosInstance
     .get("/api/user/profile", {
       headers: {
@@ -56,7 +49,6 @@ export const getUser = async (
 
 export const updateUser = async (
   formData: User & { confirmPassword: string },
-  axiosInstance: AxiosInstance,
   accessToken: string
 ): Promise<User> => {
   return axiosInstance

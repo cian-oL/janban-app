@@ -1,24 +1,29 @@
-import { useUpdateUser } from "@/hooks/useUser";
-import { useAuthContext } from "@/contexts/AuthContext";
-import UserProfileForm from "@/forms/UserProfileForm";
-import { User } from "@/types/userTypes";
 import { toast } from "sonner";
 
+import { useGetUser, useUpdateUser } from "@/hooks/useUser";
+import UserProfileForm from "@/forms/UserProfileForm";
+import LoadingSpinner from "@/components/LoadingSpinner";
+
+import type { User } from "@/types/userTypes";
+
 const UserProfilePage = () => {
+  const { data: currentUser, isLoading: isGetLoading } = useGetUser();
   const { mutateAsync: updateUser, isPending: isUpdateLoading } =
     useUpdateUser();
-  const { user, setUser } = useAuthContext();
 
   const handleUpdateUser = (formData: User & { confirmPassword: string }) => {
-    updateUser(formData).then((user) => {
-      setUser(user);
+    updateUser(formData).then(() => {
       toast.success("Profile Updated");
     });
   };
 
+  if (isGetLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <UserProfileForm
-      currentUser={user}
+      currentUser={currentUser}
       isLoading={isUpdateLoading}
       onSave={handleUpdateUser}
     />

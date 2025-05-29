@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import { hashPassword } from "../utils/user";
 
 const UserSchema = new mongoose.Schema({
   racfid: { type: String, required: true, unique: true },
@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
+    this.password = await hashPassword(this.password, 10);
   }
   next();
 });

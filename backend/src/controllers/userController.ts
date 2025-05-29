@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 
 import User from "../models/user";
+import { checkDatabaseForRacfid, generateRacfid } from "../utils/user";
 
 // "/api/user/register"
 export const registerUser = async (req: Request, res: Response) => {
@@ -24,7 +25,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const user = new User(req.body);
     user.racfid = generateRacfid(arrayLength);
 
-    while (await checkDatabaseForRacfid(user.racfid)) {
+    while (await checkDatabaseForRacfid(User, user.racfid)) {
       arrayLength += 1;
       user.racfid = generateRacfid(arrayLength);
     }
@@ -110,20 +111,4 @@ export const updateUser = async (req: Request, res: Response) => {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });
   }
-};
-
-const generateRacfid = (count: number) => {
-  if (count === 0) {
-    return "J000001";
-  }
-
-  const prefix = "J";
-  const suffix = count.toString().padStart(6, "0");
-  return `${prefix}${suffix}`;
-};
-
-const checkDatabaseForRacfid = async (racfid: string) => {
-  const user = await User.findOne({ racfid });
-
-  return !!user;
 };

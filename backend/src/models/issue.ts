@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const IssueSchema = new mongoose.Schema({
+  project: { type: mongoose.Schema.Types.ObjectId, ref: "Project", required: true },
   issueCategory: { type: String, required: true },
   isBacklog: { type: Boolean, required: true },
   issueCode: { type: String, required: true, unique: true },

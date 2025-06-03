@@ -33,7 +33,8 @@ const IssueCard = ({ issue, handleDeleteIssue }: Props) => {
 
   const style = {
     transition,
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Transform.toString(transform) ?? undefined,
+    opacity: isDragging ? 0 : 1,
   };
 
   return (
@@ -45,23 +46,21 @@ const IssueCard = ({ issue, handleDeleteIssue }: Props) => {
       style={style}
       {...attributes}
       {...listeners}
-      className={`flex flex-col items-start rounded-xl p-2.5 min-h-24 text-left bg-indigo-800 text-white text-xs hover:ring-2 cursor-grab hover:ring-inset hover:ring-amber-100 ${
-        isDragging && "opacity-70"
-      }`}
+      className={`flex min-h-24 cursor-grab flex-col items-start rounded-xl bg-indigo-800 p-2.5 text-left text-xs text-white hover:ring-2 hover:ring-inset hover:ring-amber-100`}
     >
       <Link to={`/issues/${issue.issueCode}`}>
-        <p className="font-bold underline text-sm hover:text-amber-400">
+        <p className="text-sm font-bold underline hover:text-amber-400">
           {issue.issueCode}
         </p>
       </Link>
       <p>{issue.name}</p>
       <br />
       <p className="font-bold underline">Assignee:</p>
-      <div className="flex items-center justify-between w-full gap-2">
+      <div className="flex w-full items-center justify-between gap-2">
         <p className="w-1/2">{issue.assignee}</p>
         {mouseIsOver && (
           <AlertDialog>
-            <AlertDialogTrigger className="w-4 mr-2 bg-lloyds-green text-white text-xs hover:text-red-500 hover:bg-indigo-800 hover:cursor-pointer">
+            <AlertDialogTrigger className="bg-lloyds-green mr-2 w-4 text-xs text-white hover:cursor-pointer hover:bg-indigo-800 hover:text-red-500">
               <TrashIcon className="h-4" />
             </AlertDialogTrigger>
             <DeleteIssueDialog

@@ -33,14 +33,14 @@ const KanbanColumnContainer = ({
   });
 
   return (
-    <div className="flex flex-col min-h-screen w-full p-5 md:w-[20%]">
-      <div className="bg-indigo-600 text-white font-bold rounded-t-md border border-b-2 border-amber-300 p-1 h-16">
+    <div className="w-1/10 flex min-h-screen flex-col p-5">
+      <div className="flex h-16 items-center justify-center rounded-t-md border border-b-2 border-amber-300 bg-indigo-600 p-2 text-xl font-bold text-white lg:text-sm xl:text-base">
         <h2>{column.title}</h2>
       </div>
       <SortableContext items={columnIssueIds}>
         <div
           ref={DroppableNodeRef}
-          className={`flex flex-col flex-1 gap-4 p-2 overflow-x-hidden overflow-y-auto bg-indigo-300 border-2 transition-all duration-75 ${
+          className={`flex flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden border-2 bg-indigo-300 p-2 transition-all duration-75 ${
             isOver
               ? "border-amber-500 bg-slate-500 shadow-inner"
               : "border-amber-300"
@@ -55,10 +55,8 @@ const KanbanColumnContainer = ({
           ))}
         </div>
       </SortableContext>
-      <div className="bg-indigo-600 border border-amber-300 b-t-2 text-white rounded-b-md">
-        <p className="p-2 gap-2 bg-lloyds-dark-green text-white font-bold text-xs">
-          {column.title}
-        </p>
+      <div className="b-t-2 flex h-16 items-center justify-center rounded-b-md border border-amber-300 bg-indigo-600 p-2 text-xs font-bold text-white">
+        <p>{column.title}</p>
       </div>
     </div>
   );

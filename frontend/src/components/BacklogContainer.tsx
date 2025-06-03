@@ -29,14 +29,14 @@ const BacklogContainer = ({ column, issues, handleDeleteIssue }: Props) => {
   });
 
   return (
-    <div className="flex flex-col w-full p-5">
-      <div className="bg-indigo-600 text-white font-bold rounded-t-md border border-b-2 border-amber-300 p-1 h-16">
+    <div className="flex min-h-[50vh] w-full flex-col p-5 md:min-h-screen">
+      <div className="flex h-16 items-center justify-center rounded-t-md border border-b-2 border-amber-300 bg-indigo-600 p-2 font-bold text-white lg:text-sm xl:text-base">
         <h2>{column}</h2>
       </div>
       <SortableContext items={columnIssueIds}>
         <div
           ref={DroppableNodeRef}
-          className={`flex flex-col flex-1 gap-4 p-2 pb-20 overflow-x-hidden overflow-y-auto bg-indigo-300 border-2 transition-all duration-75 ${
+          className={`flex flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden border-2 bg-indigo-300 p-2 pb-20 transition-all duration-75 ${
             isOver
               ? "border-amber-500 bg-slate-500 shadow-inner"
               : "border-amber-300"
@@ -51,6 +51,9 @@ const BacklogContainer = ({ column, issues, handleDeleteIssue }: Props) => {
           ))}
         </div>
       </SortableContext>
+      <div className="b-t-2 flex h-16 items-center justify-center rounded-b-md border border-amber-300 bg-indigo-600 p-2 text-xs font-bold text-white">
+        <p>{column}</p>
+      </div>
     </div>
   );
 };

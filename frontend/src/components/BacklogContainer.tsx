@@ -6,12 +6,16 @@ import { Issue } from "@/types/kanbanTypes";
 import IssueCard from "./IssueCard";
 
 type Props = {
-  column: "Active Board" | "Backlog";
+  columnTitle: "Active Board" | "Backlog";
   issues?: Issue[];
   handleDeleteIssue: (issue: Issue) => void;
 };
 
-const BacklogContainer = ({ column, issues, handleDeleteIssue }: Props) => {
+const BacklogContainer = ({
+  columnTitle,
+  issues,
+  handleDeleteIssue,
+}: Props) => {
   const columnIssueIds: string[] = useMemo(() => {
     if (!issues) {
       return [""];
@@ -21,17 +25,17 @@ const BacklogContainer = ({ column, issues, handleDeleteIssue }: Props) => {
   }, [issues]);
 
   const { isOver, setNodeRef: DroppableNodeRef } = useDroppable({
-    id: column,
+    id: columnTitle,
     data: {
       type: "Column",
-      column,
+      column: columnTitle,
     },
   });
 
   return (
     <div className="flex min-h-[50vh] w-full flex-col p-5 md:min-h-screen">
       <div className="flex h-16 items-center justify-center rounded-t-md border border-b-2 border-amber-300 bg-indigo-600 p-2 font-bold text-white lg:text-sm xl:text-base">
-        <h2>{column}</h2>
+        <h2>{columnTitle}</h2>
       </div>
       <SortableContext items={columnIssueIds}>
         <div
@@ -52,7 +56,7 @@ const BacklogContainer = ({ column, issues, handleDeleteIssue }: Props) => {
         </div>
       </SortableContext>
       <div className="b-t-2 flex h-16 items-center justify-center rounded-b-md border border-amber-300 bg-indigo-600 p-2 text-xs font-bold text-white">
-        <p>{column}</p>
+        <p>{columnTitle}</p>
       </div>
     </div>
   );

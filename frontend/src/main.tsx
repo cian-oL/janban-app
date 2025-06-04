@@ -7,6 +7,7 @@ import "./global.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
+import { IssuesProvider } from "./contexts/IssuesContext.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,11 +21,13 @@ createRoot(document.getElementById("root")!).render(
   <ThemeProvider>
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <AppRoutes />
-          <Toaster />
-        </BrowserRouter>
+        <IssuesProvider>
+          <BrowserRouter>
+            <AppRoutes />
+            <Toaster />
+          </BrowserRouter>
+        </IssuesProvider>
       </QueryClientProvider>
     </AuthProvider>
-  </ThemeProvider>
+  </ThemeProvider>,
 );

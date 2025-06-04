@@ -11,7 +11,11 @@ import KanbanBoard from "@/components/KanbanBoard";
 import { Issue } from "@/types/kanbanTypes";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
-const KanbanPage = () => {
+type Props = {
+  type: "active-board" | "backlog";
+};
+
+const KanbanPage = ({ type }: Props) => {
   const { data: allIssues, isLoading: isGetLoading } = useGetAllIssues();
   const { mutateAsync: updateIssue } = useUpdateIssue();
   const { mutateAsync: deleteIssue } = useDeleteIssue();
@@ -66,6 +70,7 @@ const KanbanPage = () => {
         <LoadingSpinner />
       ) : (
         <KanbanBoard
+          type={type}
           issues={issues}
           handleUpdateIssue={handleUpdateIssue}
           handleDeleteIssue={handleDeleteIssue}

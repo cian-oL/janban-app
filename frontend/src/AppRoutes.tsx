@@ -10,7 +10,6 @@ import ProtectedRoutes from "./components/auth/ProtectedRoutes";
 import KanbanPage from "./pages/KanbanPage";
 import CreateIssuePage from "./pages/CreateIssuePage";
 import IssueManagementPage from "./pages/IssueManagementPage";
-import BacklogPage from "./pages/BacklogPage";
 
 const AppRoutes = () => {
   return (
@@ -54,8 +53,16 @@ const AppRoutes = () => {
           path="/kanban"
           element={
             <KanbanLayout>
-              <KanbanPage />
+              <KanbanPage type="active-board" />
             </KanbanLayout>
+          }
+        />
+        <Route
+          path="/kanban/backlog"
+          element={
+            <Layout>
+              <KanbanPage type="backlog" />
+            </Layout>
           }
         />
         <Route
@@ -74,16 +81,7 @@ const AppRoutes = () => {
             </Layout>
           }
         />
-        {/* Put backlog in protect once online! */}
       </Route>
-      <Route
-        path="/kanban/backlog"
-        element={
-          <Layout>
-            <BacklogPage />
-          </Layout>
-        }
-      />
 
       {/* redirect */}
       <Route path="*" element={<Navigate to="/" />} />

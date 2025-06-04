@@ -76,10 +76,14 @@ const KanbanBoard = ({
     const updatedIssue = { ...issues[activeIssueIndex] };
 
     if (over.data.current?.type === "Column") {
-      updatedIssue.columnId = overId.toString();
-      updatedIssue.isBacklog = overId === "Backlog";
+      if (type === "active-board") {
+        updatedIssue.columnId = overId.toString();
+      }
+      updatedIssue.isBacklog = overId === "backlog";
     } else if (over.data.current?.type === "Issue") {
-      updatedIssue.columnId = over.data.current.issue.columnId;
+      if (type === "active-board") {
+        updatedIssue.columnId = over.data.current.issue.columnId;
+      }
       updatedIssue.isBacklog = over.data.current.issue.isBacklog;
     }
 
@@ -115,12 +119,12 @@ const KanbanBoard = ({
         ) : (
           <div className="flex w-full flex-col items-center justify-between px-1 md:flex-row">
             <BacklogContainer
-              column="Backlog"
+              columnTitle="Backlog"
               issues={issues?.filter((issue) => issue.isBacklog)}
               handleDeleteIssue={handleDeleteIssue}
             />
             <BacklogContainer
-              column="Active Board"
+              columnTitle="Active Board"
               issues={issues?.filter((issue) => !issue.isBacklog)}
               handleDeleteIssue={handleDeleteIssue}
             />

@@ -104,7 +104,7 @@ const IssueManagementForm = ({
           name="issueCategory"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="mx-2 pt-5 text-slate-700 text-sm font-bold">
+              <FormLabel className="mx-2 pt-5 text-sm font-bold text-slate-700">
                 Category:
               </FormLabel>
               <Select
@@ -112,7 +112,7 @@ const IssueManagementForm = ({
                 defaultValue={currentIssue?.issueCategory}
               >
                 <FormControl>
-                  <SelectTrigger className="ml-2 border rounded w-[95%] py-1 px-2 text-gray-700 text-sm font-normal md:w-[30%]">
+                  <SelectTrigger className="ml-2 w-[95%] rounded border px-2 py-1 text-sm font-normal text-gray-700 md:w-[30%]">
                     <SelectValue placeholder="Select..." />
                   </SelectTrigger>
                 </FormControl>
@@ -129,13 +129,13 @@ const IssueManagementForm = ({
             </FormItem>
           )}
         />
-        <div className="flex flex-col mx-2 gap-5 md:flex-row">
+        <div className="mx-2 flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
             name="issueCode"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-700 text-sm font-bold">
+                <FormLabel className="text-sm font-bold text-slate-700">
                   Code:
                 </FormLabel>
                 <FormControl>
@@ -143,7 +143,7 @@ const IssueManagementForm = ({
                     {...field}
                     disabled
                     placeholder="JI-XXXXXX"
-                    className="border rounded py-1 px-2 text-gray-700 text-sm font-normal"
+                    className="rounded border px-2 py-1 text-sm font-normal text-gray-700"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -155,13 +155,13 @@ const IssueManagementForm = ({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-700 text-sm font-bold">
+                <FormLabel className="text-sm font-bold text-slate-700">
                   Name:
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    className="border rounded py-1 px-2 text-gray-700 text-sm font-normal"
+                    className="rounded border px-2 py-1 text-sm font-normal text-gray-700"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -174,26 +174,26 @@ const IssueManagementForm = ({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="mx-2 text-slate-700 text-sm font-bold">
+              <FormLabel className="mx-2 text-sm font-bold text-slate-700">
                 Description:
               </FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
-                  className="border rounded py-1 mx-2 text-gray-700 text-sm font-normal"
+                  className="mx-2 rounded border py-1 text-sm font-normal text-gray-700"
                 />
               </FormControl>
               <FormMessage className="text-red-500" />
             </FormItem>
           )}
         />
-        <div className="flex flex-col w-1/2 mx-2 gap-5 md:flex-row">
+        <div className="mx-2 flex w-full flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
             name="storyPoints"
             render={({ field }) => (
-              <FormItem className="w-full md:w-[20%]">
-                <FormLabel className="text-slate-700 text-sm font-bold">
+              <FormItem className="w-full md:w-[30%]">
+                <FormLabel className="text-sm font-bold text-slate-700">
                   Story Points:
                 </FormLabel>
                 <FormControl>
@@ -203,7 +203,7 @@ const IssueManagementForm = ({
                     min={1}
                     max={8}
                     placeholder="1 - 8"
-                    className="border rounded py-1 px-2 text-gray-700 text-sm font-normal"
+                    className="rounded border px-2 py-1 text-sm font-normal text-gray-700"
                     onChange={(e) => field.onChange(Number(e.target.value))}
                   />
                 </FormControl>
@@ -215,8 +215,8 @@ const IssueManagementForm = ({
             control={form.control}
             name="assignee"
             render={({ field }) => (
-              <FormItem className="w-full md:w-[30%]">
-                <FormLabel className="text-slate-700 text-sm font-bold">
+              <FormItem className="w-full md:w-[50%]">
+                <FormLabel className="text-sm font-bold text-slate-700">
                   Assignee:
                 </FormLabel>
                 <Select
@@ -224,7 +224,7 @@ const IssueManagementForm = ({
                   defaultValue={currentIssue?.assignee}
                 >
                   <FormControl>
-                    <SelectTrigger className="border rounded w-[95%] py-1 px-2 text-gray-700 text-sm font-normal md:w-[70%]">
+                    <SelectTrigger className="w-full rounded border px-2 py-1 text-sm font-normal text-gray-700 md:w-[70%]">
                       <SelectValue placeholder="Assign..." />
                     </SelectTrigger>
                   </FormControl>
@@ -242,14 +242,12 @@ const IssueManagementForm = ({
             )}
           />
         </div>
-
-        {/* <div className="flex flex-col mx-2 md:flex-row gap-5"> */}
         <FormField
           control={form.control}
           name="columnId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="mx-2 text-slate-700 text-sm font-bold">
+              <FormLabel className="mx-2 text-sm font-bold text-slate-700">
                 Status:
               </FormLabel>
               <Select
@@ -257,7 +255,7 @@ const IssueManagementForm = ({
                 defaultValue={currentIssue?.columnId}
               >
                 <FormControl>
-                  <SelectTrigger className="ml-2 border rounded w-[95%] py-1 px-2 text-gray-700 text-sm font-normal md:w-[30%]">
+                  <SelectTrigger className="ml-2 w-[95%] rounded border px-2 py-1 text-sm font-normal text-gray-700 md:w-[30%]">
                     <SelectValue placeholder="Select..." />
                   </SelectTrigger>
                 </FormControl>
@@ -278,32 +276,31 @@ const IssueManagementForm = ({
           name="isBacklog"
           render={({ field }) => (
             <FormItem className="flex items-center space-y-0">
-              <FormLabel className="mx-2 text-slate-700 text-sm font-bold">
+              <FormLabel className="mx-2 text-sm font-bold text-slate-700">
                 Place in Backlog:
               </FormLabel>
               <FormControl>
                 <Checkbox
                   checked={field.value}
                   onCheckedChange={field.onChange}
-                  className="bg-white ml-2"
+                  className="ml-2 bg-white"
                 />
               </FormControl>
             </FormItem>
           )}
         />
-        {/* </div> */}
-        <div className="flex flex-col mx-2 md:flex-row gap-5">
+        <div className="mx-2 flex flex-col gap-5 md:flex-row">
           <Button
             type="submit"
             disabled={isLoading}
-            className="my-2 w-full rounded-lg bg-amber-300 text-black font-bold hover:bg-amber-400 md:w-fit"
+            className="my-2 w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400 md:w-fit"
           >
             {isLoading ? "Saving..." : "Submit"}
           </Button>
           <Button
             onClick={() => navigate("/kanban")}
             disabled={isLoading}
-            className="my-2 w-full rounded-lg bg-amber-300 text-black font-bold hover:bg-amber-400 md:w-fit"
+            className="my-2 w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400 md:w-fit"
           >
             Cancel
           </Button>
@@ -311,7 +308,7 @@ const IssueManagementForm = ({
             <AlertDialog>
               <AlertDialogTrigger
                 disabled={isDeleteLoading}
-                className="my-2 px-2 py-2 w-full rounded-lg text-white text-sm font-bold bg-red-500 hover:bg-red-700 md:w-fit"
+                className="my-2 w-full rounded-lg bg-red-500 px-2 py-2 text-sm font-bold text-white hover:bg-red-700 md:w-fit"
               >
                 {isDeleteLoading ? "Deleting" : "Delete Issue"}
               </AlertDialogTrigger>

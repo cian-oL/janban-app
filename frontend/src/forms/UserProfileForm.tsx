@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 
-import { User, UserFormData } from "@/types/userTypes";
+import { User } from "@/types/userTypes";
 import { useAuthContext } from "@/contexts/AuthContext";
 import PasswordVisibilityButton from "@/components/PasswordVisibilityButton";
 
@@ -23,7 +23,7 @@ import {
 type Props = {
   currentUser?: User;
   isLoading?: boolean;
-  onSave: (formData: UserFormData) => void;
+  onSave: (formData: User & { confirmPassword: string }) => void;
 };
 
 const formSchema = z
@@ -34,7 +34,7 @@ const formSchema = z
       .min(1, "Required")
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%^&*?])(?=.{8,})/,
-        "Passwords must meet strong password criteria"
+        "Passwords must meet strong password criteria",
       ),
     email: z.string().min(1, "Required").email("Not in email format"),
     name: z.string().min(1, "Required"),
@@ -49,7 +49,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
   const { accessToken } = useAuthContext();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const form = useForm<UserFormData>({
+  const form = useForm<User & { confirmPassword: string }>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       racfid: "",
@@ -81,7 +81,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSave)}
-        className="p-5 mx-auto my-5 rounded-lg flex flex-col gap-5 bg-indigo-100 md:max-w-[60%]"
+        className="mx-auto my-5 flex flex-col gap-5 rounded-lg bg-indigo-100 p-5 md:max-w-[60%]"
       >
         {currentUser ? (
           <>
@@ -104,7 +104,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
             name="racfid"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-700 text-sm font-bold">
+                <FormLabel className="text-sm font-bold text-slate-700">
                   RACFID:
                 </FormLabel>
                 <FormControl>
@@ -112,7 +112,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                     {...field}
                     disabled
                     placeholder="JXXXXXX"
-                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal"
+                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -124,14 +124,14 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-700 text-sm font-bold">
+                <FormLabel className="text-sm font-bold text-slate-700">
                   Email:
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="email"
-                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal"
+                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -145,13 +145,13 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-700 text-sm font-bold">
+                <FormLabel className="text-sm font-bold text-slate-700">
                   Name:
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal md:max-w-96"
+                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal md:max-w-96"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -165,7 +165,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-700 text-sm font-bold">
+                <FormLabel className="text-sm font-bold text-slate-700">
                   {currentUser && "Enter/Change"} Password:
                 </FormLabel>
                 <FormControl>
@@ -173,7 +173,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                     <Input
                       {...field}
                       type={isPasswordVisible ? "text" : "password"}
-                      className="py-1 px-2 border rounded w-full flex-1 font-normal md:max-w-60"
+                      className="w-full flex-1 rounded border px-2 py-1 font-normal md:max-w-60"
                     />
                     <PasswordVisibilityButton
                       isPasswordVisible={isPasswordVisible}
@@ -185,7 +185,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
               </FormItem>
             )}
           />
-          <ul className="pt-1 text-sm text-gray-400 md:pt-5 md:flex md:flex-col">
+          <ul className="pt-1 text-sm text-gray-400 md:flex md:flex-col md:pt-5">
             <li>A minimum of 8 characters</li>
             <li>At least one lowercase letter</li>
             <li>At least one uppercase letter</li>
@@ -199,14 +199,14 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-700 text-sm font-bold">
+                <FormLabel className="text-sm font-bold text-slate-700">
                   Confirm Password:
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type={isPasswordVisible ? "text" : "password"}
-                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal md:w-full"
+                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal md:w-full"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -218,7 +218,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
           <Button
             type="submit"
             disabled={isLoading}
-            className="rounded-lg bg-amber-300 text-black font-bold w-full lg:w-fit hover:bg-amber-400"
+            className="w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400 lg:w-fit"
           >
             {isLoading ? "Saving..." : currentUser ? "Submit" : "Register"}
           </Button>

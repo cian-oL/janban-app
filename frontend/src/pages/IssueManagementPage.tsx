@@ -14,7 +14,7 @@ const IssueManagementPage = () => {
     useUpdateIssueByFormData();
 
   const handleSave = (
-    formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">
+    formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">,
   ) => {
     try {
       updateIssue(formData).then(() => {
@@ -28,7 +28,7 @@ const IssueManagementPage = () => {
   };
 
   return (
-    <div className="w-full p-10 mx-auto border rounded-lg border-amber-300 bg-indigo-100">
+    <div className="mx-auto my-5 w-full rounded-lg border border-amber-300 bg-indigo-100 p-10 sm:max-w-[90%]">
       <h1 className="mx-2 text-2xl font-bold underline">Manage Issue</h1>
       <p className="mx-2 text-sm italic">View and Edit an Issue's Details</p>
       {isGetLoading ? (

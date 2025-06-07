@@ -50,6 +50,7 @@ jobs:
           echo "MONGO_DB_CONNECTION_STRING=${{ secrets.MONGO_DB_CONNECTION_STRING }}" >> .env
           echo "JWT_ACCESS_TOKEN_KEY=${{ secrets.JWT_ACCESS_TOKEN_KEY }}" >> .env
           echo "JWT_REFRESH_TOKEN_KEY=${{ secrets.JWT_REFRESH_TOKEN_KEY }}" >> .env
+          echo "FRONTEND_URL=https://janban.dev" >> .env
         working-directory: ./backend
 
       # === EC2 Deployment ===

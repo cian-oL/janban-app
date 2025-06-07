@@ -35,12 +35,6 @@ fi
 
 echo "=== Frontend Deployment ==="
 
-# Create backup if frontend exists
-if [ -d "${FRONTEND_TARGET_DIR}" ] && [ "$(ls -A ${FRONTEND_TARGET_DIR} 2>/dev/null)" ]; then
-    echo "Creating frontend backup..."
-    cp -r ${FRONTEND_TARGET_DIR} ${FRONTEND_TARGET_DIR}.backup.${TIMESTAMP}
-fi
-
 # Ensure frontend target directory exists
 mkdir -p ${FRONTEND_TARGET_DIR}
 
@@ -60,12 +54,6 @@ fi
 echo "Frontend deployment complete"
 
 echo "=== Backend Deployment ==="
-
-# Create backup if backend exists
-if [ -d "${BACKEND_TARGET_DIR}" ] && [ "$(ls -A ${BACKEND_TARGET_DIR} 2>/dev/null)" ]; then
-    echo "Creating backend backup..."
-    cp -r ${BACKEND_TARGET_DIR} ${BACKEND_TARGET_DIR}.backup.${TIMESTAMP}
-fi
 
 # Ensure backend target directory exists
 mkdir -p ${BACKEND_TARGET_DIR}
@@ -145,17 +133,3 @@ echo "=== Deployment Complete ==="
 echo "Services restarted successfully at $(date)"
 echo "PM2 Status:"
 sudo -u $USER pm2 list
-
-# Clean up old backups (keep last 3)
-echo "=== Cleanup ==="
-if ls ${FRONTEND_TARGET_DIR}.backup.* >/dev/null 2>&1; then
-    echo "Cleaning up old frontend backups..."
-    ls -t ${FRONTEND_TARGET_DIR}.backup.* | tail -n +4 | xargs -r rm -rf
-fi
-
-if ls ${BACKEND_TARGET_DIR}.backup.* >/dev/null 2>&1; then
-    echo "Cleaning up old backend backups..."
-    ls -t ${BACKEND_TARGET_DIR}.backup.* | tail -n +4 | xargs -r rm -rf
-fi
-
-echo "Deployment completed successfully"

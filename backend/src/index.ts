@@ -25,7 +25,22 @@ mongoose
 const app = express();
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL as string,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, etc)
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = [
+        process.env.FRONTEND_URL as string,
+        "https://www.janban.dev",
+        "https://janban.dev",
+      ];
+
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );

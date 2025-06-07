@@ -104,7 +104,7 @@ echo "=== Backend Setup ==="
 # Install dependencies (run as the user, not root)
 echo "Installing production dependencies..."
 cd ${BACKEND_TARGET_DIR}
-sudo -u $USER npm install --omit=dev
+sudo -u $USER npm ci --omit=dev
 
 # Validate node_modules was created
 if [ ! -d "${BACKEND_TARGET_DIR}/node_modules" ]; then

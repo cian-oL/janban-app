@@ -1,0 +1,84 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # === Runner Setup ===
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # === Frontend Build ===
+
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: ./frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./frontend
+        env:
+          VITE_API_BASE_URL: https://janban.dev
+
+      # === Backend Build ===
+
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: ./backend
+
+      - name: Build backend
+        run: npm run build
+        working-directory: ./backend
+
+      - name: Create backend .env file
+        run: |
+          echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
+          echo "MONGO_DB_CONNECTION_STRING=${{ secrets.MONGO_DB_CONNECTION_STRING }}" >> .env
+          echo "JWT_ACCESS_TOKEN_KEY=${{ secrets.JWT_ACCESS_TOKEN_KEY }}" >> .env
+          echo "JWT_REFRESH_TOKEN_KEY=${{ secrets.JWT_REFRESH_TOKEN_KEY }}" >> .env
+        working-directory: ./backend
+
+      # === EC2 Deployment ===
+
+      - name: Archive build artifacts
+        run: |
+          mkdir -p artifacts/frontend
+          mkdir -p artifacts/backend
+
+          cp -r frontend/dist/* artifacts/frontend/
+          cp -r backend/dist/* artifacts/backend/
+          cp backend/.env artifacts/backend/.env
+          cp backend/package.json artifacts/backend/package.json
+          cp backend/package-lock.json artifacts/backend/package-lock.json
+
+      - name: Upload artifacts to EC2
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "artifacts"
+          target: "/home/${{ secrets.EC2_USER }}/janban-deploy"
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "=== Running deployment script ==="
+            sudo /usr/local/bin/deploy-janban.sh ${{ secrets.EC2_USER }}
+            echo "=== Application deployed and restarted ==="

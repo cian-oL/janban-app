@@ -9,7 +9,7 @@ import authRoute from "./routes/authRoute";
 import issueRoute from "./routes/issueRoute";
 import projectRoute from "./routes/projectRoute";
 
-const PORT = process.env.SERVER_PORT || 8080;
+const PORT = parseInt(process.env.SERVER_PORT || "", 10) || 8080;
 const dbConnection =
   (process.env.MONGO_DB_CONNECTION_STRING as string) ||
   "mongodb://root:example@localhost:27017/janban-app?authSource=admin";
@@ -42,4 +42,6 @@ app.use("/health", (req, res) => {
   res.send("OK");
 });
 
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`Server listening on port ${PORT}`)
+);

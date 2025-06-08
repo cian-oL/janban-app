@@ -94,6 +94,7 @@ jobs:
         working-directory: ./e2e-tests
         env:
           CI: true
+          DEBUG: pw:api
 
       - name: Upload Playwright test results
         if: always()

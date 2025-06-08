@@ -2,8 +2,6 @@ import { check } from "express-validator";
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import User from "../models/user";
-
 declare global {
   namespace Express {
     interface Request {

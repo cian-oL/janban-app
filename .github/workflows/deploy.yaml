@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: "22"
 
-      # === Backend Tests and Build ===
+      # === Unit Tests ===
 
       - name: Install backend dependencies
         run: npm ci
@@ -32,11 +32,73 @@ jobs:
         run: npm run test
         working-directory: ./backend
 
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: ./frontend
+
+      # TODO: Frontend Unit tests....
+
+      # === E2E Tests ===
+
+      - name: Install e2e test dependencies
+        run: npm ci
+        working-directory: ./e2e-tests
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: ./e2e-tests
+
+      - name: Create backend .env.e2e file
+        run: |
+          echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env.e2e
+          echo "MONGO_DB_CONNECTION_STRING=${{ secrets.E2E_MONGO_DB_CONNECTION_STRING }}" >> .env.e2e
+          echo "JWT_ACCESS_TOKEN_KEY=${{ secrets.JWT_ACCESS_TOKEN_KEY }}" >> .env.e2e
+          echo "JWT_REFRESH_TOKEN_KEY=${{ secrets.JWT_REFRESH_TOKEN_KEY }}" >> .env.e2e
+          echo "FRONTEND_URL=http://localhost:5173" >> .env.e2e
+        working-directory: ./backend
+
+      - name: Create e2e-tests .env file
+        run: echo "FRONTEND_URL=http://localhost:5173" >> .env.e2e
+        working-directory: ./e2e-tests
+
+      - name: Start backend in e2e mode
+        run: npm run e2e &
+        working-directory: ./backend
+        env:
+          NODE_ENV: e2e
+
+      - name: Start frontend dev server
+        run: npm run dev &
+        working-directory: ./frontend
+        env:
+          VITE_API_BASE_URL: ${{ secrets.SERVER_PORT }}
+
+      - name: Wait for services to start
+        run: |
+          echo "Waiting for frontend and backend services to start..."
+          sleep 10
+
+      - name: Run e2e tests
+        run: npx playwright test
+        working-directory: ./e2e-tests
+        env:
+          CI: true
+
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e-tests/playwright-report/
+          retention-days: 5
+
+      # === Builds ===
+
       - name: Build backend
         run: npm run build
         working-directory: ./backend
 
-      - name: Create backend .env file
+      - name: Create backend .env file for deployment
         run: |
           echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
           echo "MONGO_DB_CONNECTION_STRING=${{ secrets.MONGO_DB_CONNECTION_STRING }}" >> .env
@@ -44,12 +106,6 @@ jobs:
           echo "JWT_REFRESH_TOKEN_KEY=${{ secrets.JWT_REFRESH_TOKEN_KEY }}" >> .env
           echo "FRONTEND_URL=https://janban.dev" >> .env
         working-directory: ./backend
-
-      # === Frontend Build ===
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: ./frontend
 
       - name: Build frontend
         run: npm run build

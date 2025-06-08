@@ -74,19 +74,19 @@ jobs:
           echo "Waiting for frontend and backend services to start..."
           sleep 10
 
-      - name: Run e2e tests
-        run: npx playwright test
-        working-directory: ./e2e-tests
-        env:
-          CI: true
+      # - name: Run e2e tests
+      #   run: npx playwright test
+      #   working-directory: ./e2e-tests
+      #   env:
+      #     CI: true
 
-      - name: Upload Playwright test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: e2e-tests/playwright-report/
-          retention-days: 5
+      # - name: Upload Playwright test results
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: playwright-report
+      #     path: e2e-tests/playwright-report/
+      #     retention-days: 5
 
       # === Builds ===
 

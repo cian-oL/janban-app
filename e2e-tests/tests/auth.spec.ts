@@ -1,12 +1,13 @@
 import { test, expect } from "@playwright/test";
+import "dotenv/config";
 
-const UI_URL = "http://localhost:5173";
+const FRONTEND_URL = process.env.FRONTEND_URL as string;
 
 test("should be able to register sucessfully", async ({ page }) => {
   const userNumber = Math.floor(Math.random() * 9999);
 
   // access the register page from the sign in page
-  await page.goto(UI_URL);
+  await page.goto(FRONTEND_URL);
   await page.getByRole("button", { name: "Sign In" }).nth(0).click();
   await page.getByRole("link", { name: "Create an account here" }).click();
   await expect(page.getByRole("heading", { name: "Register" })).toBeVisible();
@@ -28,7 +29,7 @@ test("should be able to register sucessfully", async ({ page }) => {
 
 test("should allow user to sign in", async ({ page }) => {
   // get sign in button & expect correct heading
-  await page.goto(UI_URL);
+  await page.goto(FRONTEND_URL);
   await page.getByRole("button", { name: "Sign In" }).nth(0).click();
   await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
 
@@ -47,7 +48,7 @@ test("should allow user to sign in", async ({ page }) => {
 
 test("should allow user to sign out", async ({ page }) => {
   // sign in
-  await page.goto(UI_URL);
+  await page.goto(FRONTEND_URL);
   await page.getByRole("button", { name: "Sign In" }).nth(0).click();
   await page.locator("[name=racfid]").fill("J000001");
   await page.locator("[name=password]").fill("Password?123");
@@ -55,7 +56,7 @@ test("should allow user to sign out", async ({ page }) => {
   await expect(page.getByText("Signed in")).toBeVisible();
 
   // sign out
-  await page.locator('svg.lucide-user').click();
+  await page.locator("svg.lucide-user").click();
   await page.getByRole("button", { name: "Sign Out" }).click();
 
   // check assertion by appropriate UI change

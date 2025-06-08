@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_and_deploy:
+  test_build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,22 +22,14 @@ jobs:
         with:
           node-version: "22"
 
-      # === Frontend Build ===
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: ./frontend
-
-      - name: Build frontend
-        run: npm run build
-        working-directory: ./frontend
-        env:
-          VITE_API_BASE_URL: https://janban.dev
-
-      # === Backend Build ===
+      # === Backend Tests and Build ===
 
       - name: Install backend dependencies
         run: npm ci
+        working-directory: ./backend
+
+      - name: Run backend unit tests
+        run: npm run test
         working-directory: ./backend
 
       - name: Build backend
@@ -52,6 +44,18 @@ jobs:
           echo "JWT_REFRESH_TOKEN_KEY=${{ secrets.JWT_REFRESH_TOKEN_KEY }}" >> .env
           echo "FRONTEND_URL=https://janban.dev" >> .env
         working-directory: ./backend
+
+      # === Frontend Build ===
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: ./frontend
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./frontend
+        env:
+          VITE_API_BASE_URL: https://janban.dev
 
       # === EC2 Deployment ===
 

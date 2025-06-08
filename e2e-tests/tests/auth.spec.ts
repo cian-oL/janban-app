@@ -7,7 +7,7 @@ const ensurePageLoaded = async (page: Page) => {
   await page.waitForLoadState("networkidle");
   await page.waitForLoadState("domcontentloaded");
   // Small additional wait to ensure all JS has executed
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(2000);
 };
 
 test("should be able to register sucessfully", async ({ page }) => {
@@ -16,6 +16,7 @@ test("should be able to register sucessfully", async ({ page }) => {
   // access the register page from the sign in page
   await page.goto(FRONTEND_URL);
   await ensurePageLoaded(page);
+  await expect(page.getByRole("button", { name: "Sign In" })).toBeVisible();
   await page.getByRole("button", { name: "Sign In" }).nth(0).click();
   await page.getByRole("link", { name: "Create an account here" }).click();
   await expect(page.getByRole("heading", { name: "Register" })).toBeVisible();

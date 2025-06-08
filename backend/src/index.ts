@@ -10,13 +10,25 @@ import issueRoute from "./routes/issueRoute";
 import projectRoute from "./routes/projectRoute";
 
 const PORT = parseInt(process.env.SERVER_PORT || "", 10) || 8080;
+
+// Use e2e database if running e2e environment
+const defaultDbName =
+  process.env.NODE_ENV === "e2e" ? "janban-e2e" : "janban-app";
+
 const dbConnection =
   (process.env.MONGO_DB_CONNECTION_STRING as string) ||
-  "mongodb://root:example@localhost:27017/janban-app?authSource=admin";
+  `mongodb://root:example@localhost:27017/${defaultDbName}?authSource=admin`;
 
 mongoose
   .connect(dbConnection as string)
-  .then(() => console.log("Database connected successfully"))
+  .then(() => {
+    if (process.env.NODE_ENV === "e2e") {
+      console.log("Database connected for e2e testing");
+    } else {
+      console.log("Database connected successfully");
+    }
+  })
+
   .catch((err) => {
     console.log("Database failed to connect: ", err);
     process.exit(1);

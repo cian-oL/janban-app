@@ -11,12 +11,7 @@ jobs:
   test_build_and_deploy:
     runs-on: ubuntu-latest
 
-    # Use Playwright container (see https://playwright.dev/docs/ci)
-    container:
-      image: mcr.microsoft.com/playwright:v1.52.0-noble
-      options: --user 1001
-
-    # Add service container for MongoDB for runner e2e testing
+    # Add service containers for e2e testing
     services:
       mongodb:
         image: mongo:latest
@@ -65,9 +60,9 @@ jobs:
         run: npm ci
         working-directory: ./e2e-tests
 
-      # - name: Install Playwright browsers
-      #   run: npx playwright install --with-deps chromium
-      #   working-directory: ./e2e-tests
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: ./e2e-tests
 
       - name: Create backend .env.e2e file
         run: |

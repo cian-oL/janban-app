@@ -45,7 +45,7 @@ jobs:
         working-directory: ./e2e-tests
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install chromium --with-deps
         working-directory: ./e2e-tests
 
       - name: Create backend .env.e2e file
@@ -56,10 +56,6 @@ jobs:
           echo "JWT_REFRESH_TOKEN_KEY=${{ secrets.JWT_REFRESH_TOKEN_KEY }}" >> .env.e2e
           echo "FRONTEND_URL=http://localhost:5173" >> .env.e2e
         working-directory: ./backend
-
-      - name: Create e2e-tests .env file
-        run: echo "FRONTEND_URL=http://localhost:5173" >> .env.e2e
-        working-directory: ./e2e-tests
 
       - name: Start backend in e2e mode
         run: npm run e2e &

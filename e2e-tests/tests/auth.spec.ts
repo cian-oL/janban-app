@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
-import "dotenv/config";
 
-const FRONTEND_URL = process.env.FRONTEND_URL as string;
+const FRONTEND_URL = "http://localhost:5173";
 
 test("should be able to register sucessfully", async ({ page }) => {
   const userNumber = Math.floor(Math.random() * 9999);

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm install && npx tsc",
     "dev": "nodemon",
-    "e2e": "cross-env DOTENV_CONFIG_PATH='./.env.e2e' nodemon",
+    "e2e": "cross-env NODE_ENV=e2e DOTENV_CONFIG_PATH='./.env.e2e' nodemon",
     "start": "node ./dist/index.js",
     "test": "jest --no-watchman",
     "test:watch": "jest --watch --no-watchman",

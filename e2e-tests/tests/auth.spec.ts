@@ -1,12 +1,21 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
 
 const FRONTEND_URL = "http://localhost:5173";
+
+// Helper function to ensure page is fully loaded before interactions
+const ensurePageLoaded = async (page: Page) => {
+  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("domcontentloaded");
+  // Small additional wait to ensure all JS has executed
+  await page.waitForTimeout(1000);
+};
 
 test("should be able to register sucessfully", async ({ page }) => {
   const userNumber = Math.floor(Math.random() * 9999);
 
   // access the register page from the sign in page
   await page.goto(FRONTEND_URL);
+  await ensurePageLoaded(page);
   await page.getByRole("button", { name: "Sign In" }).nth(0).click();
   await page.getByRole("link", { name: "Create an account here" }).click();
   await expect(page.getByRole("heading", { name: "Register" })).toBeVisible();
@@ -29,6 +38,7 @@ test("should be able to register sucessfully", async ({ page }) => {
 test("should allow user to sign in", async ({ page }) => {
   // get sign in button & expect correct heading
   await page.goto(FRONTEND_URL);
+  await ensurePageLoaded(page);
   await page.getByRole("button", { name: "Sign In" }).nth(0).click();
   await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
 
@@ -48,6 +58,7 @@ test("should allow user to sign in", async ({ page }) => {
 test("should allow user to sign out", async ({ page }) => {
   // sign in
   await page.goto(FRONTEND_URL);
+  await ensurePageLoaded(page);
   await page.getByRole("button", { name: "Sign In" }).nth(0).click();
   await page.locator("[name=racfid]").fill("J000001");
   await page.locator("[name=password]").fill("Password?123");

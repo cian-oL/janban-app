@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { validationResult } from "express-validator";
 
 import Issue from "../models/issue";
+import { checkDatabaseForIssueCode, generateIssueCode } from "../utils/issue";
 
 // "/api/issues/create-issue"
 export const createIssue = async (req: Request, res: Response) => {
@@ -18,7 +19,7 @@ export const createIssue = async (req: Request, res: Response) => {
     const issue = new Issue(req.body);
     issue.issueCode = generateIssueCode(arrayLength);
 
-    while (await checkDatabaseForIssueCode(issue.issueCode)) {
+    while (await checkDatabaseForIssueCode(Issue, issue.issueCode)) {
       arrayLength += 1;
       issue.issueCode = generateIssueCode(arrayLength);
     }
@@ -114,19 +115,4 @@ export const deleteIssue = async (req: Request, res: Response) => {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });
   }
-};
-
-const generateIssueCode = (count: number) => {
-  if (count === 0) {
-    return "JI000001";
-  }
-
-  const prefix = "JI";
-  const suffix = count.toString().padStart(6, "0");
-  return `${prefix}${suffix}`;
-};
-
-const checkDatabaseForIssueCode = async (issueCode: string) => {
-  const existingIssue = await Issue.findOne({ issueCode });
-  return !!existingIssue;
 };

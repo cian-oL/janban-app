@@ -93,14 +93,14 @@ export default defineConfig({
     {
       command: "npm run e2e",
       cwd: "../backend",
-      port: 4000,
+      port: 8080,
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
     },
     {
       command: "npm run dev",
       cwd: "../frontend",
-      env: { VITE_API_BASE_URL: "http://localhost:4000" },
+      env: { VITE_API_BASE_URL: "http://localhost:8080" },
       port: 5173,
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,

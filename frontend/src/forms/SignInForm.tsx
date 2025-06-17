@@ -46,7 +46,7 @@ const SignInForm = ({ onSave }: Props) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSave)}
-        className="p-5 mx-auto my-5 rounded-lg flex flex-col gap-5 bg-indigo-100 md:max-w-[60%]"
+        className="mx-auto my-5 flex flex-col gap-5 rounded-lg bg-indigo-100 p-5 md:max-w-[60%]"
       >
         <h1 className="mx-2 text-2xl font-bold underline">Sign In</h1>
         <FormDescription className="mx-2 text-sm italic">
@@ -58,13 +58,13 @@ const SignInForm = ({ onSave }: Props) => {
             name="racfid"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-700 text-sm font-bold flex flex-col">
+                <FormLabel className="flex flex-col text-sm font-bold text-slate-700">
                   RACFID:
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    className="py-1 px-2 border rounded w-[94%] flex-1 font-normal md:w-[50%]"
+                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal md:w-[50%]"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -76,7 +76,7 @@ const SignInForm = ({ onSave }: Props) => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-700 text-sm font-bold flex flex-col">
+                <FormLabel className="flex flex-col text-sm font-bold text-slate-700">
                   Password:
                 </FormLabel>
                 <FormControl>
@@ -84,7 +84,7 @@ const SignInForm = ({ onSave }: Props) => {
                     <Input
                       {...field}
                       type={isPasswordVisible ? "text" : "password"}
-                      className="py-1 px-2 border rounded w-full flex-1 font-normal md:w-[50%] md:flex-initial"
+                      className="w-full flex-1 rounded border px-2 py-1 font-normal md:w-[50%] md:flex-initial"
                     />
                     <PasswordVisibilityButton
                       isPasswordVisible={isPasswordVisible}
@@ -98,14 +98,19 @@ const SignInForm = ({ onSave }: Props) => {
           />
           <span className="flex flex-col items-center justify-start sm:flex-row">
             <Button
+              data-testid="sign-in-btn"
               type="submit"
-              className="rounded-lg bg-amber-300 text-black font-bold w-full sm:w-fit hover:bg-amber-400"
+              className="w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400 sm:w-fit"
             >
               Sign In
             </Button>
             <span className="m-2 text-sm">
               Not Registered?{" "}
-              <Link to="/register" className="underline">
+              <Link
+                data-testid="create-account-link"
+                to="/register"
+                className="underline"
+              >
                 Create an account here
               </Link>
             </span>

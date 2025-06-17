@@ -1,42 +1,35 @@
 import { test, expect, Page, Locator } from "@playwright/test";
 
-const FRONTEND_URL = "http://localhost:5173";
-
 // Helper function to ensure page is fully loaded before interactions
 const ensurePageLoaded = async (page: Page) => {
   await page.waitForLoadState("networkidle");
   await page.waitForLoadState("domcontentloaded");
-  // Small additional wait to ensure all JS has executed
-  await page.waitForTimeout(process.env.CI ? 3000 : 2000);
 };
 
 // Helper function for stable button clicks
 const safeClick = async (locator: Locator) => {
-  // First ensure the element is visible and attached
-  await locator.waitFor({ state: "visible" });
-  await locator.waitFor({ state: "attached" });
-
-  // Add a small delay for stability
-  await locator.page().waitForTimeout(500);
-
-  // Use force: true in CI to bypass potential detachment issues
-  await locator.click({ force: process.env.CI ? true : false });
+  await expect(locator).toBeVisible();
+  await expect(locator).toBeEnabled();
+  await locator.click();
 };
 
 test("should be able to register sucessfully", async ({ page }) => {
   const userNumber = Math.floor(Math.random() * 9999);
 
   // access the register page from the sign in page
-  await page.goto(FRONTEND_URL);
-  await ensurePageLoaded(page);
+  await page.goto("/");
+  if (process.env.CI) {
+    await ensurePageLoaded(page);
+  }
 
   // Use the safe click helper for more stability
-  const signInButton = page.getByRole("button", { name: "Sign In" }).nth(0);
-  // await expect(signInButton).toBeVisible();
-  await safeClick(signInButton);
+  const signInButton = page.getByTestId("header-sign-in-link");
+  await expect(signInButton).toBeVisible();
+  await signInButton.click();
+  // await safeClick(signInButton);
 
   // Continue with the rest of the test
-  await safeClick(page.getByRole("link", { name: "Create an account here" }));
+  await page.getByTestId("create-account-link").click();
   await expect(page.getByRole("heading", { name: "Register" })).toBeVisible();
 
   // success on correct completion of form
@@ -44,58 +37,62 @@ test("should be able to register sucessfully", async ({ page }) => {
   await page.locator("[name=name]").fill(`User ${userNumber}`);
   await page.locator("[name=password]").fill("Password?123");
   await page.locator("[name=confirmPassword]").fill("Password?123");
-  await safeClick(page.getByRole("button", { name: "Register" }));
+  await page.getByTestId("profile-form-submit-btn").click();
 
   // check assertion by appropriate UI change
   await expect(page.getByText("registered")).toBeVisible();
   await expect(page.getByText("Get Started on your Tasks!")).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Go to Kanban" })
-  ).toBeVisible();
+  await expect(page.getByTestId("go-to-kanban-btn")).toBeVisible();
 });
 
 test("should allow user to sign in", async ({ page }) => {
   // get sign in button & expect correct heading
-  await page.goto(FRONTEND_URL);
-  await ensurePageLoaded(page);
+  await page.goto("/");
+  if (process.env.CI) {
+    await ensurePageLoaded(page);
+  }
 
-  const signInButton = page.getByRole("button", { name: "Sign In" }).nth(0);
+  const signInButton = page.getByTestId("header-sign-in-link");
   await expect(signInButton).toBeVisible();
-  await safeClick(signInButton);
+  await signInButton.click();
+  // await safeClick(signInButton);
 
   await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
 
   // fill fields & click login
   await page.locator("[name=racfid]").fill("J000001");
   await page.locator("[name=password]").fill("Password?123");
-  await safeClick(page.getByRole("button", { name: "Sign In" }).nth(1));
+  // await safeClick(page.getByTestId("sign-in-link"));
+  await page.getByTestId("sign-in-btn").click();
 
   // check assertion for successful sign in by UI change
   await expect(page.getByText("Signed in")).toBeVisible();
   await expect(page.getByText("Get Started on your Tasks!")).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Go to Kanban" })
-  ).toBeVisible();
+  await expect(page.getByTestId("go-to-kanban-btn")).toBeVisible();
 });
 
 test("should allow user to sign out", async ({ page }) => {
   // sign in
-  await page.goto(FRONTEND_URL);
-  await ensurePageLoaded(page);
+  await page.goto("/");
+  if (process.env.CI) {
+    await ensurePageLoaded(page);
+  }
 
-  await safeClick(page.getByRole("button", { name: "Sign In" }).nth(0));
+  // await safeClick(page.getByTestId("header-sign-in-link"));
+  await page.getByTestId("header-sign-in-link").click();
   await page.locator("[name=racfid]").fill("J000001");
   await page.locator("[name=password]").fill("Password?123");
-  await safeClick(page.getByRole("button", { name: "Sign In" }).nth(1));
+  // await safeClick(page.getByTestId("sign-in-btn"));
+  await page.getByTestId("sign-in-btn").click();
   await expect(page.getByText("Signed in")).toBeVisible();
 
   // sign out
-  await safeClick(page.locator("svg.lucide-user"));
-  await safeClick(page.getByRole("button", { name: "Sign Out" }));
+  await page.locator("svg.lucide-user").click();
+  await page.getByTestId("sign-out-btn").click();
+  // await safeClick(page.locator("svg.lucide-user"));
+  // await safeClick(page.getByTestId("sign-out-btn"));
 
   // check assertion by appropriate UI change
   await expect(page.getByText("Signed out")).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Sign In" }).nth(0)
-  ).toBeVisible();
+  await expect(page.getByTestId("header-sign-in-link")).toBeVisible();
 });

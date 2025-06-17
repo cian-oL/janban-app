@@ -216,6 +216,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
         </div>
         <span className="mx-2">
           <Button
+            data-testid="profile-form-submit-btn"
             type="submit"
             disabled={isLoading}
             className="w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400 lg:w-fit"

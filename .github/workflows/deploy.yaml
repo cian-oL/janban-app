@@ -11,6 +11,22 @@ jobs:
   test_build_and_deploy:
     runs-on: ubuntu-latest
 
+    # Add service containers for e2e testing
+    services:
+      mongodb:
+        image: mongo:latest
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+        ports:
+          - 27017:27017
+        # Health check to ensure MongoDB is ready before tests run
+        options: >-
+          --health-cmd "echo 'db.runCommand({serverStatus:1}).ok' | mongosh admin -u root -p example --quiet | grep 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       # === Runner Setup ===
 
@@ -45,48 +61,31 @@ jobs:
         working-directory: ./e2e-tests
 
       - name: Install Playwright browsers
-        run: npx playwright install chromium --with-deps
+        run: npx playwright install --with-deps chromium
         working-directory: ./e2e-tests
 
       - name: Create backend .env.e2e file
         run: |
           echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env.e2e
-          echo "MONGO_DB_CONNECTION_STRING=${{ secrets.E2E_MONGO_DB_CONNECTION_STRING }}" >> .env.e2e
           echo "JWT_ACCESS_TOKEN_KEY=${{ secrets.JWT_ACCESS_TOKEN_KEY }}" >> .env.e2e
           echo "JWT_REFRESH_TOKEN_KEY=${{ secrets.JWT_REFRESH_TOKEN_KEY }}" >> .env.e2e
           echo "FRONTEND_URL=http://localhost:5173" >> .env.e2e
         working-directory: ./backend
 
-      - name: Start backend in e2e mode
-        run: npm run e2e &
-        working-directory: ./backend
+      - name: Run e2e tests
+        run: npx playwright test --project=chromium
+        working-directory: ./e2e-tests
         env:
-          NODE_ENV: e2e
+          CI: true
+          DEBUG: pw:api
 
-      - name: Start frontend dev server
-        run: npm run dev &
-        working-directory: ./frontend
-        env:
-          VITE_API_BASE_URL: ${{ secrets.SERVER_PORT }}
-
-      - name: Wait for services to start
-        run: |
-          echo "Waiting for frontend and backend services to start..."
-          sleep 10
-
-      # - name: Run e2e tests
-      #   run: npx playwright test
-      #   working-directory: ./e2e-tests
-      #   env:
-      #     CI: true
-
-      # - name: Upload Playwright test results
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: playwright-report
-      #     path: e2e-tests/playwright-report/
-      #     retention-days: 5
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: e2e-tests/playwright-report/
+          retention-days: 5
 
       # === Builds ===
 

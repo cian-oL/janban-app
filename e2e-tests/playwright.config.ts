@@ -13,31 +13,46 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests",
+
   /* Run tests in files in parallel */
   fullyParallel: true,
+
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
+
+  /* Retry on CI only - increase retries if needed for more stability */
   retries: process.env.CI ? 2 : 0,
+
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
+
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
+    baseURL: "http://localhost:5173",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: process.env.CI ? "retain-on-failure" : "on-first-retry",
 
     /* Configure timeouts for actions */
-    actionTimeout: 10000, // Timeout for each action like click, fill, etc.
-    navigationTimeout: 15000, // Timeout for navigation operations
+    // actionTimeout: 10000, // Timeout for each action like click, fill, etc.
+    // navigationTimeout: 15000, // Timeout for navigation operations
+
+    /* Slow down operations in CI for more stability */
+    launchOptions: {
+      slowMo: process.env.CI ? 100 : 0,
+    },
+  },
+
+  expect: {
+    timeout: process.env.CI ? 15000 : 5000,
   },
 
   /* Global timeout for each test */
-  timeout: 30000,
+  timeout: 120000,
 
   /* Configure projects for major browsers */
   projects: [
@@ -77,10 +92,22 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://127.0.0.1:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  /* Run for CI environment */
+  webServer: [
+    {
+      command: "npm run e2e",
+      cwd: "../backend",
+      port: 8080,
+      timeout: 120 * 1000,
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: "npm run dev",
+      cwd: "../frontend",
+      env: { VITE_API_BASE_URL: "http://localhost:8080" },
+      port: 5173,
+      timeout: 120 * 1000,
+      reuseExistingServer: !process.env.CI,
+    },
+  ],
 });

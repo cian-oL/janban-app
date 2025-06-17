@@ -40,16 +40,16 @@ const UserDropDownMenu = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex gap-2 bg-amber-300 rounded p-2 text-black font-bold hover:bg-white">
+      <DropdownMenuTrigger className="flex gap-2 rounded bg-amber-300 p-2 font-bold text-black hover:bg-white">
         <User />
         <span>{currentUser?.name}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className={`text-white mr-2 ${
+        className={`mr-2 text-white ${
           theme === "light" ? "bg-indigo-500" : "bg-indigo-800"
         }`}
       >
-        <DropdownMenuLabel className="font-extrabold text-lg underline">
+        <DropdownMenuLabel className="text-lg font-extrabold underline">
           My Account
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -65,8 +65,9 @@ const UserDropDownMenu = () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <Button
+          data-testid="sign-out-btn"
           onClick={handleSignOut}
-          className=" w-full bg-amber-300 font-bold text-black hover:bg-white"
+          className="w-full bg-amber-300 font-bold text-black hover:bg-white"
         >
           Sign Out
         </Button>

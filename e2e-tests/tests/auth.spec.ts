@@ -6,13 +6,6 @@ const ensurePageLoaded = async (page: Page) => {
   await page.waitForLoadState("domcontentloaded");
 };
 
-// Helper function for stable button clicks
-const safeClick = async (locator: Locator) => {
-  await expect(locator).toBeVisible();
-  await expect(locator).toBeEnabled();
-  await locator.click();
-};
-
 test("should be able to register sucessfully", async ({ page }) => {
   const userNumber = Math.floor(Math.random() * 9999);
 
@@ -26,7 +19,6 @@ test("should be able to register sucessfully", async ({ page }) => {
   const signInButton = page.getByTestId("header-sign-in-link");
   await expect(signInButton).toBeVisible();
   await signInButton.click();
-  // await safeClick(signInButton);
 
   // Continue with the rest of the test
   await page.getByTestId("create-account-link").click();
@@ -55,14 +47,11 @@ test("should allow user to sign in", async ({ page }) => {
   const signInButton = page.getByTestId("header-sign-in-link");
   await expect(signInButton).toBeVisible();
   await signInButton.click();
-  // await safeClick(signInButton);
-
   await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
 
   // fill fields & click login
   await page.locator("[name=racfid]").fill("J000001");
   await page.locator("[name=password]").fill("Password?123");
-  // await safeClick(page.getByTestId("sign-in-link"));
   await page.getByTestId("sign-in-btn").click();
 
   // check assertion for successful sign in by UI change
@@ -78,19 +67,15 @@ test("should allow user to sign out", async ({ page }) => {
     await ensurePageLoaded(page);
   }
 
-  // await safeClick(page.getByTestId("header-sign-in-link"));
   await page.getByTestId("header-sign-in-link").click();
   await page.locator("[name=racfid]").fill("J000001");
   await page.locator("[name=password]").fill("Password?123");
-  // await safeClick(page.getByTestId("sign-in-btn"));
   await page.getByTestId("sign-in-btn").click();
   await expect(page.getByText("Signed in")).toBeVisible();
 
   // sign out
   await page.locator("svg.lucide-user").click();
   await page.getByTestId("sign-out-btn").click();
-  // await safeClick(page.locator("svg.lucide-user"));
-  // await safeClick(page.getByTestId("sign-out-btn"));
 
   // check assertion by appropriate UI change
   await expect(page.getByText("Signed out")).toBeVisible();

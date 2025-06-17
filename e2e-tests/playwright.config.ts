@@ -21,7 +21,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
 
   /* Retry on CI only - increase retries for more stability */
-  retries: process.env.CI ? 5 : 0,
+  retries: process.env.CI ? 1 : 0,
 
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
@@ -45,6 +45,10 @@ export default defineConfig({
     launchOptions: {
       slowMo: process.env.CI ? 100 : 0,
     },
+  },
+
+  expect: {
+    timeout: process.env.CI ? 15000 : 5000,
   },
 
   /* Global timeout for each test */

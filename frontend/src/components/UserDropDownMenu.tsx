@@ -1,12 +1,10 @@
 import { User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { SignOutButton } from "@clerk/clerk-react";
 
 import { useGetUser } from "@/hooks/useUser";
 import { useTheme } from "@/contexts/ThemeProvider";
-
 import { Button } from "./ui/button";
-import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,17 +16,8 @@ import {
 import LoadingSpinner from "./LoadingSpinner";
 
 const UserDropDownMenu = () => {
-  const navigate = useNavigate();
   const { data: currentUser, isLoading } = useGetUser();
   const { theme } = useTheme();
-
-  const handleSignOut = () => {
-    signOutUser(accessToken).then(() => {
-      logoutUserSession();
-      toast.success("Signed out");
-      navigate("/");
-    });
-  };
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -54,7 +43,7 @@ const UserDropDownMenu = () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link to="/kanban">Kanaban Board</Link>
+          <Link to="/kanban">Kanban Board</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link to="/backlog">Backlog</Link>

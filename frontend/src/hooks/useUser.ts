@@ -13,11 +13,11 @@ const USERS_QUERY_KEY = "users";
 const USER_QUERY_KEY = "user";
 
 export const useRegisterUser = () => {
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (formData: User & { confirmPassword: string }) => {
+    mutationFn: async (formData: Partial<User>) => {
       const accessToken = await getToken();
 
       if (!accessToken) {
@@ -32,8 +32,10 @@ export const useRegisterUser = () => {
       const currentUsers = queryClient.getQueryData<User[]>([USERS_QUERY_KEY]);
 
       const optimisticUser: User = {
-        ...formData,
+        clerkId: userId!,
         racfid: `temp-${Date.now()}`,
+        email: formData.email!,
+        name: formData.name || "",
       };
 
       queryClient.setQueryData<User[]>([USERS_QUERY_KEY], (old) => [
@@ -111,7 +113,7 @@ export const useUpdateUser = () => {
   const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: async (formData: User & { confirmPassword: string }) => {
+    mutationFn: async (formData: Partial<User>) => {
       const accessToken = await getToken();
 
       if (!accessToken) {

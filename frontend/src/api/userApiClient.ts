@@ -2,7 +2,7 @@ import { axiosInstance } from "./axiosConfig";
 import type { User } from "@/types/userTypes";
 
 export const createUser = async (
-  formData: User & { confirmPassword: string },
+  formData: Partial<User>,
   accessToken: string,
 ): Promise<User> => {
   return axiosInstance
@@ -48,7 +48,7 @@ export const getUser = async (accessToken: string): Promise<User> => {
 };
 
 export const updateUser = async (
-  formData: User & { confirmPassword: string },
+  formData: Partial<User>,
   accessToken: string,
 ): Promise<User> => {
   return axiosInstance

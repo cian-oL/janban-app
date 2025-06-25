@@ -1,10 +1,8 @@
 import { User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { SignOutButton } from "@clerk/clerk-react";
 
 import { useGetUser } from "@/hooks/useUser";
-import { signOutUser } from "@/api/authApiClient";
-import { useAuthContext } from "@/contexts/AuthContext";
-import { useAuthenticateUserSession } from "@/hooks/useAuth";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 import { Button } from "./ui/button";
@@ -22,8 +20,6 @@ import LoadingSpinner from "./LoadingSpinner";
 const UserDropDownMenu = () => {
   const navigate = useNavigate();
   const { data: currentUser, isLoading } = useGetUser();
-  const { accessToken } = useAuthContext();
-  const { logoutUserSession } = useAuthenticateUserSession();
   const { theme } = useTheme();
 
   const handleSignOut = () => {
@@ -64,13 +60,14 @@ const UserDropDownMenu = () => {
           <Link to="/backlog">Backlog</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <Button
-          data-testid="sign-out-btn"
-          onClick={handleSignOut}
-          className="w-full bg-amber-300 font-bold text-black hover:bg-white"
-        >
-          Sign Out
-        </Button>
+        <SignOutButton>
+          <Button
+            data-testid="sign-out-btn"
+            className="w-full bg-amber-300 font-bold text-black hover:bg-white"
+          >
+            Sign Out
+          </Button>
+        </SignOutButton>
       </DropdownMenuContent>
     </DropdownMenu>
   );

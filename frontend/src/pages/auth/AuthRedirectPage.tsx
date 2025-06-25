@@ -1,7 +1,7 @@
 import AuthForm from "@/forms/AuthForm";
 
-const SignInPage = () => {
+const AuthRedirectPage = () => {
   return <AuthForm type="sign-in" />;
 };
 
-export default SignInPage;
+export default AuthRedirectPage;

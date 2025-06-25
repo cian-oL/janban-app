@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 
 import { User } from "@/types/userTypes";
-import { useAuthContext } from "@/contexts/AuthContext";
 import PasswordVisibilityButton from "@/components/PasswordVisibilityButton";
 
 import { toast } from "sonner";
@@ -46,7 +45,6 @@ const formSchema = z
   });
 
 const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
-  const { accessToken } = useAuthContext();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const form = useForm<User & { confirmPassword: string }>({
@@ -61,7 +59,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
   });
 
   useEffect(() => {
-    if (!currentUser && accessToken) {
+    if (!currentUser) {
       toast.error("Error loading profile");
       return;
     }
@@ -75,7 +73,7 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
       email: currentUser?.email,
       name: currentUser?.name,
     });
-  }, [currentUser, accessToken, form]);
+  }, [currentUser, form]);
 
   return (
     <Form {...form}>

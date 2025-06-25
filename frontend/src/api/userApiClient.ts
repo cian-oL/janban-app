@@ -1,16 +1,16 @@
 import { axiosInstance } from "./axiosConfig";
 import type { User } from "@/types/userTypes";
-import type { AccessTokenResponse } from "@/types/authTypes";
 
 export const createUser = async (
-  formData: User & { confirmPassword: string }
-): Promise<AccessTokenResponse> => {
+  formData: User & { confirmPassword: string },
+  accessToken: string,
+): Promise<User> => {
   return axiosInstance
     .post("/api/user/register", formData, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
-      withCredentials: true,
     })
     .then((response) => response.data)
     .catch((err) => {
@@ -49,7 +49,7 @@ export const getUser = async (accessToken: string): Promise<User> => {
 
 export const updateUser = async (
   formData: User & { confirmPassword: string },
-  accessToken: string
+  accessToken: string,
 ): Promise<User> => {
   return axiosInstance
     .put("/api/user/profile", formData, {

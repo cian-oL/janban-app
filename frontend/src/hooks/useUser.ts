@@ -1,8 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/clerk-react";
 
 import type { User } from "@/types/userTypes";
-import { AccessTokenResponse } from "@/types/authTypes";
-import { useAuthContext } from "@/contexts/AuthContext";
 import {
   createUser,
   getAllUsers,
@@ -14,11 +13,19 @@ const USERS_QUERY_KEY = "users";
 const USER_QUERY_KEY = "user";
 
 export const useRegisterUser = () => {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (formData: User & { confirmPassword: string }) =>
-      createUser(formData),
+    mutationFn: async (formData: User & { confirmPassword: string }) => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+
+      return createUser(formData, accessToken);
+    },
 
     onMutate: async (formData) => {
       await queryClient.cancelQueries({ queryKey: [USERS_QUERY_KEY] });
@@ -37,15 +44,13 @@ export const useRegisterUser = () => {
       return { currentUsers, tempId: optimisticUser.racfid };
     },
 
-    onSuccess: (accessTokenResponse: AccessTokenResponse, _, context) => {
-      const newUser = accessTokenResponse.user!;
-
+    onSuccess: (newUser: User, _, context) => {
       queryClient.setQueryData<User[]>(
         [USERS_QUERY_KEY],
         (old) =>
           old?.map((user) =>
-            user.racfid === context?.tempId ? newUser : user
-          ) || []
+            user.racfid === context?.tempId ? newUser : user,
+          ) || [],
       );
 
       queryClient.setQueryData<User>([USER_QUERY_KEY], newUser);
@@ -64,22 +69,38 @@ export const useRegisterUser = () => {
 };
 
 export const useGetAllUsers = () => {
-  const { accessToken } = useAuthContext();
+  const { getToken } = useAuth();
 
   return useQuery({
     queryKey: [USERS_QUERY_KEY],
-    queryFn: async () => getAllUsers(accessToken),
+    queryFn: async () => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+
+      return getAllUsers(accessToken);
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
   });
 };
 
 export const useGetUser = () => {
-  const { accessToken } = useAuthContext();
+  const { getToken } = useAuth();
 
   return useQuery({
     queryKey: [USER_QUERY_KEY],
-    queryFn: async () => getUser(accessToken),
+    queryFn: async () => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+
+      return getUser(accessToken);
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
   });
@@ -87,11 +108,18 @@ export const useGetUser = () => {
 
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
-  const { accessToken } = useAuthContext();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: async (formData: User & { confirmPassword: string }) =>
-      updateUser(formData, accessToken),
+    mutationFn: async (formData: User & { confirmPassword: string }) => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+
+      return updateUser(formData, accessToken);
+    },
 
     onMutate: async (formData) => {
       const queryId = formData.racfid;
@@ -106,12 +134,12 @@ export const useUpdateUser = () => {
         [USERS_QUERY_KEY],
         (old) =>
           old?.map((user) =>
-            user.racfid === queryId ? { ...user, ...formData } : user
-          ) || []
+            user.racfid === queryId ? { ...user, ...formData } : user,
+          ) || [],
       );
 
       queryClient.setQueryData<User>([USER_QUERY_KEY], (old) =>
-        old ? { ...old, ...formData } : old
+        old ? { ...old, ...formData } : old,
       );
 
       return { currentUsers, currentUser };
@@ -120,8 +148,8 @@ export const useUpdateUser = () => {
     onSuccess: (updatedUser, { racfid }) => {
       queryClient.setQueryData<User[]>([USERS_QUERY_KEY], (old) =>
         old?.map(
-          (user: User) => (user.racfid === racfid ? updatedUser : user) || []
-        )
+          (user: User) => (user.racfid === racfid ? updatedUser : user) || [],
+        ),
       );
 
       queryClient.setQueryData<User>([USER_QUERY_KEY], updatedUser);

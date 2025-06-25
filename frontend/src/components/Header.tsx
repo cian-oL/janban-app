@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
 
 import { Button } from "./ui/button";
-import { useAuthContext } from "@/contexts/AuthContext";
 import UserDropDownMenu from "./UserDropDownMenu";
 import ModeToggle from "./ModeToggle";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 const Header = () => {
-  const { isLoggedIn } = useAuthContext();
   const { theme } = useTheme();
 
   return (
@@ -25,9 +24,12 @@ const Header = () => {
         </Link>
         <div className="flex items-center justify-between gap-5">
           <ModeToggle />
-          {isLoggedIn ? (
+
+          {/* Dynamic rendering from Clerk */}
+          <SignedIn>
             <UserDropDownMenu />
-          ) : (
+          </SignedIn>
+          <SignedOut>
             <Link to="/sign-in">
               <Button
                 data-testid="header-sign-in-link"
@@ -36,7 +38,7 @@ const Header = () => {
                 Sign In
               </Button>
             </Link>
-          )}
+          </SignedOut>
         </div>
       </div>
     </header>

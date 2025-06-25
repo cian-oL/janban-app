@@ -2,6 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 import { verifyAccessToken } from "../../src/middleware/auth";
+import User from "../../src/models/user";
+
+// ==== DEPENDENCY MOCKS ====
+
+jest.mock("jsonwebtoken");
+jest.mock("../../src/models/user");
 
 describe("Auth Middleware", () => {
   let mockRequest: Partial<Request>;
@@ -20,9 +26,6 @@ describe("Auth Middleware", () => {
       headers: {},
     };
     mockNext = jest.fn();
-
-    // Mock environment variables
-    process.env.JWT_ACCESS_TOKEN_KEY = "access_secret";
   });
 
   // ==== TESTS ====
@@ -60,40 +63,16 @@ describe("Auth Middleware", () => {
       expect(mockNext).not.toHaveBeenCalled();
     });
 
-    it("should return 403 if token is expired", async () => {
-      mockRequest.headers = { authorization: "Bearer expired_token" };
+    it("should return 401 if no user is found with clerkId", async () => {
+      mockRequest.headers = { authorization: "Bearer valid_token" };
 
-      // Mock jwt.verify to simulate expired token
-      jest
-        .spyOn(jwt, "verify")
-        .mockImplementation((_token, _secret, callback: any) => {
-          callback({ message: "jwt expired" }, null);
-          return {} as any;
-        });
+      const decodedPayload = {
+        sub: "clerk123",
+      };
 
-      await verifyAccessToken(
-        mockRequest as Request,
-        mockResponse as Response,
-        mockNext as NextFunction
-      );
-
-      expect(mockResponse.status).toHaveBeenCalledWith(403);
-      expect(responseObject.json).toHaveBeenCalledWith({
-        message: "Token expired",
-      });
-      expect(mockNext).not.toHaveBeenCalled();
-    });
-
-    it("should return 401 if token is invalid", async () => {
-      mockRequest.headers = { authorization: "Bearer invalid_token" };
-
-      // Mock jwt.verify to simulate invalid token
-      jest
-        .spyOn(jwt, "verify")
-        .mockImplementation((_token, _secret, callback: any) => {
-          callback({ message: "invalid signature" }, null);
-          return {} as any;
-        });
+      // Mock jwt.decode and finding of no linked user
+      jest.spyOn(jwt, "decode").mockReturnValue(decodedPayload);
+      (User.findOne as jest.Mock).mockResolvedValue(null);
 
       await verifyAccessToken(
         mockRequest as Request,
@@ -103,21 +82,26 @@ describe("Auth Middleware", () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(responseObject.json).toHaveBeenCalledWith({
-        message: "Invalid token",
+        message: "Unauthorized",
       });
       expect(mockNext).not.toHaveBeenCalled();
     });
 
-    it("should set userId and call next() if token is valid", async () => {
+    it("should extract clerkId from the token and set userId if token is valid", async () => {
       mockRequest.headers = { authorization: "Bearer valid_token" };
 
-      // Mock jwt.verify to simulate valid token
-      jest
-        .spyOn(jwt, "verify")
-        .mockImplementation((_token, _secret, callback: any) => {
-          callback(null, { userId: "user123" });
-          return {} as any;
-        });
+      const decodedPayload = {
+        sub: "clerk123",
+      };
+
+      const mockUser = {
+        _id: { toString: () => "user123" },
+        clerkId: "clerk123",
+      };
+
+      // Mock jwt.decode and finding of user
+      jest.spyOn(jwt, "decode").mockReturnValue(decodedPayload);
+      (User.findOne as jest.Mock).mockResolvedValue(mockUser);
 
       await verifyAccessToken(
         mockRequest as Request,
@@ -125,16 +109,17 @@ describe("Auth Middleware", () => {
         mockNext as NextFunction
       );
 
+      expect(jwt.decode).toHaveBeenCalledWith("valid_token");
+      expect(User.findOne).toHaveBeenCalledWith({ clerkId: "clerk123" });
       expect(mockRequest.userId).toBe("user123");
       expect(mockNext).toHaveBeenCalled();
-      expect(mockResponse.status).not.toHaveBeenCalled();
     });
 
     it("should return 500 if an error occurs", async () => {
       mockRequest.headers = { authorization: "Bearer valid_token" };
 
-      // Mock jwt.verify to throw an error
-      jest.spyOn(jwt, "verify").mockImplementation(() => {
+      // Mock jwt.decode to throw an error
+      jest.spyOn(jwt, "decode").mockImplementation(() => {
         throw new Error("Unexpected error");
       });
 

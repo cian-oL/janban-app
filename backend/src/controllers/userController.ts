@@ -17,7 +17,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const { clerkId, email } = req.body;
 
     if (!clerkId) {
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
     const allUsers = await User.find({});

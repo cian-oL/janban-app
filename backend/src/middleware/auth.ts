@@ -2,6 +2,8 @@ import { check } from "express-validator";
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
+import User from "../models/user";
+
 declare global {
   namespace Express {
     interface Request {
@@ -11,16 +13,6 @@ declare global {
 }
 
 export const validateRegistration = [
-  check(
-    "password",
-    "Passwords must meet strong password criteria"
-  ).isStrongPassword({
-    minLength: 8,
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
-  }),
   check("email", "Email is required").notEmpty().isEmail(),
   check("name", "Name is required").notEmpty().isString(),
 ];
@@ -54,23 +46,16 @@ export const verifyAccessToken = async (
     }
 
     const accessToken = authorization.split(" ")[1];
-    jwt.verify(
-      accessToken,
-      process.env.JWT_ACCESS_TOKEN_KEY as string,
-      (err, decodedToken) => {
-        if (err && err.message === "jwt expired") {
-          return res.status(403).json({ message: "Token expired" });
-        }
+    const decoded = jwt.decode(accessToken) as JwtPayload;
+    const clerkId = decoded.sub;
+    const user = await User.findOne({ clerkId });
 
-        if (err) {
-          return res.status(401).json({ message: "Invalid token" });
-        }
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
-        req.userId = (decodedToken as JwtPayload).userId.toString();
-
-        next();
-      }
-    );
+    req.userId = user._id.toString();
+    next();
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Something went wrong" });

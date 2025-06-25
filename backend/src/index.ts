@@ -5,7 +5,6 @@ import "dotenv/config";
 import cookieParser from "cookie-parser";
 
 import userRoute from "./routes/userRoute";
-import authRoute from "./routes/authRoute";
 import issueRoute from "./routes/issueRoute";
 import projectRoute from "./routes/projectRoute";
 
@@ -61,7 +60,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/user", userRoute);
-app.use("/api/auth", authRoute);
 app.use("/api/issues", issueRoute);
 app.use("/api/projects", projectRoute);
 

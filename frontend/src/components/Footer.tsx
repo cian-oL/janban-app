@@ -1,4 +1,5 @@
 import { useTheme } from "@/contexts/ThemeProvider";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const { theme } = useTheme();
@@ -9,13 +10,20 @@ const Footer = () => {
         theme === "light" ? "bg-indigo-600" : "bg-indigo-900"
       }`}
     >
-      <footer className="container flex justify-between items-center">
-        <span className="text-lg font-bold text-amber-300 hover:text-white">
+      <footer className="container flex items-center justify-between">
+        <Link
+          to="/under-construction"
+          className="text-lg font-bold text-amber-300 hover:text-white"
+        >
           olearylab.com
-        </span>
+        </Link>
         <span className="flex gap-4 text-lg font-bold text-amber-300">
-          <span className=" hover:text-white">Privacy Policy</span>
-          <span className=" hover:text-white">Terms of Service</span>
+          <Link to="/under-construction" className="hover:text-white">
+            Privacy Policy
+          </Link>
+          <Link to="/under-construction" className="hover:text-white">
+            Terms of Service
+          </Link>
         </span>
       </footer>
     </div>

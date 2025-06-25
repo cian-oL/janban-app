@@ -16,7 +16,7 @@ const UnderConstructionPage = () => {
 
         <div className="text-center">
           <Link to="/">
-            <Button className="bg-amber-300 font-bold text-black hover:bg-white">
+            <Button className="bg-amber-300 font-bold text-black hover:bg-amber-400">
               Return Home
             </Button>
           </Link>

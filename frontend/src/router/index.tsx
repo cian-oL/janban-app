@@ -5,12 +5,13 @@ import HomePage from "@/pages/HomePage";
 import SignInPage from "@/pages/SignInPage";
 import RegisterPage from "@/pages/RegisterPage";
 import UserProfilePage from "@/pages/UserProfilePage";
-import ProtectedRoutes from "@/components/auth/ProtectedRoutes";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import KanbanPage from "@/pages/KanbanPage";
 import CreateIssuePage from "@/pages/CreateIssuePage";
 import IssueManagementPage from "@/pages/IssueManagementPage";
 import UnderConstructionPage from "@/pages/UnderConstructionPage";
 import NotFoundPage from "@/pages/NotFoundPage";
+import AuthRedirectPage from "@/pages/auth/AuthRedirectPage";
 
 const router = createBrowserRouter([
   {
@@ -35,8 +36,12 @@ const router = createBrowserRouter([
       // Protected routes
       {
         path: "/",
-        element: <ProtectedRoutes />,
+        element: <ProtectedRoute />,
         children: [
+          {
+            path: "/auth-redirect",
+            element: <AuthRedirectPage />,
+          },
           {
             path: "/my-profile",
             element: <UserProfilePage />,

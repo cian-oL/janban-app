@@ -1,31 +1,71 @@
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useUser } from "@clerk/clerk-react";
+import { UserResource } from "@clerk/types";
 
-import { useGetUser, useUpdateUser } from "@/hooks/useUser";
+import { useGetUser, useRegisterUser, useUpdateUser } from "@/hooks/useUser";
 import UserProfileForm from "@/forms/UserProfileForm";
 import LoadingSpinner from "@/components/LoadingSpinner";
-
-import type { User } from "@/types/userTypes";
+import { User } from "@/types/userTypes";
+import { transformClerkData } from "@/lib/utils";
 
 const UserProfilePage = () => {
+  const { user: clerkUser, isLoaded: isClerkLoaded } = useUser();
   const { data: currentUser, isLoading: isGetLoading } = useGetUser();
-  const { mutateAsync: updateUser, isPending: isUpdateLoading } =
-    useUpdateUser();
+  const { mutateAsync: createUser } = useRegisterUser();
+  const { mutateAsync: updateUser } = useUpdateUser();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const handleUpdateUser = (formData: User & { confirmPassword: string }) => {
-    updateUser(formData).then(() => {
-      toast.success("Profile Updated");
-    });
+  const handleSubmit = async (formData: Partial<User>) => {
+    try {
+      if (currentUser) {
+        await updateUser(formData);
+        toast.success("Profile updated");
+      } else if (clerkUser) {
+        await createUser(formData);
+        toast.success("Profile created. Welcome!");
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Error submitting Profile form:", err);
+      toast.error("Failed to save profile. Please try again");
+    }
   };
 
-  if (isGetLoading) {
+  const getFormData = (
+    user?: User,
+    clerkUser?: UserResource | null,
+  ): Partial<User> => {
+    if (user) return { ...user };
+
+    if (clerkUser) {
+      return transformClerkData(clerkUser);
+    }
+
+    // Default empty
+    return {
+      clerkId: "",
+      racfid: "",
+      email: "",
+      name: "",
+    };
+  };
+
+  const fromAuthRedirect = searchParams.get("fromAuthRedirect") === "true";
+  const mode = fromAuthRedirect && !currentUser ? "create" : "edit";
+  const formData = getFormData(currentUser, clerkUser);
+
+  if (isGetLoading || !isClerkLoaded) {
     return <LoadingSpinner />;
   }
 
   return (
     <UserProfileForm
-      currentUser={currentUser}
-      isLoading={isUpdateLoading}
-      onSave={handleUpdateUser}
+      mode={mode}
+      formData={formData}
+      isSubmitting={false}
+      onSave={handleSubmit}
     />
   );
 };

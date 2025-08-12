@@ -1,13 +1,9 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 
 import { User } from "@/types/userTypes";
-import { useAuthContext } from "@/contexts/AuthContext";
-import PasswordVisibilityButton from "@/components/PasswordVisibilityButton";
 
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,86 +15,58 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import LoadingButton from "@/components/LoadingButton";
+import ChangeUserPasswordDialog from "@/components/auth/ChangeUserPasswordDialog";
+
+const formSchema = z.object({
+  racfid: z.string(),
+  email: z.string().min(1, "Required").email("Not in email format"),
+  name: z.string().min(1, "Required"),
+});
+
+type ProfileFormValues = z.infer<typeof formSchema>;
 
 type Props = {
-  currentUser?: User;
-  isLoading?: boolean;
-  onSave: (formData: User & { confirmPassword: string }) => void;
+  mode: "edit" | "create";
+  formData: Partial<User>;
+  isSubmitting: boolean;
+  onSave: (formData: Partial<User>) => void;
 };
 
-const formSchema = z
-  .object({
-    racfid: z.string(),
-    password: z
-      .string()
-      .min(1, "Required")
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%^&*?])(?=.{8,})/,
-        "Passwords must meet strong password criteria",
-      ),
-    email: z.string().min(1, "Required").email("Not in email format"),
-    name: z.string().min(1, "Required"),
-    confirmPassword: z.string().min(1, "Required"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
-  const { accessToken } = useAuthContext();
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
-  const form = useForm<User & { confirmPassword: string }>({
+const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
+  const form = useForm<ProfileFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      racfid: "",
-      password: "",
-      email: "",
-      name: "",
-      confirmPassword: "",
+      racfid: formData.racfid || "",
+      email: formData.email || "",
+      name: formData.name || "",
     },
+    mode: "onChange",
   });
 
-  useEffect(() => {
-    if (!currentUser && accessToken) {
-      toast.error("Error loading profile");
-      return;
-    }
-
-    if (!currentUser) {
-      return;
-    }
-
-    form.reset({
-      racfid: currentUser?.racfid,
-      email: currentUser?.email,
-      name: currentUser?.name,
+  const handleSubmit = (formValues: ProfileFormValues) => {
+    onSave({
+      ...formValues,
+      clerkId: formData.clerkId,
     });
-  }, [currentUser, accessToken, form]);
+  };
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSave)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="mx-auto my-5 flex flex-col gap-5 rounded-lg bg-indigo-100 p-5 md:max-w-[60%]"
       >
-        {currentUser ? (
-          <>
-            <h1 className="mx-2 text-2xl font-bold underline">Profile</h1>
-            <FormDescription className="mx-2 text-sm italic">
-              Edit Information by confirming password and submitting
-            </FormDescription>
-          </>
-        ) : (
-          <>
-            <h1 className="mx-2 text-2xl font-bold underline">Register</h1>
-            <FormDescription className="mx-2 text-sm italic">
-              All fields are required
-            </FormDescription>
-          </>
-        )}
-        <div className="mx-2 flex flex-col gap-5 md:flex-row">
+        <h1 className="mx-2 text-2xl font-bold underline">Profile</h1>
+        <FormDescription className="mx-2 text-sm italic">
+          <p>
+            {mode === "create"
+              ? "Please provide your profile information"
+              : "Edit your profile information"}
+          </p>
+          <p>All fields are required</p>
+        </FormDescription>
+        <div className="mx-2 flex flex-col gap-5">
           <FormField
             control={form.control}
             name="racfid"
@@ -112,10 +80,9 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                     {...field}
                     disabled
                     placeholder="JXXXXXX"
-                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal"
+                    className="w-full flex-1 rounded border px-2 py-1 font-normal sm:max-w-72"
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -131,7 +98,9 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                   <Input
                     {...field}
                     type="email"
-                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal"
+                    disabled={mode === "edit"}
+                    placeholder="john.doe@example.com"
+                    className="w-full flex-1 rounded border px-2 py-1 font-normal sm:max-w-72"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -151,7 +120,8 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
                 <FormControl>
                   <Input
                     {...field}
-                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal md:max-w-96"
+                    placeholder="John Doe"
+                    className="w-full flex-1 rounded border px-2 py-1 font-normal sm:max-w-72"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -159,69 +129,26 @@ const UserProfileForm = ({ currentUser, isLoading, onSave }: Props) => {
             )}
           />
         </div>
-        <div className="mx-2 flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-bold text-slate-700">
-                  {currentUser && "Enter/Change"} Password:
-                </FormLabel>
-                <FormControl>
-                  <div className="flex">
-                    <Input
-                      {...field}
-                      type={isPasswordVisible ? "text" : "password"}
-                      className="w-full flex-1 rounded border px-2 py-1 font-normal md:max-w-60"
-                    />
-                    <PasswordVisibilityButton
-                      isPasswordVisible={isPasswordVisible}
-                      setIsPasswordVisible={setIsPasswordVisible}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
-          <ul className="pt-1 text-sm text-gray-400 md:flex md:flex-col md:pt-5">
-            <li>A minimum of 8 characters</li>
-            <li>At least one lowercase letter</li>
-            <li>At least one uppercase letter</li>
-            <li>At least one number</li>
-            <li>At least one symbol</li>
-          </ul>
-        </div>
-        <div className="mx-2 flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-bold text-slate-700">
-                  Confirm Password:
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type={isPasswordVisible ? "text" : "password"}
-                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal md:w-full"
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
-        </div>
-        <span className="mx-2">
+        {mode === "edit" && (
+          <FormDescription className="mx-2">
+            Contact support to change your email address
+          </FormDescription>
+        )}
+        <span className="mx-2 flex flex-col gap-2 md:flex-row md:justify-between lg:justify-normal">
+          <ChangeUserPasswordDialog />
           <Button
             data-testid="profile-form-submit-btn"
             type="submit"
-            disabled={isLoading}
-            className="w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400 lg:w-fit"
+            disabled={isSubmitting}
+            className="w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400 md:w-40"
           >
-            {isLoading ? "Saving..." : currentUser ? "Submit" : "Register"}
+            {isSubmitting ? (
+              <LoadingButton />
+            ) : mode === "create" ? (
+              "Create Profile"
+            ) : (
+              "Update Profile"
+            )}
           </Button>
         </span>
       </form>

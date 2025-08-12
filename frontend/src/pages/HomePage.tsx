@@ -1,11 +1,12 @@
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useAuth } from "@clerk/clerk-react";
+
 import HomePageTile from "@/components/HomePageTile";
 import SignInTile from "@/components/SignInTile";
 
 const HomePage = () => {
-  const { isLoggedIn } = useAuthContext();
+  const { isSignedIn } = useAuth();
 
-  return <>{isLoggedIn ? <HomePageTile /> : <SignInTile />}</>;
+  return <>{isSignedIn ? <HomePageTile /> : <SignInTile />}</>;
 };
 
 export default HomePage;

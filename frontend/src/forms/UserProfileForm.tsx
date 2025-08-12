@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import LoadingButton from "@/components/LoadingButton";
+import ChangeUserPasswordDialog from "@/components/auth/ChangeUserPasswordDialog";
 
 const formSchema = z.object({
   racfid: z.string(),
@@ -65,7 +66,7 @@ const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
           </p>
           <p>All fields are required</p>
         </FormDescription>
-        <div className="mx-2 flex flex-col gap-5 md:flex-row">
+        <div className="mx-2 flex flex-col gap-5">
           <FormField
             control={form.control}
             name="racfid"
@@ -79,7 +80,7 @@ const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
                     {...field}
                     disabled
                     placeholder="JXXXXXX"
-                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal"
+                    className="w-full flex-1 rounded border px-2 py-1 font-normal sm:max-w-72"
                   />
                 </FormControl>
               </FormItem>
@@ -99,14 +100,9 @@ const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
                     type="email"
                     disabled={mode === "edit"}
                     placeholder="john.doe@example.com"
-                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal"
+                    className="w-full flex-1 rounded border px-2 py-1 font-normal sm:max-w-72"
                   />
                 </FormControl>
-                {mode === "edit" && (
-                  <FormDescription>
-                    Contact support to change your email address
-                  </FormDescription>
-                )}
                 <FormMessage className="text-red-500" />
               </FormItem>
             )}
@@ -125,7 +121,7 @@ const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
                   <Input
                     {...field}
                     placeholder="John Doe"
-                    className="w-[94%] flex-1 rounded border px-2 py-1 font-normal md:max-w-96"
+                    className="w-full flex-1 rounded border px-2 py-1 font-normal sm:max-w-72"
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -133,12 +129,18 @@ const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
             )}
           />
         </div>
-        <span className="mx-2">
+        {mode === "edit" && (
+          <FormDescription className="mx-2">
+            Contact support to change your email address
+          </FormDescription>
+        )}
+        <span className="mx-2 flex flex-col gap-2 md:flex-row md:justify-between lg:justify-normal">
+          <ChangeUserPasswordDialog />
           <Button
             data-testid="profile-form-submit-btn"
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400 lg:w-fit"
+            className="w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400 md:w-40"
           >
             {isSubmitting ? (
               <LoadingButton />

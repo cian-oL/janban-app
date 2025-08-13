@@ -6,14 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { useGetAllUsers } from "@/hooks/useUser";
-import { useDeleteIssue } from "../hooks/useIssue";
-import { issueCategories, kanbanColumns } from "../config/kanbanConfig";
-import DeleteIssueDialog from "../components/DeleteIssueDialog";
+import { useDeleteIssue } from "@/hooks/useIssue";
+import { issueCategories, kanbanColumns } from "@/config/kanbanConfig";
+import DeleteIssueDialog from "@/components/DeleteIssueDialog";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertDialog, AlertDialogTrigger } from "../components/ui/alert-dialog";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -31,8 +31,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import type { Issue } from "../types/kanbanTypes";
-import { User } from "@/types/userTypes";
+import type { Issue } from "@/types/kanbanTypes";
+import type { User } from "@/types/userTypes";
 
 type Props = {
   currentIssue?: Issue;

@@ -4,7 +4,7 @@ import { useUser } from "@clerk/clerk-react";
 import { UserResource } from "@clerk/types";
 
 import { useGetUser, useRegisterUser, useUpdateUser } from "@/hooks/useUser";
-import UserProfileForm from "@/forms/UserProfileForm";
+import UserProfileForm from "@/components/forms/UserProfileForm";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { User } from "@/types/userTypes";
 import { transformClerkData } from "@/lib/utils";

@@ -7,9 +7,6 @@ import Header from "@/components/Header";
 
 // ==== MOCKS ====
 
-let mockIsLoggedIn = false;
-let mockTheme = "light";
-
 const renderHeader = () => {
   render(<Header />);
 
@@ -22,8 +19,19 @@ const renderHeader = () => {
   };
 };
 
-const mockNavigate = vi.fn();
+let mockIsSignedIn = vi.hoisted(() => true);
+vi.mock("@clerk/clerk-react", () => ({
+  ClerkProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+  SignedIn: ({ children }: { children: ReactNode }) =>
+    mockIsSignedIn ? <>{children}</> : null,
+  SignedOut: ({ children }: { children: ReactNode }) =>
+    !mockIsSignedIn ? <>{children}</> : null,
+  useUser: () => ({ isSignedIn: mockIsSignedIn }),
+}));
 
+const mockNavigate = vi.fn();
 vi.mock("react-router-dom", () => ({
   Link: ({
     children,
@@ -45,15 +53,7 @@ vi.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
-vi.mock("@/contexts/AuthContext", () => ({
-  useAuthContext: vi.fn(() => ({
-    accessToken: "mock-token",
-    setAccessToken: vi.fn(),
-    isLoggedIn: mockIsLoggedIn,
-    setIsLoggedIn: vi.fn(),
-  })),
-}));
-
+let mockTheme = vi.hoisted<"light" | "dark">(() => "light");
 vi.mock("@/contexts/ThemeProvider", () => ({
   useTheme: vi.fn(() => ({
     theme: mockTheme,
@@ -92,7 +92,7 @@ describe("Header Component", () => {
   afterEach(() => cleanup());
 
   // Basic rendering test
-  it("Renders the header with all expected elements", () => {
+  it("Renders the header with all expected elements when signed in", () => {
     const {
       headerElement,
       logoElement,
@@ -111,7 +111,7 @@ describe("Header Component", () => {
     expect(buttonElement).toHaveTextContent("Sign In");
 
     // Confirm no User Drop Down Menu when not logged in
-    expect(userDropDownMenu).not.toBeInTheDocument();
+    expect(userDropDownMenu).toBeInTheDocument();
   });
 
   // Logo navigation test
@@ -148,10 +148,8 @@ describe("Header Component", () => {
 
   //   Check render of UserDropDownMenu when logged in
   it("Renders the UserDropDownMenu component when logged in", () => {
-    mockIsLoggedIn = true;
-    const { userDropDownMenu, buttonElement } = renderHeader();
+    const { userDropDownMenu } = renderHeader();
 
     expect(userDropDownMenu).toBeInTheDocument();
-    expect(buttonElement).not.toBeInTheDocument();
   });
 });

@@ -49,6 +49,7 @@ const UserProfilePage = () => {
       racfid: "",
       email: "",
       name: "",
+      passwordEnabled: false,
     };
   };
 

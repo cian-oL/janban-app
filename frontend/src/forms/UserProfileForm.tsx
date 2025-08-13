@@ -48,6 +48,7 @@ const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
     onSave({
       ...formValues,
       clerkId: formData.clerkId,
+      passwordEnabled: formData.passwordEnabled,
     });
   };
 
@@ -107,8 +108,17 @@ const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
               </FormItem>
             )}
           />
-        </div>
-        <div className="mx-2 flex flex-col gap-5">
+
+          <label className="text-sm font-bold text-slate-700">
+            Authentication Method:
+          </label>
+          <FormControl>
+            <p className="w-full flex-1 rounded border px-2 py-1 text-sm font-normal sm:max-w-72">
+              {formData.passwordEnabled
+                ? "Password Entry"
+                : "Single Sign-On (SSO)"}
+            </p>
+          </FormControl>
           <FormField
             control={form.control}
             name="name"
@@ -135,7 +145,7 @@ const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
           </FormDescription>
         )}
         <span className="mx-2 flex flex-col gap-2 md:flex-row md:justify-between lg:justify-normal">
-          <ChangeUserPasswordDialog />
+          {formData.passwordEnabled && <ChangeUserPasswordDialog />}
           <Button
             data-testid="profile-form-submit-btn"
             type="submit"

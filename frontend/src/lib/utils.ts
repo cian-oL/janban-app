@@ -13,5 +13,6 @@ export const transformClerkData = (clerkUser: UserResource): Partial<User> => {
     clerkId: clerkUser.id,
     email: clerkUser.primaryEmailAddress?.emailAddress || "",
     name: `${clerkUser.firstName || ""} ${clerkUser.lastName || ""}`.trim(),
+    passwordEnabled: clerkUser.passwordEnabled,
   };
 };

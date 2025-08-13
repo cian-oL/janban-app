@@ -3,6 +3,7 @@ export type User = {
   racfid: string;
   email: string;
   name: string;
+  passwordEnabled: boolean;
   createdAt: Date;
   lastUpdated: Date;
 };

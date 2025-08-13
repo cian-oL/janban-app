@@ -4,8 +4,8 @@ export type User = {
   email: string;
   name: string;
   passwordEnabled: boolean;
-  createdAt: Date;
-  lastUpdated: Date;
+  createdAt: string;
+  lastUpdated: string;
 };
 
 export type SignInFormData = {

@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 
 import User from "../models/user";
@@ -36,8 +35,6 @@ export const registerUser = async (req: Request, res: Response) => {
       user.racfid = generateRacfid(arrayLength);
     }
 
-    user.createdAt = new Date();
-    user.lastUpdated = new Date();
     await user.save();
     return res.status(201).json(user);
   } catch (err) {
@@ -89,7 +86,6 @@ export const updateUser = async (req: Request, res: Response) => {
 
     const { name } = req.body;
     user.name = name;
-    user.lastUpdated = new Date();
     await user.save();
     return res.status(200).json(user);
   } catch (err) {

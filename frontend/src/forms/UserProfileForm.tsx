@@ -110,7 +110,7 @@ const UserProfileForm = ({ mode, formData, isSubmitting, onSave }: Props) => {
           />
 
           <label className="text-sm font-bold text-slate-700">
-            Authentication Method:
+            Primary Authentication Method:
           </label>
           <FormControl>
             <p className="w-full flex-1 rounded border px-2 py-1 text-sm font-normal sm:max-w-72">

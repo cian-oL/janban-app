@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 
+import { clerkAuth } from "./middleware/clerkAuth";
 import userRoute from "./routes/userRoute";
 import issueRoute from "./routes/issueRoute";
 import projectRoute from "./routes/projectRoute";
@@ -55,6 +56,7 @@ app.use(
     credentials: true,
   })
 );
+app.use("/api", clerkAuth);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

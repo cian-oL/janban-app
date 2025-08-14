@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-import IssueManagementForm from "@/forms/IssueManagementForm";
+import IssueManagementForm from "@/components/forms/IssueManagementForm";
 import { useCreateIssue } from "@/hooks/useIssue";
 
 import type { Issue } from "../types/kanbanTypes";
@@ -11,7 +11,7 @@ const CreateIssuePage = () => {
   const { mutateAsync: createIssue, isPending: isLoading } = useCreateIssue();
 
   const handleSave = (
-    formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">
+    formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">,
   ) => {
     try {
       createIssue(formData).then((issue: Issue) => {
@@ -25,7 +25,7 @@ const CreateIssuePage = () => {
   };
 
   return (
-    <div className="w-full p-10 mx-auto border rounded-lg border-amber-300 bg-indigo-100">
+    <div className="mx-auto w-full rounded-lg border border-amber-300 bg-indigo-100 p-10">
       <h1 className="text-3xl font-bold">Create Issue</h1>
       <IssueManagementForm onSave={handleSave} isLoading={isLoading} />
     </div>

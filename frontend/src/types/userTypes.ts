@@ -3,8 +3,9 @@ export type User = {
   racfid: string;
   email: string;
   name: string;
-  createdAt: Date;
-  lastUpdated: Date;
+  passwordEnabled: boolean;
+  createdAt: string;
+  lastUpdated: string;
 };
 
 export type SignInFormData = {

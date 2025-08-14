@@ -52,7 +52,7 @@ export const updateUser = async (
   accessToken: string,
 ): Promise<User> => {
   return axiosInstance
-    .put("/api/user/profile", formData, {
+    .patch("/api/user/profile", formData, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,

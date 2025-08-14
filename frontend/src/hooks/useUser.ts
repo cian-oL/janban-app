@@ -36,6 +36,9 @@ export const useRegisterUser = () => {
         racfid: `temp-${Date.now()}`,
         email: formData.email!,
         name: formData.name || "",
+        passwordEnabled: formData.passwordEnabled || false,
+        createdAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
       };
 
       queryClient.setQueryData<User[]>([USERS_QUERY_KEY], (old) => [
@@ -148,10 +151,12 @@ export const useUpdateUser = () => {
     },
 
     onSuccess: (updatedUser, { racfid }) => {
-      queryClient.setQueryData<User[]>([USERS_QUERY_KEY], (old) =>
-        old?.map(
-          (user: User) => (user.racfid === racfid ? updatedUser : user) || [],
-        ),
+      queryClient.setQueryData<User[]>(
+        [USERS_QUERY_KEY],
+        (old) =>
+          old?.map((user: User) =>
+            user.racfid === racfid ? updatedUser : user,
+          ) || [],
       );
 
       queryClient.setQueryData<User>([USER_QUERY_KEY], updatedUser);

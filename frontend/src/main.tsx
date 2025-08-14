@@ -23,6 +23,7 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")!).render(
   <ClerkProvider
+    telemetry={false}
     publishableKey={CLERK_PUBLISHABLE_KEY}
     signInFallbackRedirectUrl={
       import.meta.env.VITE_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL

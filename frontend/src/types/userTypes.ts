@@ -1,8 +1,11 @@
 export type User = {
+  clerkId: string;
   racfid: string;
-  password: string;
   email: string;
   name: string;
+  passwordEnabled: boolean;
+  createdAt: string;
+  lastUpdated: string;
 };
 
 export type SignInFormData = {

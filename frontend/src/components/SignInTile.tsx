@@ -17,7 +17,7 @@ const SignInTile = () => {
           <div className="mt-10 flex flex-col">
             <Link to="/sign-in">
               <Button
-                data-testid="sign-in-link"
+                data-testid="sign-in-tile-sign-in-btn"
                 className="my-2 w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400"
               >
                 Sign In
@@ -25,7 +25,7 @@ const SignInTile = () => {
             </Link>
             <Link to="/register">
               <Button
-                data-testid="register-link"
+                data-testid="sign-in-tile-register-btn"
                 className="my-2 w-full rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400"
               >
                 Register

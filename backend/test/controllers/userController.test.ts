@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 
 import {
@@ -14,7 +13,6 @@ import User from "../../src/models/user";
 // ==== DEPENDENCY MOCKS ====
 
 jest.mock("../../src/models/user");
-jest.mock("jsonwebtoken");
 jest.mock("express-validator", () => ({
   validationResult: jest.fn(),
 }));
@@ -52,27 +50,30 @@ describe("User Controller", () => {
       });
     });
 
-    it("should return 409 if user already exists", async () => {
+    it("should return 401 if no clerkId in request body", async () => {
+      mockRequest.body = {
+        clerkId: "",
+        email: "test@example.com",
+        name: "John Doe",
+      };
+
       (validationResult as unknown as jest.Mock).mockReturnValue({
         isEmpty: () => true,
       });
-      (User.find as jest.Mock).mockResolvedValue([
-        { email: "test@example.com" },
-      ]);
-      mockRequest.body = { email: "test@example.com" };
+
       await registerUser(mockRequest as Request, mockResponse as Response);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(409);
+      expect(mockResponse.status).toHaveBeenCalledWith(401);
       expect(responseObject.json).toHaveBeenCalledWith({
-        message: "User already exists",
+        message: "Unauthorized",
       });
     });
 
-    it("should create user, generate tokens, and return 201", async () => {
+    it("should create user, and return 201", async () => {
       const newUser = {
         _id: "user123",
+        clerkId: "clerk123",
         racfid: "J000001",
-        password: "testpassword",
         email: "test@example.com",
         name: "John Doe",
         createdAt: expect.any(Date),
@@ -81,10 +82,9 @@ describe("User Controller", () => {
       };
 
       mockRequest.body = {
-        password: "testpassword",
+        clerkId: "clerk123",
         email: "test@example.com",
         name: "John Doe",
-        confirmPassword: "testpassword",
       };
 
       (validationResult as unknown as jest.Mock).mockReturnValue({
@@ -101,31 +101,18 @@ describe("User Controller", () => {
         .spyOn(racfidUtils, "checkDatabaseForRacfid")
         .mockResolvedValue(false);
 
-      // Simulate accessToken and refreshToken generation
-      (jwt.sign as jest.Mock)
-        .mockReturnValueOnce("access")
-        .mockReturnValueOnce("refresh");
-
       await registerUser(mockRequest as Request, mockResponse as Response);
 
       expect(newUser.save).toHaveBeenCalled();
       expect(mockResponse.status).toHaveBeenCalledWith(201);
-      expect(responseObject.cookie).toHaveBeenCalledWith(
-        "refresh_token",
-        "refresh",
-        expect.objectContaining({ httpOnly: true })
-      );
-      expect(responseObject.json).toHaveBeenCalledWith({
-        accessToken: "access",
-        user: newUser,
-      });
+      expect(responseObject.json).toHaveBeenCalledWith(newUser);
     });
 
-    it("should regenerate racfid if duplicate is found", async () => {
-      const newUser = {
+    it("should return user if pre-existing with 200", async () => {
+      const existingUser = {
         _id: "user123",
-        racfid: "J000002",
-        password: "testpassword",
+        clerkId: "clerk123",
+        racfid: "J000001",
         email: "test@example.com",
         name: "John Doe",
         createdAt: expect.any(Date),
@@ -134,10 +121,42 @@ describe("User Controller", () => {
       };
 
       mockRequest.body = {
-        password: "testpassword",
+        clerkId: "clerk123",
         email: "test@example.com",
         name: "John Doe",
-        confirmPassword: "testpassword",
+      };
+
+      (validationResult as unknown as jest.Mock).mockReturnValue({
+        isEmpty: () => true,
+      });
+      (User.find as jest.Mock).mockResolvedValue([existingUser]);
+
+      // Mock User.findOne to return existingUser
+      (User.findOne as jest.Mock).mockResolvedValue(existingUser);
+      (User as unknown as jest.Mock).mockImplementation(() => existingUser);
+
+      await registerUser(mockRequest as Request, mockResponse as Response);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(responseObject.json).toHaveBeenCalledWith(existingUser);
+    });
+
+    it("should regenerate racfid if duplicate is found", async () => {
+      const newUser = {
+        _id: "user123",
+        clerkId: "clerk123",
+        racfid: "J000002",
+        email: "test@example.com",
+        name: "John Doe",
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+        save: jest.fn().mockResolvedValue(true),
+      };
+
+      mockRequest.body = {
+        clerkId: "clerk123",
+        email: "test@example.com",
+        name: "John Doe",
       };
 
       (validationResult as unknown as jest.Mock).mockReturnValue({
@@ -153,35 +172,21 @@ describe("User Controller", () => {
         .mockResolvedValueOnce(true)
         .mockResolvedValueOnce(false);
 
-      // Simulate accessToken and refreshToken generation
-      (jwt.sign as jest.Mock)
-        .mockReturnValueOnce("access")
-        .mockReturnValueOnce("refresh");
-
       await registerUser(mockRequest as Request, mockResponse as Response);
 
       expect(newUser.save).toHaveBeenCalled();
       expect(mockResponse.status).toHaveBeenCalledWith(201);
-      expect(responseObject.cookie).toHaveBeenCalledWith(
-        "refresh_token",
-        "refresh",
-        expect.objectContaining({ httpOnly: true })
-      );
-      expect(responseObject.json).toHaveBeenCalledWith({
-        accessToken: "access",
-        user: newUser,
-      });
+      expect(responseObject.json).toHaveBeenCalledWith(newUser);
+
       // The racfid should have been regenerated (checkDatabaseForRacfid called twice)
       expect(racfidUtils.checkDatabaseForRacfid).toHaveBeenCalledTimes(2);
     });
 
     it("should return 500 if error occurs", async () => {
       mockRequest.body = {
-        racfid: "J000001",
-        password: "testpassword",
+        clerkId: "clerk123",
         email: "test@example.com",
         name: "John Doe",
-        confirmPassword: "testpassword",
       };
 
       (validationResult as unknown as jest.Mock).mockReturnValue({
@@ -194,7 +199,7 @@ describe("User Controller", () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(500);
       expect(responseObject.json).toHaveBeenCalledWith({
-        message: "Something went wrong",
+        message: "Something went wrong with registration",
       });
     });
   });
@@ -209,6 +214,7 @@ describe("User Controller", () => {
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(responseObject.json).toHaveBeenCalledWith(users);
     });
+
     it("should return 500 if error occurs", async () => {
       (User.find as jest.Mock).mockRejectedValue(new Error("Database error"));
       jest.spyOn(console, "log").mockImplementation(() => {});
@@ -217,7 +223,7 @@ describe("User Controller", () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(500);
       expect(responseObject.json).toHaveBeenCalledWith({
-        message: "Something went wrong",
+        message: "Something went wrong with fetching users",
       });
     });
   });
@@ -259,7 +265,7 @@ describe("User Controller", () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(500);
       expect(responseObject.json).toHaveBeenCalledWith({
-        message: "Something went wrong",
+        message: "Something went wrong with fetching user",
       });
     });
   });
@@ -268,8 +274,8 @@ describe("User Controller", () => {
     it("should update and return user if found", async () => {
       const user = {
         _id: "user123",
+        clerkId: "clerk123",
         racfid: "J000001",
-        password: "testpassword",
         email: "test@example.com",
         name: "John Doe",
         createdAt: expect.any(Date),
@@ -279,11 +285,10 @@ describe("User Controller", () => {
 
       mockRequest.userId = "user123";
       mockRequest.body = {
+        clerkId: "clerk123",
         racfid: "J000001",
-        password: "testpassword",
         email: "test@example.com",
         name: "New Name",
-        confirmPassword: "testpassword",
       };
 
       (User.findById as jest.Mock).mockResolvedValue(user);
@@ -302,11 +307,10 @@ describe("User Controller", () => {
     it("should return 404 if user not found", async () => {
       mockRequest.userId = "nonexistent";
       mockRequest.body = {
+        clerkId: "clerk123",
         racfid: "J000001",
-        password: "testpassword",
         email: "test@example.com",
         name: "New Name",
-        confirmPassword: "testpassword",
       };
 
       (User.findById as jest.Mock).mockResolvedValue(null);
@@ -323,11 +327,10 @@ describe("User Controller", () => {
     it("should return 500 if error occurs", async () => {
       mockRequest.userId = "user123";
       mockRequest.body = {
+        clerkId: "clerk123",
         racfid: "J000001",
-        password: "testpassword",
         email: "test@example.com",
         name: "New Name",
-        confirmPassword: "testpassword",
       };
 
       (User.findById as jest.Mock).mockRejectedValue(
@@ -339,7 +342,7 @@ describe("User Controller", () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(500);
       expect(responseObject.json).toHaveBeenCalledWith({
-        message: "Something went wrong",
+        message: "Something went wrong with updating user",
       });
     });
   });

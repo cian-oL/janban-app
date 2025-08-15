@@ -46,10 +46,9 @@ describe("User Routes", () => {
     );
 
     const response = await request(app).post("/api/user/register").send({
-      password: "testpassword",
+      clerkId: "clerk123",
       email: "test@example.com",
       name: "John Doe",
-      confirmPassword: "testpassword",
     });
 
     expect(response.status).toBe(201);
@@ -86,7 +85,7 @@ describe("User Routes", () => {
     expect(response.body.id).toBe("test-user-id");
   });
 
-  it("should route PUT /profile to updateUser controller with auth middleware", async () => {
+  it("should route PATCH /profile to updateUser controller with auth middleware", async () => {
     (userController.updateUser as jest.Mock).mockImplementation(
       (req: Request, res: Response) => {
         res.status(200).json({ success: true });
@@ -94,8 +93,8 @@ describe("User Routes", () => {
     );
 
     const response = await request(app)
-      .put("/api/user/profile")
-      .send({ firstName: "Test", lastName: "User" });
+      .patch("/api/user/profile")
+      .send({ name: "Test User" });
 
     expect(response.status).toBe(200);
     expect(authMiddleware.verifyAccessToken).toHaveBeenCalled();

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 
-import { useAuthContext } from "@/contexts/AuthContext";
 import {
   createIssue,
   deleteIssue,
@@ -17,13 +17,21 @@ const ISSUES_QUERY_KEY = "issues";
 const ISSUE_QUERY_KEY = "issue";
 
 export const useCreateIssue = () => {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
-  const { accessToken } = useAuthContext();
 
   return useMutation({
     mutationFn: async (
-      formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">
-    ) => createIssue(formData, accessToken),
+      formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">,
+    ) => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+
+      return createIssue(formData, accessToken);
+    },
 
     onMutate: async (formData) => {
       await queryClient.cancelQueries({ queryKey: [ISSUES_QUERY_KEY] });
@@ -51,13 +59,13 @@ export const useCreateIssue = () => {
         [ISSUES_QUERY_KEY],
         (old) =>
           old?.map((issue) =>
-            issue._id === context?.tempId ? newIssue : issue
-          ) || []
+            issue._id === context?.tempId ? newIssue : issue,
+          ) || [],
       );
 
       queryClient.setQueryData<Issue>(
         [ISSUE_QUERY_KEY, newIssue.issueCode],
-        newIssue
+        newIssue,
       );
     },
 
@@ -76,36 +84,57 @@ export const useCreateIssue = () => {
 };
 
 export const useGetAllIssues = () => {
-  const { accessToken } = useAuthContext();
+  const { getToken } = useAuth();
 
   return useQuery({
     queryKey: [ISSUES_QUERY_KEY],
-    queryFn: async () => getAllIssues(accessToken),
+    queryFn: async () => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+      return getAllIssues(accessToken);
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
   });
 };
 
 export const useGetIssue = () => {
-  const { accessToken } = useAuthContext();
+  const { getToken } = useAuth();
   const { issueCode } = useParams();
 
   return useQuery({
     queryKey: [ISSUE_QUERY_KEY, issueCode],
-    queryFn: async () => getIssue(issueCode!, accessToken),
+    queryFn: async () => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+      return getIssue(issueCode!, accessToken);
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
   });
 };
 
 export const useUpdateIssueByFormData = () => {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
-  const { accessToken } = useAuthContext();
 
   return useMutation({
     mutationFn: async (
-      formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">
-    ) => updateIssueByFormData(formData, accessToken),
+      formData: Omit<Issue, "_id" | "createdAt" | "lastUpdated">,
+    ) => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+      return updateIssueByFormData(formData, accessToken);
+    },
 
     onMutate: async (formData) => {
       const queryId = formData.issueCode;
@@ -127,12 +156,12 @@ export const useUpdateIssueByFormData = () => {
           old?.map((issue) =>
             issue.issueCode === queryId
               ? { ...issue, ...formData, lastUpdated: new Date() }
-              : issue
-          ) || []
+              : issue,
+          ) || [],
       );
 
       queryClient.setQueryData<Issue>([ISSUE_QUERY_KEY, queryId], (old) =>
-        old ? { ...old, ...formData, lastUpdated: new Date() } : old
+        old ? { ...old, ...formData, lastUpdated: new Date() } : old,
       );
 
       return { currentIssues, currentIssue };
@@ -143,13 +172,13 @@ export const useUpdateIssueByFormData = () => {
         [ISSUES_QUERY_KEY],
         (old) =>
           old?.map((issue) =>
-            issue.issueCode === issueCode ? updatedIssue : issue
-          ) || []
+            issue.issueCode === issueCode ? updatedIssue : issue,
+          ) || [],
       );
 
       queryClient.setQueryData<Issue>(
         [ISSUE_QUERY_KEY, issueCode],
-        updatedIssue
+        updatedIssue,
       );
     },
 
@@ -158,7 +187,7 @@ export const useUpdateIssueByFormData = () => {
       queryClient.setQueryData([ISSUES_QUERY_KEY], context?.currentIssues);
       queryClient.setQueryData(
         [ISSUE_QUERY_KEY, issueCode],
-        context?.currentIssue
+        context?.currentIssue,
       );
     },
 
@@ -173,10 +202,17 @@ export const useUpdateIssueByFormData = () => {
 
 export const useUpdateIssue = () => {
   const queryClient = useQueryClient();
-  const { accessToken } = useAuthContext();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: async (issue: Issue) => updateIssue(issue, accessToken),
+    mutationFn: async (issue: Issue) => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+      return updateIssue(issue, accessToken);
+    },
 
     onMutate: async (issue) => {
       const queryId = issue.issueCode;
@@ -198,12 +234,12 @@ export const useUpdateIssue = () => {
           old?.map((oldIssue) =>
             oldIssue.issueCode === queryId
               ? { ...oldIssue, ...issue, lastUpdated: new Date() }
-              : oldIssue
-          ) || []
+              : oldIssue,
+          ) || [],
       );
 
       queryClient.setQueryData<Issue>([ISSUE_QUERY_KEY, queryId], (old) =>
-        old ? { ...old, ...issue, lastUpdated: new Date() } : old
+        old ? { ...old, ...issue, lastUpdated: new Date() } : old,
       );
 
       return { currentIssues, currentIssue };
@@ -214,7 +250,7 @@ export const useUpdateIssue = () => {
       queryClient.setQueryData([ISSUES_QUERY_KEY], context?.currentIssues);
       queryClient.setQueryData(
         [ISSUE_QUERY_KEY, issueCode],
-        context?.currentIssue
+        context?.currentIssue,
       );
     },
 
@@ -228,11 +264,18 @@ export const useUpdateIssue = () => {
 };
 
 export const useDeleteIssue = () => {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
-  const { accessToken } = useAuthContext();
 
   return useMutation({
-    mutationFn: async (issue: Issue) => deleteIssue(issue, accessToken),
+    mutationFn: async (issue: Issue) => {
+      const accessToken = await getToken();
+
+      if (!accessToken) {
+        throw new Error("No authentication token available");
+      }
+      return deleteIssue(issue, accessToken);
+    },
 
     onMutate: async (issue) => {
       const queryId = issue.issueCode;
@@ -250,7 +293,8 @@ export const useDeleteIssue = () => {
 
       queryClient.setQueryData<Issue[]>(
         [ISSUES_QUERY_KEY],
-        (old) => old?.filter((oldIssue) => oldIssue.issueCode !== queryId) || []
+        (old) =>
+          old?.filter((oldIssue) => oldIssue.issueCode !== queryId) || [],
       );
 
       queryClient.setQueryData([ISSUE_QUERY_KEY, queryId], null);
@@ -263,7 +307,7 @@ export const useDeleteIssue = () => {
       queryClient.setQueryData([ISSUES_QUERY_KEY], context?.currentIssues);
       queryClient.setQueryData(
         [ISSUE_QUERY_KEY, issue.issueCode],
-        context?.currentIssue
+        context?.currentIssue,
       );
     },
 

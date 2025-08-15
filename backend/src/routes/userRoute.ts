@@ -13,6 +13,6 @@ const router = express.Router();
 router.post("/register", validateRegistration, registerUser);
 router.get("/users", verifyAccessToken, getAllUsers);
 router.get("/profile", verifyAccessToken, getUser);
-router.put("/profile", verifyAccessToken, updateUser);
+router.patch("/profile", verifyAccessToken, updateUser);
 
 export default router;

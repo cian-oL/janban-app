@@ -1,21 +1,15 @@
 import mongoose from "mongoose";
-import { hashPassword } from "../utils/user";
 
-const UserSchema = new mongoose.Schema({
-  racfid: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  createdAt: { type: Date, required: true },
-  lastUpdated: { type: Date, required: true },
-});
-
-UserSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await hashPassword(this.password, 10);
-  }
-  next();
-});
+const UserSchema = new mongoose.Schema(
+  {
+    clerkId: { type: String, required: true, unique: true },
+    racfid: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    passwordEnabled: { type: Boolean, required: true },
+  },
+  { timestamps: { createdAt: "createdAt", updatedAt: "lastUpdated" } }
+);
 
 const User = mongoose.model("User", UserSchema);
 

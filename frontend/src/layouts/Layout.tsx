@@ -1,8 +1,9 @@
+import { Outlet, useMatches } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
+
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import MainNavbar from "@/components/MainNavbar";
-import { useAuthContext } from "@/contexts/AuthContext";
-import { Outlet, useMatches } from "react-router-dom";
 
 type RouteHandle = {
   layoutVariant?: string;
@@ -13,7 +14,7 @@ type RouteMatch = {
 };
 
 const Layout = () => {
-  const { isLoggedIn } = useAuthContext();
+  const { isSignedIn } = useAuth();
   const matches = useMatches() as RouteMatch[];
 
   // Get layout variant from route handle if available
@@ -36,7 +37,7 @@ const Layout = () => {
     <div className="flex min-h-screen flex-col">
       <Header />
       <div className="flex flex-1 flex-col lg:flex-row">
-        {isLoggedIn && <MainNavbar />}
+        {isSignedIn && <MainNavbar />}
         <main className={getMainClasses()}>
           <Outlet />
         </main>

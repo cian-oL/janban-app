@@ -17,12 +17,12 @@ const PasswordVisibilityButton = ({
   };
 
   return (
-    <div className="flex items-center">
+    <div className="inline">
       <Button
         onClick={togglePasswordVisibility}
         variant="ghost"
         type="button"
-        className="translate-x-[-40px] p-0 bg-none"
+        className="bg-none p-0"
       >
         {isPasswordVisible ? <EyeOff /> : <Eye />}
       </Button>

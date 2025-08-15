@@ -6,44 +6,45 @@ const ensurePageLoaded = async (page: Page) => {
   await page.waitForLoadState("domcontentloaded");
 };
 
-test("should be able to register sucessfully", async ({ page }) => {
-  const userNumber = Math.floor(Math.random() * 9999);
+const generateRandomPassword: string = () => {
+  return "password";
+};
 
-  // access the register page from the sign in page
+test("Should be able to register sucessfully", async ({ page }) => {
+  const userNumber = Math.floor(Math.random() * 9999);
+  const password = generateRandomPassword();
+
   await page.goto("/");
   if (process.env.CI) {
     await ensurePageLoaded(page);
   }
 
-  // Use the safe click helper for more stability
-  const signInButton = page.getByTestId("header-sign-in-link");
-  await expect(signInButton).toBeVisible();
-  await signInButton.click();
+  // Access the register page from the HomePage's SignInTile
+  const registerButton = page.getByTestId("sign-in-tile-register-btn");
+  await expect(registerButton).toBeVisible();
+  await registerButton.click();
+  await expect(page.getByTestId("auth-form-register")).toBeVisible();
 
-  // Continue with the rest of the test
-  await page.getByTestId("create-account-link").click();
-  await expect(page.getByRole("heading", { name: "Register" })).toBeVisible();
+  // Success on correct completion of form
+  await page.locator("[id=firstName-field]").fill("John");
+  await page.locator("[id=lastName-field]").fill("Doe");
+  await page.locator("[id=emailAddress-field]").fill(`${userNumber}@email.com`);
+  await page.locator("[id=password-field]").fill(password);
+  await page.locator("[data-localization-key=formButtonPrimary]").click();
 
-  // success on correct completion of form
-  await page.locator("[name=email]").fill(`${userNumber}@email.com`);
-  await page.locator("[name=name]").fill(`User ${userNumber}`);
-  await page.locator("[name=password]").fill("Password?123");
-  await page.locator("[name=confirmPassword]").fill("Password?123");
-  await page.getByTestId("profile-form-submit-btn").click();
-
-  // check assertion by appropriate UI change
+  // Check assertion by appropriate UI change
   await expect(page.getByText("registered")).toBeVisible();
   await expect(page.getByText("Get Started on your Tasks!")).toBeVisible();
   await expect(page.getByTestId("go-to-kanban-btn")).toBeVisible();
 });
 
-test("should allow user to sign in", async ({ page }) => {
-  // get sign in button & expect correct heading
+test("Should allow user to sign in from HomePage", async ({ page }) => {
   await page.goto("/");
   if (process.env.CI) {
     await ensurePageLoaded(page);
   }
 
+  // Get sign in button & expect correct heading
   const signInButton = page.getByTestId("header-sign-in-link");
   await expect(signInButton).toBeVisible();
   await signInButton.click();
@@ -60,7 +61,16 @@ test("should allow user to sign in", async ({ page }) => {
   await expect(page.getByTestId("go-to-kanban-btn")).toBeVisible();
 });
 
-test("should allow user to sign out", async ({ page }) => {
+test("Should allow user to sign in from Header button", async ({ page }) => {
+  await page.goto("/");
+  if (process.env.CI) {
+    await ensurePageLoaded(page);
+  }
+
+  await page.getByTestId("header-sign-in-link").click();
+});
+
+test("Should allow user to sign out", async ({ page }) => {
   // sign in
   await page.goto("/");
   if (process.env.CI) {

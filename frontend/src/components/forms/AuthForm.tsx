@@ -8,7 +8,10 @@ type Props = {
 
 const AuthForm = ({ type }: Props) => {
   return (
-    <div className="my-6 flex items-center justify-center">
+    <div
+      data-testid="auth-form-register"
+      className="my-6 flex items-center justify-center"
+    >
       <ClerkLoading>
         <LoadingSpinner />
       </ClerkLoading>

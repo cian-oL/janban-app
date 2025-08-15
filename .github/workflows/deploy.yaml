@@ -69,11 +69,21 @@ jobs:
       - name: Create backend .env.e2e file
         run: |
           echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env.e2e
-          echo "CLERK_AUTHORIZED_PARTIES=${{ secrets.CLERK_AUTHORIZED_PARTIES }}" >> .env.e2e
+          echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_DEV_PUBLISHABLE_KEY }}" >> .env.e2e
+          echo "CLERK_SECRET_KEY=${{ secrets.CLERK_DEV_SECRET_KEY }}" >> .env.e2e
+          echo "CLERK_AUTHORIZED_PARTIES=${{ secrets.CLERK_DEV_AUTHORIZED_PARTIES }}" >> .env.e2e
           echo "CLERK_TELEMETRY_DISABLED=${{ secrets.CLERK_TELEMETRY_DISABLED }}" >> .env.e2e
           echo "CLERK_TELEMETRY_DEBUG=${{ secrets.CLERK_TELEMETRY_DEBUG }}" >> .env.e2e
           echo "FRONTEND_URL=http://localhost:5173" >> .env.e2e
         working-directory: ./backend
+
+      - name: Create e2e-tests .env file
+        run: |
+          echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_DEV_PUBLISHABLE_KEY }}" >> .env
+          echo "CLERK_SECRET_KEY=${{ secrets.CLERK_DEV_SECRET_KEY }}" >> .env
+          echo "CLERK_USER_EMAIL=${{ secrets.CLERK_USER_EMAIL }}" >> .env
+          echo "CLERK_USER_PASSWORD=${{ secrets.CLERK_USER_PASSWORD }}" >> .env
+        working-directory: ./e2e-tests
 
       - name: Run e2e tests
         run: npx playwright test --project=chromium
@@ -100,7 +110,9 @@ jobs:
         run: |
           echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env
           echo "MONGO_DB_CONNECTION_STRING=${{ secrets.MONGO_DB_CONNECTION_STRING }}" >> .env
-          echo "CLERK_AUTHORIZED_PARTIES=${{ secrets.CLERK_AUTHORIZED_PARTIES }}" >> .env
+          echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PROD_PUBLISHABLE_KEY }}" >> .env
+          echo "CLERK_SECRET_KEY=${{ secrets.CLERK_PROD_SECRET_KEY }}" >> .env
+          echo "CLERK_AUTHORIZED_PARTIES=https://janban.dev,https://www.janban.dev" >> .env
           echo "CLERK_TELEMETRY_DISABLED=${{ secrets.CLERK_TELEMETRY_DISABLED }}" >> .env
           echo "CLERK_TELEMETRY_DEBUG=${{ secrets.CLERK_TELEMETRY_DEBUG }}" >> .env
           echo "FRONTEND_URL=https://janban.dev" >> .env
@@ -111,9 +123,11 @@ jobs:
         working-directory: ./frontend
         env:
           VITE_API_BASE_URL: https://janban.dev
-          VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
-          VITE_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/auth-redirect
-          VITE_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/auth-redirect
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+          VITE_CLERK_SIGN_IN_URL: /sign-in
+          VITE_CLERK_SIGN_UP_URL: /register
+          VITE_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL: /auth-redirect
+          VITE_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL: /auth-redirect
 
       # === EC2 Deployment ===
 

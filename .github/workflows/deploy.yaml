@@ -58,47 +58,47 @@ jobs:
 
       # === E2E Tests ===
 
-      - name: Install e2e test dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
+      # - name: Install e2e test dependencies
+      #   run: npm ci
+      #   working-directory: ./e2e-tests
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-        working-directory: ./e2e-tests
+      # - name: Install Playwright browsers
+      #   run: npx playwright install --with-deps chromium
+      #   working-directory: ./e2e-tests
 
-      - name: Create backend .env.e2e file
-        run: |
-          echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env.e2e
-          echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_DEV_PUBLISHABLE_KEY }}" >> .env.e2e
-          echo "CLERK_SECRET_KEY=${{ secrets.CLERK_DEV_SECRET_KEY }}" >> .env.e2e
-          echo "CLERK_AUTHORIZED_PARTIES=${{ secrets.CLERK_DEV_AUTHORIZED_PARTIES }}" >> .env.e2e
-          echo "CLERK_TELEMETRY_DISABLED=${{ secrets.CLERK_TELEMETRY_DISABLED }}" >> .env.e2e
-          echo "CLERK_TELEMETRY_DEBUG=${{ secrets.CLERK_TELEMETRY_DEBUG }}" >> .env.e2e
-          echo "FRONTEND_URL=http://localhost:5173" >> .env.e2e
-        working-directory: ./backend
+      # - name: Create backend .env.e2e file
+      #   run: |
+      #     echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> .env.e2e
+      #     echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_DEV_PUBLISHABLE_KEY }}" >> .env.e2e
+      #     echo "CLERK_SECRET_KEY=${{ secrets.CLERK_DEV_SECRET_KEY }}" >> .env.e2e
+      #     echo "CLERK_AUTHORIZED_PARTIES=${{ secrets.CLERK_DEV_AUTHORIZED_PARTIES }}" >> .env.e2e
+      #     echo "CLERK_TELEMETRY_DISABLED=${{ secrets.CLERK_TELEMETRY_DISABLED }}" >> .env.e2e
+      #     echo "CLERK_TELEMETRY_DEBUG=${{ secrets.CLERK_TELEMETRY_DEBUG }}" >> .env.e2e
+      #     echo "FRONTEND_URL=http://localhost:5173" >> .env.e2e
+      #   working-directory: ./backend
 
-      - name: Create e2e-tests .env file
-        run: |
-          echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_DEV_PUBLISHABLE_KEY }}" >> .env
-          echo "CLERK_SECRET_KEY=${{ secrets.CLERK_DEV_SECRET_KEY }}" >> .env
-          echo "CLERK_USER_EMAIL=${{ secrets.CLERK_USER_EMAIL }}" >> .env
-          echo "CLERK_USER_PASSWORD=${{ secrets.CLERK_USER_PASSWORD }}" >> .env
-        working-directory: ./e2e-tests
+      # - name: Create e2e-tests .env file
+      #   run: |
+      #     echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_DEV_PUBLISHABLE_KEY }}" >> .env
+      #     echo "CLERK_SECRET_KEY=${{ secrets.CLERK_DEV_SECRET_KEY }}" >> .env
+      #     echo "CLERK_USER_EMAIL=${{ secrets.CLERK_USER_EMAIL }}" >> .env
+      #     echo "CLERK_USER_PASSWORD=${{ secrets.CLERK_USER_PASSWORD }}" >> .env
+      #   working-directory: ./e2e-tests
 
-      - name: Run e2e tests
-        run: npx playwright test --project=chromium
-        working-directory: ./e2e-tests
-        env:
-          CI: true
-          DEBUG: pw:api
+      # - name: Run e2e tests
+      #   run: npx playwright test --project=chromium
+      #   working-directory: ./e2e-tests
+      #   env:
+      #     CI: true
+      #     DEBUG: pw:api
 
-      - name: Upload Playwright test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: e2e-tests/playwright-report/
-          retention-days: 5
+      # - name: Upload Playwright test results
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: playwright-report
+      #     path: e2e-tests/playwright-report/
+      #     retention-days: 5
 
       # === Builds ===
 

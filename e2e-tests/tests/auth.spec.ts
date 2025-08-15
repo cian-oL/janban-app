@@ -35,9 +35,8 @@ test("Should be able to register sucessfully", async ({ page }) => {
   const userNumber = Math.floor(Math.random() * 9999);
   const password = generateRandomPassword();
 
-  await setupClerkTestingToken({ page });
-
   await page.goto("/");
+  await setupClerkTestingToken({ page });
   if (process.env.CI) {
     await ensurePageLoaded(page);
   }

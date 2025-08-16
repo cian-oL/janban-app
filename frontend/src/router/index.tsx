@@ -12,6 +12,7 @@ import IssueManagementPage from "@/pages/IssueManagementPage";
 import UnderConstructionPage from "@/pages/UnderConstructionPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import AuthRedirectPage from "@/pages/auth/AuthRedirectPage";
+import ProjectsPage from "@/pages/projects/ProjectsPage";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
           {
             path: "/my-profile",
             element: <UserProfilePage />,
+          },
+          {
+            path: "/projects",
+            element: <ProjectsPage />,
           },
           {
             path: "/kanban",

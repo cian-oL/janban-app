@@ -66,6 +66,7 @@ const KanbanPage = ({ type }: Props) => {
 
   return (
     <>
+      <h1>{"Project: Kanban"}</h1>
       {isGetLoading ? (
         <LoadingSpinner />
       ) : (

@@ -24,8 +24,6 @@ export const createProject = async (req: Request, res: Response) => {
       count++;
     } while (isInDb);
 
-    project.createdAt = new Date();
-    project.lastUpdated = new Date();
     project.issues = [];
 
     await project.save();

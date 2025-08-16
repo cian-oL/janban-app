@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { transformClerkData } from "@/lib/utils";
 import { useRegisterUser } from "@/hooks/useUser";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 const AuthRedirectPage = () => {
   const navigate = useNavigate();

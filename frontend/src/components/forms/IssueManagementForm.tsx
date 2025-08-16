@@ -8,8 +8,7 @@ import { toast } from "sonner";
 import { useGetAllUsers } from "@/hooks/useUser";
 import { useDeleteIssue } from "@/hooks/useIssue";
 import { issueCategories, kanbanColumns } from "@/config/kanbanConfig";
-import DeleteIssueDialog from "@/components/DeleteIssueDialog";
-
+import DeleteIssueDialog from "@/components/kanban/DeleteIssueDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

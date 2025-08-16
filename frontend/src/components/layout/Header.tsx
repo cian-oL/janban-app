@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { SignedIn, SignedOut } from "@clerk/clerk-react";
 
-import { Button } from "./ui/button";
-import UserDropDownMenu from "./UserDropDownMenu";
-import ModeToggle from "./ModeToggle";
+import { Button } from "@/components/ui/button";
+import UserDropDownMenu from "@/components/layout/UserDropDownMenu";
+import ModeToggle from "@/components/common/ModeToggle";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 const Header = () => {

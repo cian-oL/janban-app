@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useDroppable } from "@dnd-kit/core";
 
 import { Issue } from "@/types/kanbanTypes";
-import IssueCard from "./IssueCard";
+import IssueCard from "@/components/kanban/IssueCard";
 
 type Props = {
   columnTitle: "Active Board" | "Backlog";

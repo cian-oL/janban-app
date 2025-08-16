@@ -1,5 +1,3 @@
-import { Issue } from "../types/kanbanTypes";
-
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -8,7 +6,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../components/ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
+
+import type { Issue } from "@/types/kanbanTypes";
 
 type Props = {
   issue: Issue;
@@ -26,12 +26,12 @@ const DeleteIssueDialog = ({ issue, handleDeleteIssue }: Props) => {
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel className="my-2 rounded-lg bg-amber-300 text-black font-bold hover:bg-amber-400">
+        <AlertDialogCancel className="my-2 rounded-lg bg-amber-300 font-bold text-black hover:bg-amber-400">
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
           onClick={() => handleDeleteIssue(issue)}
-          className="rounded-lg text-white font-bold bg-red-500 hover:bg-red-700"
+          className="rounded-lg bg-red-500 font-bold text-white hover:bg-red-700"
         >
           Delete Issue
         </AlertDialogAction>

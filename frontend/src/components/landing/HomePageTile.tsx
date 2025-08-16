@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
-import janbanImage from "../assets/janban-main.png";
-import { Button } from "./ui/button";
+import janbanImage from "@/assets/janban-main.png";
+import { Button } from "@/components/ui/button";
 
 const HomePageTile = () => {
   return (

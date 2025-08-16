@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import IssueManagementForm from "@/components/forms/IssueManagementForm";
 import { useCreateIssue } from "@/hooks/useIssue";
 
-import type { Issue } from "../types/kanbanTypes";
+import type { Issue } from "@/types/kanbanTypes";
 
 const CreateIssuePage = () => {
   const navigate = useNavigate();

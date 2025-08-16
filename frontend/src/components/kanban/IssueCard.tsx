@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { Issue } from "../types/kanbanTypes";
-import { AlertDialog, AlertDialogTrigger } from "../components/ui/alert-dialog";
-import DeleteIssueDialog from "./DeleteIssueDialog";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import DeleteIssueDialog from "@/components/kanban/DeleteIssueDialog";
+
+import type { Issue } from "@/types/kanbanTypes";
 
 type Props = {
   issue: Issue;

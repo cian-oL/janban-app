@@ -1,8 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-import { User } from "@/types/userTypes";
-import { UserResource } from "@clerk/types";
+import type { User } from "@/types/userTypes";
+import type { UserResource } from "@clerk/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

@@ -9,7 +9,7 @@ import {
   getIssue,
   updateIssue,
   updateIssueByFormData,
-} from "../api/issueApiClient";
+} from "@/api/issueApiClient";
 
 import type { Issue } from "../types/kanbanTypes";
 

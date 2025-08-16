@@ -7,9 +7,10 @@ import {
   useUpdateIssue,
 } from "@/hooks/useIssue";
 import { useIssuesContext } from "@/contexts/IssuesContext";
-import KanbanBoard from "@/components/KanbanBoard";
-import { Issue } from "@/types/kanbanTypes";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import KanbanBoard from "@/components/kanban/KanbanBoard";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
+
+import type { Issue } from "@/types/kanbanTypes";
 
 type Props = {
   type: "active-board" | "backlog";

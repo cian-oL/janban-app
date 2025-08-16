@@ -2,8 +2,6 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { User } from "@/types/userTypes";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,8 +13,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import LoadingButton from "@/components/LoadingButton";
+import LoadingButton from "@/components/common/LoadingButton";
 import ChangeUserPasswordDialog from "@/components/auth/ChangeUserPasswordDialog";
+
+import type { User } from "@/types/userTypes";
 
 const formSchema = z.object({
   racfid: z.string(),

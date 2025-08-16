@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import { Issue } from "@/types/kanbanTypes";
+import type { Issue } from "@/types/kanbanTypes";
 
 type Props = {
   children: React.ReactNode;

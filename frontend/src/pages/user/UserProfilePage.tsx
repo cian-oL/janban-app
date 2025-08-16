@@ -5,7 +5,7 @@ import { UserResource } from "@clerk/types";
 
 import { useGetUser, useRegisterUser, useUpdateUser } from "@/hooks/useUser";
 import UserProfileForm from "@/components/forms/UserProfileForm";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { User } from "@/types/userTypes";
 import { transformClerkData } from "@/lib/utils";
 

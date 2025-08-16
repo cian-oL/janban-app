@@ -13,11 +13,12 @@ import {
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
-import { kanbanColumns } from "../config/kanbanConfig";
-import KanbanColumnContainer from "./KanbanColumnContainer";
-import BacklogContainer from "./BacklogContainer";
-import { Issue } from "../types/kanbanTypes";
-import { Button } from "./ui/button";
+import { kanbanColumns } from "@/config/kanbanConfig";
+import KanbanColumnContainer from "@/components/kanban/KanbanColumnContainer";
+import BacklogContainer from "@/components/kanban/BacklogContainer";
+import { Button } from "@/components/ui/button";
+
+import type { Issue } from "@/types/kanbanTypes";
 
 type Props = {
   type: "active-board" | "backlog";

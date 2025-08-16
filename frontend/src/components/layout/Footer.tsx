@@ -1,5 +1,6 @@
-import { useTheme } from "@/contexts/ThemeProvider";
 import { Link } from "react-router-dom";
+
+import { useTheme } from "@/contexts/ThemeProvider";
 
 const Footer = () => {
   const { theme } = useTheme();

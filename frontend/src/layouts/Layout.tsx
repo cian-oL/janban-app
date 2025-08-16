@@ -1,9 +1,9 @@
 import { Outlet, useMatches } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import MainNavbar from "@/components/MainNavbar";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
+import MainNavbar from "@/components/layout/MainNavbar";
 
 type RouteHandle = {
   layoutVariant?: string;

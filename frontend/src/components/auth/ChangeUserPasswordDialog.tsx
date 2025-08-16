@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import PasswordVisibilityButton from "@/components/PasswordVisibilityButton";
+import PasswordVisibilityButton from "@/components/auth/PasswordVisibilityButton";
 
 interface ClerkError {
   code: string;

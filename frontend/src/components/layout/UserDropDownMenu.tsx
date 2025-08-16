@@ -4,7 +4,7 @@ import { SignOutButton } from "@clerk/clerk-react";
 
 import { useGetUser } from "@/hooks/useUser";
 import { useTheme } from "@/contexts/ThemeProvider";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 const UserDropDownMenu = () => {
   const { data: currentUser, isLoading } = useGetUser();

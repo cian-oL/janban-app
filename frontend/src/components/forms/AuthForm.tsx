@@ -1,6 +1,6 @@
 import { SignIn, SignUp, ClerkLoading, ClerkLoaded } from "@clerk/clerk-react";
 
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 type Props = {
   type: "sign-in" | "register";

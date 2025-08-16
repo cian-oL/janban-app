@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@clerk/clerk-react";
 
-import type { User } from "@/types/userTypes";
 import {
   createUser,
   getAllUsers,
   getUser,
   updateUser,
 } from "@/api/userApiClient";
+
+import type { User } from "@/types/userTypes";
 
 const USERS_QUERY_KEY = "users";
 const USER_QUERY_KEY = "user";

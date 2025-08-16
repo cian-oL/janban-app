@@ -7,8 +7,3 @@ export type User = {
   createdAt: string;
   lastUpdated: string;
 };
-
-export type SignInFormData = {
-  racfid: string;
-  password: string;
-};
